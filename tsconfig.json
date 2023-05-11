@@ -13,6 +13,6 @@
     "declaration": true,
     "declarationMap": true,
     "noImplicitOverride": true,
-    "noUncheckedIndexAccess": true
+    "noUncheckedIndexedAccess": true
   }
 }
