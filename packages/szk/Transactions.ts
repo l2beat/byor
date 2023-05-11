@@ -7,11 +7,13 @@ export function EthereumAddress(value: string): EthereumAddress {
     if(isAddress(value)) {
         return value as unknown as EthereumAddress;
     } else {
-        throw new Error("Invalid Ethereum address");
+        throw new Error(`Invalid Ethereum address ${value}`);
     }
 }
 
-export type Unsigned64 = BigInt;
+export interface Unsigned64 extends BigInt {
+    _Value: bigint;
+}
 export function Unsigned64(value: bigint | number) {
     if(typeof value == 'number') {
         try {
@@ -21,18 +23,59 @@ export function Unsigned64(value: bigint | number) {
         }
     }
 
-    const MAX_U64 = (1n << 64n);
+    const MAX_U64 = (1n << 64n) - 1n;
     const MIN_U64 = 0n;
     if(value >= MIN_U64 && value <= MAX_U64) {
-        return value;
+        return value as unknown as Unsigned64;
     } else {
         throw new Error("Value not in unsigned 64bit range");
     }
 }
+
+Unsigned64.toHex = function toHex(a: Unsigned64) {
+    const hexed = a.toString(16);
+    return `0x${"0".repeat(16 - hexed.length)}${hexed}`
+}
+
+export interface Unsigned8 extends BigInt {
+    _Value: bigint;
+}
+export function Unsigned8(value: bigint | number) {
+    if(typeof value == 'number') {
+        try {
+            value = BigInt(value)
+        } catch(e) {
+            throw new Error(`Invalid value of type number passed ${e}`)
+        }
+    }
+
+    const MAX_U8 = (1n << 8n);
+    const MIN_U8 = 0n;
+    if(value >= MIN_U8 && value <= MAX_U8) {
+        return value as unknown as Unsigned8;
+    } else {
+        throw new Error("Value not in unsigned 8bit range");
+    }
+}
+
+export type ByteArray = Uint8Array;
+export type Hex = `0x${string}`;
 
 export interface UnsignedTransaction {
     to: EthereumAddress,
     value: Unsigned64,
     nonce: Unsigned64,
     fee: Unsigned64,
+};
+
+export interface SignedTransaction extends UnsignedTransaction{
+    r: ByteArray,
+    s: ByteArray,
+    v: Unsigned8,
+    hash: ByteArray,
+};
+
+export interface Transaction extends UnsignedTransaction{
+    from: EthereumAddress,
+    hash: ByteArray,
 };

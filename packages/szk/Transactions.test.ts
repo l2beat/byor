@@ -13,7 +13,7 @@ describe('EthereumAddress', function() {
 })
 
 describe('Unsigned64', function() {
-    const MAX_U64 = 1n << 64n
+    const MAX_U64 = (1n << 64n) - 1n
 
     it('Should transform number zero', async function() {
         const value: Unsigned64 = Unsigned64(0);
@@ -66,5 +66,13 @@ describe('Unsigned64', function() {
 
     it('Should throw for bigint bigger than unsigned 64bit', async function() {
         assert.throws(() => Unsigned64(MAX_U64 + 1n));
+    })
+
+    it('Should convert to correct hex with zero padding', async function() {
+        expect(Unsigned64.toHex(Unsigned64(0n))).to.equal("0x0000000000000000");
+        expect(Unsigned64.toHex(Unsigned64(1n))).to.equal("0x0000000000000001");
+        expect(Unsigned64.toHex(Unsigned64(256n))).to.equal("0x0000000000000100");
+        expect(Unsigned64.toHex(Unsigned64(2251804108652544n))).to.equal("0x0008000100000000");
+        expect(Unsigned64.toHex(Unsigned64(MAX_U64))).to.equal("0xffffffffffffffff");
     })
 })
