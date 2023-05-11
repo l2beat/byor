@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "lib": ["es2020"],
+    "lib": ["es2020", "dom"],
     "module": "CommonJS",
     "sourceMap": true,
     "strict": true,
@@ -13,6 +13,7 @@
     "declaration": true,
     "declarationMap": true,
     "noImplicitOverride": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "outDir": "build"
   }
 }
