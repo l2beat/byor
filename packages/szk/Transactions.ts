@@ -79,3 +79,6 @@ export interface Transaction extends UnsignedTransaction{
     from: EthereumAddress,
     hash: ByteArray,
 };
+
+export const SIGNED_TX_SIZE: number = 20 + 8 + 8 + 8 + 32 + 32 + 1 + 32;
+export const SIGNED_TX_HEX_SIZE: number = SIGNED_TX_SIZE * 2 + 2;
