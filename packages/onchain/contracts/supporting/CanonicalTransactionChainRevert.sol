@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../CTC.sol";
+import "../CanonicalTransactionChain.sol";
 
-contract CTCRevert {
-    CTC ctc;
+contract CanonicalTransactionChainRevert {
+    CanonicalTransactionChain ctc;
     constructor(address ctcContract) {
-        ctc = CTC(ctcContract);
+        ctc = CanonicalTransactionChain(ctcContract);
     }
 
     function appendBatch(bytes calldata batch) public {

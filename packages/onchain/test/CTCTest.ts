@@ -2,7 +2,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { assert, expect } from 'chai'
 import hre from 'hardhat'
 
-describe('CTC', function () {
+describe('CanonicalTransactionChain', function () {
   const randomBytes = '0x12345678907654321234567890987654321234567890987654'
 
   async function getDeployer(): Promise<SignerWithAddress> {
@@ -14,7 +14,7 @@ describe('CTC', function () {
   it('Should emit BatchAppended event', async function () {
     const deployer = await getDeployer()
 
-    const CTC = await hre.ethers.getContractFactory('CTC')
+    const CTC = await hre.ethers.getContractFactory('CanonicalTransactionChain')
     const ctc = await CTC.deploy()
 
     await expect(ctc.appendBatch(randomBytes))
@@ -23,9 +23,9 @@ describe('CTC', function () {
   })
 
   it('Should revert if called from another contract', async function () {
-    const CTC = await hre.ethers.getContractFactory('CTC')
+    const CTC = await hre.ethers.getContractFactory('CanonicalTransactionChain')
     const ctc = await CTC.deploy()
-    const CTCRevert = await hre.ethers.getContractFactory('CTCRevert')
+    const CTCRevert = await hre.ethers.getContractFactory('CanonicalTransactionChainRevert')
     const ctcRevert = await CTCRevert.deploy(ctc.address)
 
     await expect(ctcRevert.appendBatch(randomBytes)).to.be.reverted
