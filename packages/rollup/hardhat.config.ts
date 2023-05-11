@@ -4,10 +4,13 @@ import '@nomicfoundation/hardhat-toolbox'
 const config: HardhatUserConfig = {
   solidity: '0.8.18',
   paths: {
-    sources: './packages/rollup/contracts',
-    tests: './packages/rollup/test',
-    cache: './build/hardhat/cache',
-    artifacts: './build/hardhat/artifacts',
+    sources: './contracts',
+    tests: './test',
+    cache: './build/cache',
+    artifacts: './build/artifacts',
+  },
+  typechain: {
+    outDir: 'build/typechain',
   },
 }
 

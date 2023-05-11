@@ -1,5 +1,5 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
-import { expect, assert } from 'chai'
+import { assert, expect } from 'chai'
 import hre from 'hardhat'
 
 describe('CTC', function () {
@@ -7,20 +7,19 @@ describe('CTC', function () {
 
   async function getDeployer(): Promise<SignerWithAddress> {
     const accounts = await hre.ethers.getSigners()
-    assert(accounts !== undefined, "Signer accounts is undefined");
-    assert(accounts[0] !== undefined, "First signer account is undefined");
-    return accounts[0];
+    assert(accounts[0] !== undefined, 'First signer account is undefined')
+    return accounts[0]
   }
 
   it('Should emit BatchAppended event', async function () {
-    const deployer = await getDeployer();
+    const deployer = await getDeployer()
 
     const CTC = await hre.ethers.getContractFactory('CTC')
     const ctc = await CTC.deploy()
 
     await expect(ctc.appendBatch(randomBytes))
       .to.emit(ctc, 'BatchAppended')
-      .withArgs(await deployer?.getAddress())
+      .withArgs(await deployer.getAddress())
   })
 
   it('Should revert if called from another contract', async function () {

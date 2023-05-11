@@ -1,9 +1,3 @@
 node_modules
 .vscode
-
-# Hardhat
-cache
-artifacts
-typechain-types
-
 build
