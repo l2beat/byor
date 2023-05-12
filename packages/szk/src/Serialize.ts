@@ -1,6 +1,5 @@
 import * as E from 'fp-ts/Either'
-import { hashMessage } from 'viem'
-import { PrivateKeyAccount } from 'viem/accounts'
+import { hashMessage, PrivateKeyAccount } from 'viem'
 
 import {
   Hex,
@@ -11,7 +10,7 @@ import {
 
 export async function serialize(
   unsignedTx: Transaction,
-  account: PrivateKeyAccount
+  account: PrivateKeyAccount,
 ): Promise<Hex> {
   const toHex = unsignedTx.to.toString()
   const valueHex = Unsigned64.toHex(unsignedTx.value)
