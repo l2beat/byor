@@ -25,7 +25,9 @@ describe('CanonicalTransactionChain', function () {
   it('Should revert if called from another contract', async function () {
     const CTC = await hre.ethers.getContractFactory('CanonicalTransactionChain')
     const ctc = await CTC.deploy()
-    const CTCRevert = await hre.ethers.getContractFactory('CanonicalTransactionChainRevert')
+    const CTCRevert = await hre.ethers.getContractFactory(
+      'CanonicalTransactionChainRevert',
+    )
     const ctcRevert = await CTCRevert.deploy(ctc.address)
 
     await expect(ctcRevert.appendBatch(randomBytes)).to.be.reverted
