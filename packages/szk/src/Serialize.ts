@@ -1,12 +1,9 @@
 import * as E from 'fp-ts/Either'
 import { hashMessage, PrivateKeyAccount } from 'viem'
 
-import {
-  Hex,
-  SIGNED_TX_HEX_SIZE,
-  Transaction,
-  Unsigned64,
-} from './Transactions'
+import { Hex, SIGNED_TX_HEX_SIZE, Transaction } from './types/Transactions'
+
+import { Unsigned64 } from './types/UnsignedSized'
 
 export async function serialize(
   unsignedTx: Transaction,
