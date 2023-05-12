@@ -1,5 +1,6 @@
-import { EthereumAddress } from './EthereumAddress'
 import { assert, expect } from 'chai'
+
+import { EthereumAddress } from './EthereumAddress'
 
 describe('EthereumAddress', function () {
   it('Should transform valid address', async function () {

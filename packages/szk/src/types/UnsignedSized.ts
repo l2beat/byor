@@ -27,6 +27,10 @@ Unsigned64.fromHex = function fromHex(a: Hex): Unsigned64 {
   return Unsigned64(BigInt(a))
 }
 
+Unsigned64.toBigInt = function toBigInt(a: Unsigned64): bigint {
+  return a as unknown as bigint
+}
+
 export interface Unsigned8 extends BigInt {
   _Value: bigint
 }

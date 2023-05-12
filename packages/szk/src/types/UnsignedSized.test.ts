@@ -1,5 +1,6 @@
 import { assert, expect } from 'chai'
-import { Unsigned64, Unsigned8 } from './UnsignedSized'
+
+import { Unsigned8,Unsigned64 } from './UnsignedSized'
 
 describe('Unsigned64', function () {
   const MAX_U64 = (1n << 64n) - 1n

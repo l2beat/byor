@@ -1,5 +1,5 @@
 import { EthereumAddress } from './EthereumAddress'
-import { Unsigned64, Unsigned8 } from './UnsignedSized'
+import { Unsigned8,Unsigned64 } from './UnsignedSized'
 
 export type ByteArray = Uint8Array
 export type Hex = `0x${string}`
@@ -23,5 +23,5 @@ export interface Transaction extends UnsignedTransaction {
   hash: ByteArray
 }
 
-export const SIGNED_TX_SIZE: number = 20 + 8 + 8 + 8 + 32 + 32 + 1 + 32
+export const SIGNED_TX_SIZE: number = 20 + 8 + 8 + 8 + 32 + 32 + 1
 export const SIGNED_TX_HEX_SIZE: number = SIGNED_TX_SIZE * 2 + 2

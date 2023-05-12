@@ -1,4 +1,4 @@
-import { isAddress } from 'viem'
+import { isAddress, Hex } from 'viem'
 
 export interface EthereumAddress extends String {
   _Value: string
@@ -9,4 +9,8 @@ export function EthereumAddress(value: string): EthereumAddress {
   } else {
     throw new Error(`Invalid Ethereum address ${value}`)
   }
+}
+
+EthereumAddress.toHex = function toHex(a: EthereumAddress): Hex {
+  return a as unknown as Hex
 }
