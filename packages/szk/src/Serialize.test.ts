@@ -10,10 +10,7 @@ import {
   serializeAndSign,
 } from './Serialize'
 import { EthereumAddress } from './types/EthereumAddress'
-import {
-  SIGNED_TX_SIZE as SIGNED_TX_HEX_SIZE,
-  Transaction,
-} from './types/Transactions'
+import { SIGNED_TX_HEX_SIZE, Transaction } from './types/Transactions'
 import { Unsigned64 } from './types/UnsignedSized'
 
 const modelAccount = privateKeyToAccount(
@@ -35,7 +32,7 @@ const modelTxSerializedHex =
 describe('serialize', function () {
   it('Should serialize a valid transaction', async function () {
     const serialized = await serializeAndSign(modelTx, modelAccount)
-    expect(serialized.length).to.equal(SIGNED_TX_HEX_SIZE * 2 + 2)
+    expect(serialized.length).to.equal(SIGNED_TX_HEX_SIZE)
     expect(serialized).to.equal(modelTxSerializedHex)
   })
 })
