@@ -1,32 +1,37 @@
 import * as E from 'fp-ts/Either'
-import { PrivateKeyAccount } from 'viem'
+import { PrivateKeyAccount, hashTypedData, recoverAddress, recoverTypedDataAddress, verifyTypedData } from 'viem'
 
 import { EthereumAddress } from './types/EthereumAddress'
-import { Hex, SIGNED_TX_HEX_SIZE, Transaction } from './types/Transactions'
+import { Hex, SIGNED_TX_HEX_SIZE, Transaction, UnsignedTransaction } from './types/Transactions'
 import { Unsigned64 } from './types/UnsignedSized'
+
+const domain = {
+    name: "BYOR Sovereign Rollup",
+    version: '1',
+    chainId: 1,
+    // TODO(radomski): Find this
+    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC' as Hex,
+}
+
+const types = {
+    UnsignedTransaction: [
+        { name: "to", type: 'address' },
+        { name: "value", type: 'uint64' },
+        { name: "nonce", type: 'uint64' },
+        { name: "fee", type: 'uint64' }
+    ]
+}
+
+const primaryType = 'UnsignedTransaction'
 
 export async function serialize(
     unsignedTx: Transaction,
     account: PrivateKeyAccount,
 ): Promise<Hex> {
     const signature = await account.signTypedData({
-        domain: {
-            name: "BYOR Sovereign Rollup",
-            version: '1',
-            chainId: 1,
-            // TODO(radomski): Find this
-            verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-        },
-
-        types: {
-            UnsignedTransaction: [
-                { name: "to", type: 'address' },
-                { name: "value", type: 'uint64' },
-                { name: "nonce", type: 'uint64' },
-                { name: "fee", type: 'uint64' }
-            ]
-        },
-        primaryType: 'UnsignedTransaction',
+        domain: domain,
+        types: types,
+        primaryType: primaryType,
         message: {
             to: EthereumAddress.toHex(unsignedTx.to),
             value: Unsigned64.toBigInt(unsignedTx.value),
@@ -51,18 +56,41 @@ export async function deserialize(
     if (signedTxBytes.length !== SIGNED_TX_HEX_SIZE) {
         return E.right(
             new Error(
-                `Serialized transaction byte array too small, got/expected => ${signedTxBytes.length}/${SIGNED_TX_HEX_SIZE}`,
+                `Serialized transaction byte array too small or too big, got/expected => ${signedTxBytes.length}/${SIGNED_TX_HEX_SIZE}`,
             ),
         )
     }
 
+    const hex = signedTxBytes.substring(2);
+    const unsignedTx: UnsignedTransaction = {
+        to: EthereumAddress(`0x${hex.substring(0, 40)}`),
+        value: Unsigned64.fromHex(`0x${hex.substring(40, 56)}`),
+        nonce: Unsigned64.fromHex(`0x${hex.substring(56, 72)}`),
+        fee: Unsigned64.fromHex(`0x${hex.substring(72, 88)}`),
+    }
+
+    const signature: Hex = `0x${hex.substring(88)}`
+    const hash: Hex = hashTypedData({
+        domain,
+        types,
+        primaryType,
+        message: {
+            to: EthereumAddress.toHex(unsignedTx.to),
+            value: Unsigned64.toBigInt(unsignedTx.value),
+            nonce: Unsigned64.toBigInt(unsignedTx.nonce),
+            fee: Unsigned64.toBigInt(unsignedTx.fee),
+        },
+    })
+
+    const signer = await recoverAddress({ hash, signature })
+
     const tx: Transaction = {
-        from: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
-        to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
-        value: Unsigned64(10),
-        nonce: Unsigned64(1),
-        fee: Unsigned64(2),
-        hash: new Uint8Array([1, 2, 3]),
+        from: EthereumAddress(signer),
+        to: unsignedTx.to,
+        value: unsignedTx.value,
+        nonce: unsignedTx.nonce,
+        fee: unsignedTx.fee,
+        hash: hash,
     }
 
     return E.left(tx)
