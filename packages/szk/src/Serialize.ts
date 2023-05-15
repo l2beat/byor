@@ -29,7 +29,7 @@ const types = {
 
 const primaryType = 'UnsignedTransaction'
 
-export async function serialize(
+export async function serializeAndSign(
   unsignedTx: Transaction,
   account: PrivateKeyAccount,
 ): Promise<Hex> {

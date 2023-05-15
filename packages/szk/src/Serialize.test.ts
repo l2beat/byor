@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import * as E from 'fp-ts/Either'
 import { privateKeyToAccount } from 'viem/accounts'
 
-import { deserialize, serialize } from './Serialize'
+import { deserialize, serializeAndSign } from './Serialize'
 import { EthereumAddress } from './types/EthereumAddress'
 import {
   SIGNED_TX_SIZE as SIGNED_TX_HEX_SIZE,
@@ -29,7 +29,7 @@ const modelTxSerializedHex =
 
 describe('serialize', function () {
   it('Should serialize a valid transaction', async function () {
-    const serialized = await serialize(modelTx, modelAccount)
+    const serialized = await serializeAndSign(modelTx, modelAccount)
     expect(serialized.length).to.equal(SIGNED_TX_HEX_SIZE * 2 + 2)
     expect(serialized).to.equal(modelTxSerializedHex)
   })
