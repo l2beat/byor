@@ -89,14 +89,9 @@ export async function deserialize(
 
   const signer = await recoverAddress({ hash, signature })
 
-  const tx: Transaction = {
-    from: EthereumAddress(signer),
-    to: unsignedTx.to,
-    value: unsignedTx.value,
-    nonce: unsignedTx.nonce,
-    fee: unsignedTx.fee,
-    hash: hash,
-  }
+  const tx = unsignedTx as Transaction;
+  tx.from = EthereumAddress(signer);
+  tx.hash = hash;
 
   return E.left(tx)
 }
