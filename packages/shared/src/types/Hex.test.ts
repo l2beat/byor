@@ -51,7 +51,7 @@ describe('Hex', () => {
     expect(() => Hex('quick red fox jumped over the lazy dog')).toThrow()
   })
 
-  it('throws on semi-valid string', async () => {
+  it('throws on almost-valid string', async () => {
     expect(() =>
       Hex('0xdeadcafebabebeefabacadaba0987foo321234567890'),
     ).toThrow()
