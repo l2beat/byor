@@ -1,5 +1,5 @@
 {
-  "name": "@byor/szk",
+  "name": "@byor/shared",
   "version": "0.1.0",
   "scripts": {
     "test": "mocha",

@@ -36,7 +36,7 @@
       "error",
       { "devDependencies": false }
     ],
-    "import/no-unresolved": ["error", { "ignore": ["^knex/types/tables$", "^viem/.*"] }],
+    "import/no-unresolved": ["error", { "ignore": ["^viem/.*"] }],
     "import/no-internal-modules": [
       "error",
       {
