@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai'
+import { assert, expect } from 'earl'
 
 import { EthereumAddress } from './EthereumAddress'
 
@@ -8,12 +8,12 @@ describe('EthereumAddress', function () {
       '0xdebdbc023f1b26b5999cc0e92e7aa4f5616e52ce',
     )
 
-    expect(address).to.equal('0xdebdbc023f1b26b5999cc0e92e7aa4f5616e52ce')
+    expect(address).toEqual('0xdebdbc023f1b26b5999cc0e92e7aa4f5616e52ce')
   })
 
   it('Should throw with invalid address', async function () {
-    assert.throws(() =>
+    expect(() =>
       EthereumAddress('0xdebdbcloremipsum999cc0e92e7aa4f5616e52ce'),
-    )
+    ).toThrow()
   })
 })

@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { expect } from 'earl'
 import * as E from 'fp-ts/Either'
 import { Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
@@ -33,8 +33,8 @@ describe('serialize', function () {
   it('Should serialize a valid transaction', async function () {
     const serialized = await serializeAndSign(modelTx, modelAccount)
 
-    expect(serialized.length).to.equal(SIGNED_TX_HEX_SIZE)
-    expect(serialized).to.equal(modelTxSerializedHex)
+    expect(serialized.length).toEqual(SIGNED_TX_HEX_SIZE)
+    expect(serialized).toEqual(modelTxSerializedHex)
   })
 })
 
@@ -44,8 +44,8 @@ describe('deserialize', function () {
 
     const deserialized = await deserialize(signedTxBytes)
 
-    expect(E.isRight(deserialized)).true
-    expect(deserialized.right).to.equal(DeserializationError.INVALID_INPUT_SIZE)
+    expect(E.isRight(deserialized)).toBeTruthy()
+    expect(deserialized.right).toEqual(DeserializationError.INVALID_INPUT_SIZE)
   })
 
   it('Should deserialize but not be equal to the model transaction after message corruption', async function () {
@@ -53,9 +53,9 @@ describe('deserialize', function () {
 
     const deserialized = await deserialize(signedTxBytes)
 
-    expect(E.isLeft(deserialized)).true
+    expect(E.isLeft(deserialized)).toBeTruthy()
     const tx: Transaction = deserialized.left
-    expect(tx).not.to.deep.equal(modelTx)
+    expect(tx).not.toEqual(modelTx)
   })
 
   it('Should deserialize but fail verifiction after message corruption', async function () {
@@ -66,8 +66,8 @@ describe('deserialize', function () {
       EthereumAddress(modelAccount.address),
     )
 
-    expect(E.isRight(deserialized)).true
-    expect(deserialized.right).to.equal(
+    expect(E.isRight(deserialized)).toBeTruthy()
+    expect(deserialized.right).toEqual(
       DeserializationError.SIGNER_VERIFICATION_FAILED,
     )
   })
@@ -77,9 +77,8 @@ describe('deserialize', function () {
 
     const deserialized = await deserialize(signedTxBytes)
 
-    expect(E.isLeft(deserialized)).true
-    const tx: Transaction = deserialized.left
-    expect(tx).to.deep.equal(modelTx)
+    expect(E.isLeft(deserialized)).toBeTruthy()
+    expect(deserialized.left).toEqual(modelTx)
   })
 
   it('Should deserialize a valid input with verification', async function () {
@@ -90,8 +89,7 @@ describe('deserialize', function () {
       EthereumAddress(modelAccount.address),
     )
 
-    expect(E.isLeft(deserialized)).true
-    const tx: Transaction = deserialized.left
-    expect(tx).to.deep.equal(modelTx)
+    expect(E.isLeft(deserialized)).toBeTruthy()
+    expect(deserialized.left).toEqual(modelTx)
   })
 })

@@ -10,6 +10,7 @@
     "lint": "eslint --ext .ts,.tsx --max-warnings 0 src"
   },
   "devDependencies": {
+    "earl": "^1.1.0",
     "esbuild": "^0.17.18",
     "esbuild-register": "^3.4.2"
   },
