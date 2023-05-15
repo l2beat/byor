@@ -1,9 +1,10 @@
 import { expect } from 'chai'
 import * as E from 'fp-ts/Either'
+import { Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
 import {
-    DeserializationError,
+  DeserializationError,
   deserialize,
   deserializeAndVerify,
   serializeAndSign,
@@ -14,7 +15,6 @@ import {
   Transaction,
 } from './types/Transactions'
 import { Unsigned64 } from './types/UnsignedSized'
-import { Hex } from 'viem'
 
 const modelAccount = privateKeyToAccount(
   '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
@@ -65,7 +65,9 @@ describe('deserialize', function () {
       EthereumAddress(modelAccount.address),
     )
     expect(E.isRight(deserialized)).true
-    expect(deserialized.right).to.equal(DeserializationError.SIGNER_VERIFICATION_FAILED)
+    expect(deserialized.right).to.equal(
+      DeserializationError.SIGNER_VERIFICATION_FAILED,
+    )
   })
 
   it('Should deserialize a valid input', async function () {

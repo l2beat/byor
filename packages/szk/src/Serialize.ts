@@ -53,10 +53,7 @@ export async function serializeAndSign(
   return serialize(unsignedTx, signature)
 }
 
-export async function serialize(
-  unsignedTx: Transaction,
-  signature: Hex,
-): Promise<Hex> {
+export function serialize(unsignedTx: Transaction, signature: Hex): Hex {
   const toHex = unsignedTx.to.toString().slice(2)
   const valueHex = Unsigned64.toHex(unsignedTx.value).slice(2)
   const nonceHex = Unsigned64.toHex(unsignedTx.nonce).slice(2)
