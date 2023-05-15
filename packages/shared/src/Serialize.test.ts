@@ -29,8 +29,8 @@ const modelTx: Transaction = {
 const modelTxSerializedHex =
   '0x70997970C51812dc3A010C7d01b50e0d17dc79C8000000000000000a00000000000000010000000000000002950e2f5c8514196afc5ba38e0d10638d3f4061d6d0b62573ad47808587f92f9867d72774c53d2e64d4fcc6fb9f5526be2a93a68514109d0292c13656f481d0331b'
 
-describe('serialize', function () {
-  it('Should serialize a valid transaction', async function () {
+describe('serialize', () => {
+  it('serializes a valid transaction', async () => {
     const serialized = await serializeAndSign(modelTx, modelAccount)
 
     expect(serialized.length).toEqual(SIGNED_TX_HEX_SIZE)
@@ -38,8 +38,8 @@ describe('serialize', function () {
   })
 })
 
-describe('deserialize', function () {
-  it('Should error on deserialize with too small of a input', async function () {
+describe('deserialize', () => {
+  it('deserializes with error with too small of a input', async () => {
     const signedTxBytes = '0x01'
 
     const deserialized = await deserialize(signedTxBytes)
@@ -48,7 +48,7 @@ describe('deserialize', function () {
     expect(deserialized.right).toEqual(DeserializationError.INVALID_INPUT_SIZE)
   })
 
-  it('Should deserialize but not be equal to the model transaction after message corruption', async function () {
+  it('deserializes but result is not equal to the model transaction after message corruption', async () => {
     const signedTxBytes: Hex = `0xdead${modelTxSerializedHex.slice(6)}`
 
     const deserialized = await deserialize(signedTxBytes)
@@ -58,7 +58,7 @@ describe('deserialize', function () {
     expect(tx).not.toEqual(modelTx)
   })
 
-  it('Should deserialize but fail verifiction after message corruption', async function () {
+  it('deserializes but fails verifiction after message corruption', async () => {
     const signedTxBytes: Hex = `0xdead${modelTxSerializedHex.slice(6)}`
 
     const deserialized = await deserializeAndVerify(
@@ -72,7 +72,7 @@ describe('deserialize', function () {
     )
   })
 
-  it('Should deserialize a valid input', async function () {
+  it('deserializes a valid input', async () => {
     const signedTxBytes = modelTxSerializedHex
 
     const deserialized = await deserialize(signedTxBytes)
@@ -81,7 +81,7 @@ describe('deserialize', function () {
     expect(deserialized.left).toEqual(modelTx)
   })
 
-  it('Should deserialize a valid input with verification', async function () {
+  it('deserializes a valid input with verification', async () => {
     const signedTxBytes = modelTxSerializedHex
 
     const deserialized = await deserializeAndVerify(
