@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import * as E from 'fp-ts/Either'
 import { privateKeyToAccount } from 'viem/accounts'
 
-import { deserialize, serializeAndSign } from './Serialize'
+import { deserialize, deserializeAndVerify, serializeAndSign } from './Serialize'
 import { EthereumAddress } from './types/EthereumAddress'
 import {
   SIGNED_TX_SIZE as SIGNED_TX_HEX_SIZE,
@@ -52,10 +52,26 @@ describe('deserialize', function () {
     expect(tx).not.to.deep.equal(modelTx)
   })
 
+  it('Should deserialize but fail verifiction after message corruption', async function () {
+    const signedTxBytes: Hex = `0xdead${modelTxSerializedHex.slice(6)}`
+    const deserialized = await deserializeAndVerify(signedTxBytes, EthereumAddress(modelAccount.address))
+    expect(E.isRight(deserialized)).true
+  })
+
   it('Should deserialize a valid input', async function () {
     const signedTxBytes = modelTxSerializedHex
 
     const deserialized = await deserialize(signedTxBytes)
+    expect(E.isLeft(deserialized)).true
+
+    const tx: Transaction = deserialized.left
+    expect(tx).to.deep.equal(modelTx)
+  })
+
+  it('Should deserialize a valid input with verification', async function () {
+    const signedTxBytes = modelTxSerializedHex
+
+    const deserialized = await deserializeAndVerify(signedTxBytes, EthereumAddress(modelAccount.address))
     expect(E.isLeft(deserialized)).true
 
     const tx: Transaction = deserialized.left
