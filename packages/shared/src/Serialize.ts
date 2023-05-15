@@ -75,9 +75,9 @@ export async function deserialize(signedTxBytes: Hex): Promise<Transaction> {
   const hex = signedTxBytes.substring(2)
   const unsignedTx: UnsignedTransaction = {
     to: EthereumAddress(`0x${hex.substring(0, 40)}`),
-    value: Unsigned64.fromHex(`0x${hex.substring(40, 56)}`),
-    nonce: Unsigned64.fromHex(`0x${hex.substring(56, 72)}`),
-    fee: Unsigned64.fromHex(`0x${hex.substring(72, 88)}`),
+    value: Unsigned64.fromHex(Hex(`0x${hex.substring(40, 56)}`)),
+    nonce: Unsigned64.fromHex(Hex(`0x${hex.substring(56, 72)}`)),
+    fee: Unsigned64.fromHex(Hex(`0x${hex.substring(72, 88)}`)),
   }
 
   const signature = Hex(hex.substring(88))
@@ -114,6 +114,6 @@ export async function deserializeAndVerify(
   if (tx.from === signerAddress) {
     return tx
   } else {
-    throw new Error('Signer ')
+    throw new Error('Recovered address does not match the one provided')
   }
 }
