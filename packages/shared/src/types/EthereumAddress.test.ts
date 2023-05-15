@@ -7,6 +7,7 @@ describe('EthereumAddress', function () {
     const address: EthereumAddress = EthereumAddress(
       '0xdebdbc023f1b26b5999cc0e92e7aa4f5616e52ce',
     )
+
     expect(address).to.equal('0xdebdbc023f1b26b5999cc0e92e7aa4f5616e52ce')
   })
 

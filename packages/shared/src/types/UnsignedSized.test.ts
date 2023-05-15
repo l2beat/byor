@@ -6,17 +6,20 @@ describe('Unsigned64', function () {
   const MAX_U64 = (1n << 64n) - 1n
 
   it('Should transform number zero', async function () {
-    const value: Unsigned64 = Unsigned64(0)
+    const value = Unsigned64(0)
+
     expect(value).to.equal(0n)
   })
 
   it('Should transform valid number', async function () {
-    const value: Unsigned64 = Unsigned64(420)
+    const value = Unsigned64(420)
+
     expect(value).to.equal(420n)
   })
 
   it('Should transform large number', async function () {
-    const value: Unsigned64 = Unsigned64(2251804108652544)
+    const value = Unsigned64(2251804108652544)
+
     expect(value).to.equal(2251804108652544n)
   })
 
@@ -30,22 +33,26 @@ describe('Unsigned64', function () {
   })
 
   it('Should transform bigint zero', async function () {
-    const value: Unsigned64 = Unsigned64(0n)
+    const value = Unsigned64(0n)
+
     expect(value).to.equal(0n)
   })
 
   it('Should transform valid bigint', async function () {
-    const value: Unsigned64 = Unsigned64(420n)
+    const value = Unsigned64(420n)
+
     expect(value).to.equal(420n)
   })
 
   it('Should transform large bigint', async function () {
-    const value: Unsigned64 = Unsigned64(2251804108652544n)
+    const value = Unsigned64(2251804108652544n)
+
     expect(value).to.equal(2251804108652544n)
   })
 
   it('Should transform unsigned 64bit limit bigint', async function () {
-    const value: Unsigned64 = Unsigned64(MAX_U64)
+    const value = Unsigned64(MAX_U64)
+
     expect(value).to.equal(MAX_U64)
   })
 
@@ -89,17 +96,20 @@ describe('Unsigned8', function () {
   const MAX_U8 = (1n << 8n) - 1n
 
   it('Should transform number zero', async function () {
-    const value: Unsigned8 = Unsigned8(0)
+    const value = Unsigned8(0)
+
     expect(value).to.equal(0n)
   })
 
   it('Should transform valid number', async function () {
-    const value: Unsigned8 = Unsigned8(69)
+    const value = Unsigned8(69)
+
     expect(value).to.equal(69n)
   })
 
   it('Should transform large number', async function () {
-    const value: Unsigned8 = Unsigned8(123)
+    const value = Unsigned8(123)
+
     expect(value).to.equal(123n)
   })
 
@@ -113,22 +123,26 @@ describe('Unsigned8', function () {
   })
 
   it('Should transform bigint zero', async function () {
-    const value: Unsigned8 = Unsigned8(0n)
+    const value = Unsigned8(0n)
+
     expect(value).to.equal(0n)
   })
 
   it('Should transform valid bigint', async function () {
-    const value: Unsigned8 = Unsigned8(69n)
+    const value = Unsigned8(69n)
+
     expect(value).to.equal(69n)
   })
 
   it('Should transform large bigint', async function () {
-    const value: Unsigned8 = Unsigned8(123n)
+    const value = Unsigned8(123n)
+
     expect(value).to.equal(123n)
   })
 
   it('Should transform unsigned 8bit limit bigint', async function () {
-    const value: Unsigned8 = Unsigned8(MAX_U8)
+    const value = Unsigned8(MAX_U8)
+
     expect(value).to.equal(MAX_U8)
   })
 

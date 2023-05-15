@@ -32,6 +32,7 @@ const modelTxSerializedHex =
 describe('serialize', function () {
   it('Should serialize a valid transaction', async function () {
     const serialized = await serializeAndSign(modelTx, modelAccount)
+
     expect(serialized.length).to.equal(SIGNED_TX_HEX_SIZE)
     expect(serialized).to.equal(modelTxSerializedHex)
   })
@@ -42,25 +43,29 @@ describe('deserialize', function () {
     const signedTxBytes = '0x01'
 
     const deserialized = await deserialize(signedTxBytes)
+
     expect(E.isRight(deserialized)).true
     expect(deserialized.right).to.equal(DeserializationError.INVALID_INPUT_SIZE)
   })
 
   it('Should deserialize but not be equal to the model transaction after message corruption', async function () {
     const signedTxBytes: Hex = `0xdead${modelTxSerializedHex.slice(6)}`
-    const deserialized = await deserialize(signedTxBytes)
-    expect(E.isLeft(deserialized)).true
 
+    const deserialized = await deserialize(signedTxBytes)
+
+    expect(E.isLeft(deserialized)).true
     const tx: Transaction = deserialized.left
     expect(tx).not.to.deep.equal(modelTx)
   })
 
   it('Should deserialize but fail verifiction after message corruption', async function () {
     const signedTxBytes: Hex = `0xdead${modelTxSerializedHex.slice(6)}`
+
     const deserialized = await deserializeAndVerify(
       signedTxBytes,
       EthereumAddress(modelAccount.address),
     )
+
     expect(E.isRight(deserialized)).true
     expect(deserialized.right).to.equal(
       DeserializationError.SIGNER_VERIFICATION_FAILED,
@@ -71,8 +76,8 @@ describe('deserialize', function () {
     const signedTxBytes = modelTxSerializedHex
 
     const deserialized = await deserialize(signedTxBytes)
-    expect(E.isLeft(deserialized)).true
 
+    expect(E.isLeft(deserialized)).true
     const tx: Transaction = deserialized.left
     expect(tx).to.deep.equal(modelTx)
   })
@@ -84,8 +89,8 @@ describe('deserialize', function () {
       signedTxBytes,
       EthereumAddress(modelAccount.address),
     )
-    expect(E.isLeft(deserialized)).true
 
+    expect(E.isLeft(deserialized)).true
     const tx: Transaction = deserialized.left
     expect(tx).to.deep.equal(modelTx)
   })
