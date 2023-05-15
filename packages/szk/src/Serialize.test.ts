@@ -2,7 +2,12 @@ import { expect } from 'chai'
 import * as E from 'fp-ts/Either'
 import { privateKeyToAccount } from 'viem/accounts'
 
-import { deserialize, deserializeAndVerify, serializeAndSign } from './Serialize'
+import {
+    DeserializationError,
+  deserialize,
+  deserializeAndVerify,
+  serializeAndSign,
+} from './Serialize'
 import { EthereumAddress } from './types/EthereumAddress'
 import {
   SIGNED_TX_SIZE as SIGNED_TX_HEX_SIZE,
@@ -41,6 +46,7 @@ describe('deserialize', function () {
 
     const deserialized = await deserialize(signedTxBytes)
     expect(E.isRight(deserialized)).true
+    expect(deserialized.right).to.equal(DeserializationError.INVALID_INPUT_SIZE)
   })
 
   it('Should deserialize but not be equal to the model transaction after message corruption', async function () {
@@ -54,8 +60,12 @@ describe('deserialize', function () {
 
   it('Should deserialize but fail verifiction after message corruption', async function () {
     const signedTxBytes: Hex = `0xdead${modelTxSerializedHex.slice(6)}`
-    const deserialized = await deserializeAndVerify(signedTxBytes, EthereumAddress(modelAccount.address))
+    const deserialized = await deserializeAndVerify(
+      signedTxBytes,
+      EthereumAddress(modelAccount.address),
+    )
     expect(E.isRight(deserialized)).true
+    expect(deserialized.right).to.equal(DeserializationError.SIGNER_VERIFICATION_FAILED)
   })
 
   it('Should deserialize a valid input', async function () {
@@ -71,7 +81,10 @@ describe('deserialize', function () {
   it('Should deserialize a valid input with verification', async function () {
     const signedTxBytes = modelTxSerializedHex
 
-    const deserialized = await deserializeAndVerify(signedTxBytes, EthereumAddress(modelAccount.address))
+    const deserialized = await deserializeAndVerify(
+      signedTxBytes,
+      EthereumAddress(modelAccount.address),
+    )
     expect(E.isLeft(deserialized)).true
 
     const tx: Transaction = deserialized.left
