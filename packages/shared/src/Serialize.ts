@@ -1,4 +1,3 @@
-import * as E from 'fp-ts/Either'
 import { hashTypedData, PrivateKeyAccount, recoverAddress } from 'viem'
 
 import { EthereumAddress } from './types/EthereumAddress'
@@ -9,11 +8,6 @@ import {
   UnsignedTransaction,
 } from './types/Transactions'
 import { Unsigned64 } from './types/UnsignedSized'
-
-export const enum DeserializationError {
-  INVALID_INPUT_SIZE = 1,
-  SIGNER_VERIFICATION_FAILED = 2,
-}
 
 // TODO(radomski): Move this to some configuration file
 const domain = {
@@ -64,11 +58,11 @@ export function serialize(unsignedTx: Transaction, signature: Hex): Hex {
   return result
 }
 
-export async function deserialize(
-  signedTxBytes: Hex,
-): Promise<E.Either<Transaction, DeserializationError>> {
+export async function deserialize(signedTxBytes: Hex): Promise<Transaction> {
   if (signedTxBytes.length !== SIGNED_TX_HEX_SIZE) {
-    return E.right(DeserializationError.INVALID_INPUT_SIZE)
+    throw new Error(
+      `Invalid input size, got/expected = ${signedTxBytes.length}/${SIGNED_TX_HEX_SIZE}`,
+    )
   }
 
   const hex = signedTxBytes.substring(2)
@@ -98,22 +92,18 @@ export async function deserialize(
   tx.from = EthereumAddress(signer)
   tx.hash = hash
 
-  return E.left(tx)
+  return tx
 }
 
 export async function deserializeAndVerify(
   signedTxBytes: Hex,
   signerAddress: EthereumAddress,
-): Promise<E.Either<Transaction, DeserializationError>> {
+): Promise<Transaction> {
   const tx = await deserialize(signedTxBytes)
 
-  if (E.isRight(tx)) {
+  if (tx.from === signerAddress) {
     return tx
   } else {
-    if (tx.left.from === signerAddress) {
-      return tx
-    } else {
-      return E.right(DeserializationError.SIGNER_VERIFICATION_FAILED)
-    }
+    throw new Error('Signer ')
   }
 }

@@ -9,7 +9,9 @@ describe('EthereumAddress', () => {
     )
 
     expect(address).toBeA(String)
-    expect(address).toEqual('0xdebdbc023f1b26b5999cc0e92e7aa4f5616e52ce' as unknown as EthereumAddress)
+    expect(address).toEqual(
+      '0xdebdbc023f1b26b5999cc0e92e7aa4f5616e52ce' as unknown as EthereumAddress,
+    )
   })
 
   it('throws with invalid address', async () => {

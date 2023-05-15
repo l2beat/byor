@@ -1,10 +1,8 @@
 import { expect } from 'earl'
-import * as E from 'fp-ts/Either'
 import { Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
 import {
-  DeserializationError,
   deserialize,
   deserializeAndVerify,
   serializeAndSign,
@@ -42,54 +40,44 @@ describe('deserialize', () => {
   it('deserializes with error with too small of a input', async () => {
     const signedTxBytes = '0x01'
 
-    const deserialized = await deserialize(signedTxBytes)
-
-    expect(E.isRight(deserialized)).toBeTruthy()
-    expect(deserialized.right).toEqual(DeserializationError.INVALID_INPUT_SIZE)
+    await expect(() => deserialize(signedTxBytes)).toBeRejected()
   })
 
   it('deserializes but result is not equal to the model transaction after message corruption', async () => {
     const signedTxBytes: Hex = `0xdead${modelTxSerializedHex.slice(6)}`
 
-    const deserialized = await deserialize(signedTxBytes)
+    const tx = await deserialize(signedTxBytes)
 
-    expect(E.isLeft(deserialized)).toBeTruthy()
-    const tx: Transaction = deserialized.left
     expect(tx).not.toEqual(modelTx)
   })
 
   it('deserializes but fails verifiction after message corruption', async () => {
     const signedTxBytes: Hex = `0xdead${modelTxSerializedHex.slice(6)}`
 
-    const deserialized = await deserializeAndVerify(
-      signedTxBytes,
-      EthereumAddress(modelAccount.address),
-    )
-
-    expect(E.isRight(deserialized)).toBeTruthy()
-    expect(deserialized.right).toEqual(
-      DeserializationError.SIGNER_VERIFICATION_FAILED,
-    )
+    await expect(() =>
+      deserializeAndVerify(
+        signedTxBytes,
+        EthereumAddress(modelAccount.address),
+      ),
+    ).toBeRejected()
   })
 
   it('deserializes a valid input', async () => {
     const signedTxBytes = modelTxSerializedHex
 
-    const deserialized = await deserialize(signedTxBytes)
+    const tx = await deserialize(signedTxBytes)
 
-    expect(E.isLeft(deserialized)).toBeTruthy()
-    expect(deserialized.left).toEqual(modelTx)
+    expect(tx).toEqual(modelTx)
   })
 
   it('deserializes a valid input with verification', async () => {
     const signedTxBytes = modelTxSerializedHex
 
-    const deserialized = await deserializeAndVerify(
+    const tx = await deserializeAndVerify(
       signedTxBytes,
       EthereumAddress(modelAccount.address),
     )
 
-    expect(E.isLeft(deserialized)).toBeTruthy()
-    expect(deserialized.left).toEqual(modelTx)
+    expect(tx).toEqual(modelTx)
   })
 })
