@@ -1,8 +1,13 @@
-import { hashTypedData, PrivateKeyAccount, recoverAddress } from 'viem'
+import {
+  hashTypedData,
+  Hex as ViemHex,
+  PrivateKeyAccount,
+  recoverAddress,
+} from 'viem'
 
 import { EthereumAddress } from './types/EthereumAddress'
+import { Hex } from './types/Hex'
 import {
-  Hex,
   SIGNED_TX_HEX_SIZE,
   Transaction,
   UnsignedTransaction,
@@ -14,7 +19,7 @@ const domain = {
   name: 'BYOR Sovereign Rollup',
   version: '1',
   chainId: 1,
-  verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC' as Hex,
+  verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC' as ViemHex,
 }
 
 const types = {
@@ -32,17 +37,19 @@ export async function serializeAndSign(
   unsignedTx: Transaction,
   account: PrivateKeyAccount,
 ): Promise<Hex> {
-  const signature = await account.signTypedData({
-    domain: domain,
-    types: types,
-    primaryType: primaryType,
-    message: {
-      to: EthereumAddress.toHex(unsignedTx.to),
-      value: Unsigned64.toBigInt(unsignedTx.value),
-      nonce: Unsigned64.toBigInt(unsignedTx.nonce),
-      fee: Unsigned64.toBigInt(unsignedTx.fee),
-    },
-  })
+  const signature = Hex(
+    await account.signTypedData({
+      domain: domain,
+      types: types,
+      primaryType: primaryType,
+      message: {
+        to: EthereumAddress.toHex(unsignedTx.to),
+        value: Unsigned64.toBigInt(unsignedTx.value),
+        nonce: Unsigned64.toBigInt(unsignedTx.nonce),
+        fee: Unsigned64.toBigInt(unsignedTx.fee),
+      },
+    }),
+  )
 
   return serialize(unsignedTx, signature)
 }
@@ -54,7 +61,7 @@ export function serialize(unsignedTx: Transaction, signature: Hex): Hex {
   const feeHex = Unsigned64.toHex(unsignedTx.fee).slice(2)
   const msg = `0x${toHex}${valueHex}${nonceHex}${feeHex}`
 
-  const result: Hex = `0x${msg.slice(2)}${signature.slice(2)}`
+  const result = Hex(`${msg.slice(2)}${signature.slice(2)}`)
   return result
 }
 
@@ -73,8 +80,8 @@ export async function deserialize(signedTxBytes: Hex): Promise<Transaction> {
     fee: Unsigned64.fromHex(`0x${hex.substring(72, 88)}`),
   }
 
-  const signature: Hex = `0x${hex.substring(88)}`
-  const hash: Hex = hashTypedData({
+  const signature = Hex(hex.substring(88))
+  const hash = hashTypedData({
     domain,
     types,
     primaryType,
@@ -86,11 +93,14 @@ export async function deserialize(signedTxBytes: Hex): Promise<Transaction> {
     },
   })
 
-  const signer = await recoverAddress({ hash, signature })
+  const signer = await recoverAddress({
+    hash,
+    signature: Hex.toString(signature) as ViemHex,
+  })
 
   const tx = unsignedTx as Transaction
   tx.from = EthereumAddress(signer)
-  tx.hash = hash
+  tx.hash = Hex(hash)
 
   return tx
 }

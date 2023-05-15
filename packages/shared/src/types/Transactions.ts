@@ -1,8 +1,8 @@
 import { EthereumAddress } from './EthereumAddress'
+import { Hex } from './Hex'
 import { Unsigned8, Unsigned64 } from './UnsignedSized'
 
 export type ByteArray = Uint8Array
-export type Hex = `0x${string}`
 
 export interface UnsignedTransaction {
   to: EthereumAddress

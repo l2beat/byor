@@ -1,4 +1,4 @@
-import { Hex } from 'viem'
+import { Hex } from './Hex'
 
 export interface Unsigned64 extends BigInt {
   _Value: bigint
@@ -20,11 +20,11 @@ export function Unsigned64(value: bigint | number): Unsigned64 {
 
 Unsigned64.toHex = function toHex(a: Unsigned64): Hex {
   const hexed = a.toString(16)
-  return `0x${'0'.repeat(16 - hexed.length)}${hexed}`
+  return Hex(`${'0'.repeat(16 - hexed.length)}${hexed}`)
 }
 
 Unsigned64.fromHex = function fromHex(a: Hex): Unsigned64 {
-  return Unsigned64(BigInt(a))
+  return Unsigned64(BigInt(Hex.toString(a)))
 }
 
 Unsigned64.toBigInt = function toBigInt(a: Unsigned64): bigint {
@@ -51,9 +51,9 @@ export function Unsigned8(value: bigint | number): Unsigned8 {
 
 Unsigned8.toHex = function toHex(a: Unsigned8): Hex {
   const hexed = a.toString(16)
-  return `0x${'0'.repeat(2 - hexed.length)}${hexed}`
+  return Hex(`${'0'.repeat(2 - hexed.length)}${hexed}`)
 }
 
 Unsigned8.fromHex = function fromHex(a: Hex): Unsigned8 {
-  return Unsigned8(BigInt(a))
+  return Unsigned8(BigInt(Hex.toString(a)))
 }

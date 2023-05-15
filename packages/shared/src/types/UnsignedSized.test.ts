@@ -1,5 +1,6 @@
 import { expect } from 'earl'
 
+import { Hex } from './Hex'
 import { Unsigned8, Unsigned64 } from './UnsignedSized'
 
 describe('Unsigned64', () => {
@@ -66,29 +67,35 @@ describe('Unsigned64', () => {
   })
 
   it('converts to correct hex with zero padding', async () => {
-    expect(Unsigned64.toHex(Unsigned64(0n))).toEqual('0x0000000000000000')
-    expect(Unsigned64.toHex(Unsigned64(1n))).toEqual('0x0000000000000001')
-    expect(Unsigned64.toHex(Unsigned64(256n))).toEqual('0x0000000000000100')
-    expect(Unsigned64.toHex(Unsigned64(2251804108652544n))).toEqual(
-      '0x0008000100000000',
+    expect(Unsigned64.toHex(Unsigned64(0n))).toEqual(Hex('0x0000000000000000'))
+    expect(Unsigned64.toHex(Unsigned64(1n))).toEqual(Hex('0x0000000000000001'))
+    expect(Unsigned64.toHex(Unsigned64(256n))).toEqual(
+      Hex('0x0000000000000100'),
     )
-    expect(Unsigned64.toHex(Unsigned64(MAX_U64))).toEqual('0xffffffffffffffff')
+    expect(Unsigned64.toHex(Unsigned64(2251804108652544n))).toEqual(
+      Hex('0x0008000100000000'),
+    )
+    expect(Unsigned64.toHex(Unsigned64(MAX_U64))).toEqual(
+      Hex('0xffffffffffffffff'),
+    )
   })
 
   it('converts from hex', async () => {
-    expect(Unsigned64.fromHex('0x0000000000000000')).toEqual(Unsigned64(0n))
-    expect(Unsigned64.fromHex('0x0000000000000001')).toEqual(Unsigned64(1n))
-    expect(Unsigned64.fromHex('0x0000000000000100')).toEqual(Unsigned64(256n))
-    expect(Unsigned64.fromHex('0x0008000100000000')).toEqual(
+    expect(Unsigned64.fromHex(Hex('0x0000000000000000'))).toEqual(
+      Unsigned64(0n),
+    )
+    expect(Unsigned64.fromHex(Hex('0x0000000000000001'))).toEqual(
+      Unsigned64(1n),
+    )
+    expect(Unsigned64.fromHex(Hex('0x0000000000000100'))).toEqual(
+      Unsigned64(256n),
+    )
+    expect(Unsigned64.fromHex(Hex('0x0008000100000000'))).toEqual(
       Unsigned64(2251804108652544n),
     )
-    expect(Unsigned64.fromHex('0xffffffffffffffff')).toEqual(
+    expect(Unsigned64.fromHex(Hex('0xffffffffffffffff'))).toEqual(
       Unsigned64(MAX_U64),
     )
-  })
-
-  it('throws on invalid hex', async () => {
-    expect(() => Unsigned64.fromHex('0xloremipsum')).toThrow()
   })
 })
 
@@ -156,20 +163,16 @@ describe('Unsigned8', () => {
   })
 
   it('converts to correct hex with zero padding', async () => {
-    expect(Unsigned8.toHex(Unsigned8(0n))).toEqual('0x00')
-    expect(Unsigned8.toHex(Unsigned8(1n))).toEqual('0x01')
-    expect(Unsigned8.toHex(Unsigned8(123n))).toEqual('0x7b')
-    expect(Unsigned8.toHex(Unsigned8(MAX_U8))).toEqual('0xff')
+    expect(Unsigned8.toHex(Unsigned8(0n))).toEqual(Hex('0x00'))
+    expect(Unsigned8.toHex(Unsigned8(1n))).toEqual(Hex('0x01'))
+    expect(Unsigned8.toHex(Unsigned8(123n))).toEqual(Hex('0x7b'))
+    expect(Unsigned8.toHex(Unsigned8(MAX_U8))).toEqual(Hex('0xff'))
   })
 
   it('converts from hex', async () => {
-    expect(Unsigned8.fromHex('0x00')).toEqual(Unsigned8(0n))
-    expect(Unsigned8.fromHex('0x01')).toEqual(Unsigned8(1n))
-    expect(Unsigned8.fromHex('0x7b')).toEqual(Unsigned8(123n))
-    expect(Unsigned8.fromHex('0xff')).toEqual(Unsigned8(MAX_U8))
-  })
-
-  it('throws on invalid hex', async () => {
-    expect(() => Unsigned8.fromHex('0xloremipsum')).toThrow()
+    expect(Unsigned8.fromHex(Hex('0x00'))).toEqual(Unsigned8(0n))
+    expect(Unsigned8.fromHex(Hex('0x01'))).toEqual(Unsigned8(1n))
+    expect(Unsigned8.fromHex(Hex('0x7b'))).toEqual(Unsigned8(123n))
+    expect(Unsigned8.fromHex(Hex('0xff'))).toEqual(Unsigned8(MAX_U8))
   })
 })
