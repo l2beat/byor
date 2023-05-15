@@ -1,4 +1,4 @@
-import { isAddress, Hex } from 'viem'
+import { Hex, isAddress } from 'viem'
 
 export interface EthereumAddress extends String {
   _Value: string

@@ -1,6 +1,6 @@
 import { assert, expect } from 'chai'
 
-import { Unsigned8,Unsigned64 } from './UnsignedSized'
+import { Unsigned8, Unsigned64 } from './UnsignedSized'
 
 describe('Unsigned64', function () {
   const MAX_U64 = (1n << 64n) - 1n
@@ -81,7 +81,7 @@ describe('Unsigned64', function () {
   })
 
   it('Should throw on invalid hex', async function () {
-      assert.throws(() => Unsigned64.fromHex('0xloremipsum'))
+    assert.throws(() => Unsigned64.fromHex('0xloremipsum'))
   })
 })
 
@@ -156,6 +156,6 @@ describe('Unsigned8', function () {
   })
 
   it('Should throw on invalid hex', async function () {
-      assert.throws(() => Unsigned8.fromHex('0xloremipsum'))
+    assert.throws(() => Unsigned8.fromHex('0xloremipsum'))
   })
 })
