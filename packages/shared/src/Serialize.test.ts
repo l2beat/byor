@@ -43,7 +43,9 @@ describe('deserialize', () => {
   it('deserializes with error with too small of a input', async () => {
     const signedTxBytes = Hex('0x01')
 
-    await expect(() => deserialize(signedTxBytes)).toBeRejectedWith("Invalid input size")
+    await expect(() => deserialize(signedTxBytes)).toBeRejectedWith(
+      'Invalid input size',
+    )
   })
 
   it('deserializes but result is not equal to the model transaction after message corruption', async () => {
@@ -66,7 +68,7 @@ describe('deserialize', () => {
         signedTxBytes,
         EthereumAddress(modelAccount.address),
       ),
-    ).toBeRejectedWith("Recovered address does not match")
+    ).toBeRejectedWith('Recovered address does not match')
   })
 
   it('deserializes a valid input', async () => {
