@@ -2,7 +2,7 @@ import { expect } from 'earl'
 
 import { deserializeBatch, serializeAndSignBatch } from './BatchSerialize'
 import {
-  modelAccount1,
+  modelAccount,
   modelTx1,
   modelTx2,
   modelTxSerializedHex1,
@@ -13,7 +13,7 @@ import { Transaction } from './types/Transactions'
 
 describe('serializeBatch', () => {
   it('serializes a single valid transaction', async () => {
-    const bytes = await serializeAndSignBatch([modelTx1], modelAccount1)
+    const bytes = await serializeAndSignBatch([modelTx1], modelAccount)
 
     expect(bytes).toEqual(modelTxSerializedHex1)
   })
@@ -21,7 +21,7 @@ describe('serializeBatch', () => {
   it('serializes two identical valid transactions', async () => {
     const bytes = await serializeAndSignBatch(
       new Array<Transaction>(2).fill(modelTx1),
-      modelAccount1,
+      modelAccount,
     )
 
     expect(bytes).toEqual(Hex(modelTxSerializedHex1.slice(2).repeat(2)))
@@ -30,7 +30,7 @@ describe('serializeBatch', () => {
   it('serializes a hundred identical valid transactions', async () => {
     const bytes = await serializeAndSignBatch(
       new Array<Transaction>(100).fill(modelTx1),
-      modelAccount1,
+      modelAccount,
     )
 
     expect(bytes).toEqual(Hex(modelTxSerializedHex1.slice(2).repeat(100)))
@@ -39,7 +39,7 @@ describe('serializeBatch', () => {
   it('serializes two different valid transactions', async () => {
     const bytes = await serializeAndSignBatch(
       [modelTx1, modelTx2],
-      modelAccount1,
+      modelAccount,
     )
 
     expect(bytes).toEqual(

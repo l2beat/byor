@@ -5,15 +5,15 @@ import { Hex } from '../types/Hex'
 import { Transaction } from '../types/Transactions'
 import { Unsigned64 } from '../types/UnsignedSized'
 
-export const modelAccount1 = privateKeyToAccount(
+export const modelAccount = privateKeyToAccount(
   '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
 )
 
 //
-// Both of those transactions are signed with the same account - `modelAccount1`
+// Both of those transactions are signed with the same account - `modelAccount`
 //
 export const modelTx1: Transaction = {
-  from: EthereumAddress(modelAccount1.address),
+  from: EthereumAddress(modelAccount.address),
   to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
   value: Unsigned64(10),
   nonce: Unsigned64(1),
@@ -24,7 +24,7 @@ export const modelTx1: Transaction = {
 }
 
 export const modelTx2: Transaction = {
-  from: EthereumAddress(modelAccount1.address),
+  from: EthereumAddress(modelAccount.address),
   to: EthereumAddress('0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC'),
   value: Unsigned64(258476297),
   nonce: Unsigned64(97061547),

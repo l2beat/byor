@@ -6,7 +6,7 @@ import {
   serializeAndSign,
 } from './Serialize'
 import {
-  modelAccount1,
+  modelAccount,
   modelTx1,
   modelTxSerializedHex1,
 } from './supporting/modelTestConstats'
@@ -16,7 +16,7 @@ import { SIGNED_TX_HEX_SIZE } from './types/Transactions'
 
 describe('serialize', () => {
   it('serializes a valid transaction', async () => {
-    const serialized = await serializeAndSign(modelTx1, modelAccount1)
+    const serialized = await serializeAndSign(modelTx1, modelAccount)
 
     expect(serialized.length).toEqual(SIGNED_TX_HEX_SIZE)
     expect(serialized).toEqual(modelTxSerializedHex1)
@@ -50,7 +50,7 @@ describe('deserialize', () => {
     await expect(() =>
       deserializeAndVerify(
         signedTxBytes,
-        EthereumAddress(modelAccount1.address),
+        EthereumAddress(modelAccount.address),
       ),
     ).toBeRejectedWith('Recovered address does not match')
   })
@@ -68,7 +68,7 @@ describe('deserialize', () => {
 
     const tx = await deserializeAndVerify(
       signedTxBytes,
-      EthereumAddress(modelAccount1.address),
+      EthereumAddress(modelAccount.address),
     )
 
     expect(tx).toEqual(modelTx1)
