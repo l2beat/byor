@@ -9,7 +9,7 @@ export async function serializeAndSignBatch(
   unsignedBatch: TransactionBatch,
   account: PrivateKeyAccount,
 ): Promise<Hex> {
-  const parts = new Array<string>()
+  const parts: string[] = []
   for (const tx of unsignedBatch) {
     const bytes = await serializeAndSign(tx, account)
     parts.push(bytes.slice(2))
@@ -21,7 +21,7 @@ export async function serializeAndSignBatch(
 export async function deserializeBatch(
   signedBatchBytes: Hex,
 ): Promise<TransactionBatch> {
-  const result = new Array<Transaction>()
+  const result: Transaction[] = []
 
   const bytes = signedBatchBytes.slice(2)
   if (bytes.length % SIGNED_TX_ASCII_SIZE !== 0) {
