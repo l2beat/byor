@@ -9,7 +9,7 @@ import {
   modelAccount,
   modelTx1,
   modelTxSerializedHex1,
-} from './supporting/modelTestConstats'
+} from './test/modelTestConstats'
 import { EthereumAddress } from './types/EthereumAddress'
 import { Hex } from './types/Hex'
 import { SIGNED_TX_HEX_SIZE } from './types/Transactions'

@@ -7,7 +7,7 @@ import {
   modelTx2,
   modelTxSerializedHex1,
   modelTxSerializedHex2,
-} from './supporting/modelTestConstats'
+} from './test/modelTestConstats'
 import { Hex } from './types/Hex'
 import { Transaction } from './types/Transactions'
 
