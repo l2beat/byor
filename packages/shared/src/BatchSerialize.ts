@@ -23,7 +23,7 @@ export async function deserializeBatch(
 ): Promise<TransactionBatch> {
   const result = new Array<Transaction>()
 
-  let bytes = signedBatchBytes.slice(2)
+  const bytes = signedBatchBytes.slice(2)
   if (bytes.length % (SIGNED_TX_SIZE * 2) !== 0) {
     throw new Error(
       'Length of input bytes is not multiple of SIGNED_TX_HEX_SIZE',
@@ -33,8 +33,9 @@ export async function deserializeBatch(
   const txCount = bytes.length / (SIGNED_TX_SIZE * 2)
 
   for (let i = 0; i < txCount; i++) {
-    const signedTxBytes = Hex(bytes.slice(0, SIGNED_TX_SIZE * 2))
-    bytes = bytes.slice(SIGNED_TX_SIZE * 2)
+    const signedTxBytes = Hex(
+      bytes.slice(i * (SIGNED_TX_SIZE * 2), (i + 1) * (SIGNED_TX_SIZE * 2)),
+    )
 
     result.push(await deserialize(signedTxBytes))
   }
