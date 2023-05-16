@@ -25,3 +25,7 @@ export function Hex(value: bigint | number | string): Hex {
 Hex.toString = function toString(a: Hex): string {
   return a as unknown as string
 }
+
+Hex.removePrefix = function toString(a: Hex): string {
+  return (a as unknown as string).slice(2)
+}

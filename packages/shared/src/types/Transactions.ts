@@ -24,4 +24,5 @@ export interface Transaction extends UnsignedTransaction {
 }
 
 export const SIGNED_TX_SIZE = 20 + 8 + 8 + 8 + 32 + 32 + 1
-export const SIGNED_TX_HEX_SIZE = SIGNED_TX_SIZE * 2 + 2
+export const SIGNED_TX_ASCII_SIZE = SIGNED_TX_SIZE * 2
+export const SIGNED_TX_HEX_SIZE = SIGNED_TX_ASCII_SIZE + 2
