@@ -24,7 +24,9 @@ describe('serializeBatch', () => {
       modelAccount,
     )
 
-    expect(bytes).toEqual(Hex(modelTxSerializedHex1.slice(2).repeat(2)))
+    expect(bytes).toEqual(
+      Hex(Hex.removePrefix(modelTxSerializedHex1).repeat(2)),
+    )
   })
 
   it('serializes a hundred identical valid transactions', async () => {
@@ -33,7 +35,9 @@ describe('serializeBatch', () => {
       modelAccount,
     )
 
-    expect(bytes).toEqual(Hex(modelTxSerializedHex1.slice(2).repeat(100)))
+    expect(bytes).toEqual(
+      Hex(Hex.removePrefix(modelTxSerializedHex1).repeat(100)),
+    )
   })
 
   it('serializes two different valid transactions', async () => {
@@ -43,7 +47,11 @@ describe('serializeBatch', () => {
     )
 
     expect(bytes).toEqual(
-      Hex(`${modelTxSerializedHex1.slice(2)}${modelTxSerializedHex2.slice(2)}`),
+      Hex(
+        `${Hex.removePrefix(modelTxSerializedHex1)}${Hex.removePrefix(
+          modelTxSerializedHex2,
+        )}`,
+      ),
     )
   })
 })
@@ -58,7 +66,7 @@ describe('deserializeBatch', () => {
 
   it('deserializes two identical valid transactions', async () => {
     const batch = await deserializeBatch(
-      Hex(modelTxSerializedHex1.slice(2).repeat(2)),
+      Hex(Hex.removePrefix(modelTxSerializedHex1).repeat(2)),
     )
 
     expect(batch.length).toEqual(2)
@@ -67,7 +75,7 @@ describe('deserializeBatch', () => {
 
   it('deserializes a hundred identical valid transactions', async () => {
     const batch = await deserializeBatch(
-      Hex(modelTxSerializedHex1.slice(2).repeat(100)),
+      Hex(Hex.removePrefix(modelTxSerializedHex1).repeat(100)),
     )
 
     expect(batch.length).toEqual(100)
@@ -81,8 +89,10 @@ describe('deserializeBatch', () => {
     secondTx.hash = Hex(
       '0x6acf80d210e85589d2fe24764e04ef379596d994cac505dab44ac0b2451fe88a',
     )
-    const firstTxBytes = modelTxSerializedHex1.slice(2)
-    const secondTxBytes = `cafe${Hex.toString(modelTxSerializedHex1).slice(6)}`
+    const firstTxBytes = Hex.removePrefix(modelTxSerializedHex1)
+    const secondTxBytes = `cafe${Hex.removePrefix(modelTxSerializedHex1).slice(
+      4,
+    )}`
 
     const batch = await deserializeBatch(Hex(`${firstTxBytes}${secondTxBytes}`))
 
@@ -97,7 +107,7 @@ describe('deserializeBatch', () => {
   })
 
   it('throws on not a multiplicitive of a single transaction', async () => {
-    const bytes = Hex(`${modelTxSerializedHex1.slice(2)}abacadaba`)
+    const bytes = Hex(`${Hex.removePrefix(modelTxSerializedHex1)}abacadaba`)
 
     await expect(() => deserializeBatch(bytes)).toBeRejectedWith(
       'input bytes is not multiple',

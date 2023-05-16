@@ -12,7 +12,7 @@ export async function serializeAndSignBatch(
   const parts: string[] = []
   for (const tx of unsignedBatch) {
     const bytes = await serializeAndSign(tx, account)
-    parts.push(bytes.slice(2))
+    parts.push(Hex.removePrefix(bytes))
   }
 
   return Hex(parts.join(''))
@@ -23,7 +23,7 @@ export async function deserializeBatch(
 ): Promise<TransactionBatch> {
   const result: Transaction[] = []
 
-  const bytes = signedBatchBytes.slice(2)
+  const bytes = Hex.removePrefix(signedBatchBytes)
   if (bytes.length % SIGNED_TX_ASCII_SIZE !== 0) {
     throw new Error(
       'Length of input bytes is not multiple of SIGNED_TX_HEX_SIZE',
