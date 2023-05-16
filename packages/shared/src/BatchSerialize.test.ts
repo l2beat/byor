@@ -91,12 +91,16 @@ describe('deserializeBatch', () => {
   })
 
   it('throws on smaller than a single transaction', async () => {
-    await expect(() => deserializeBatch(Hex('0x707070707070'))).toBeRejected()
+    await expect(() =>
+      deserializeBatch(Hex('0x707070707070')),
+    ).toBeRejectedWith('input bytes is not multiple')
   })
 
   it('throws on not a multiplicitive of a single transaction', async () => {
     const bytes = Hex(`${modelTxSerializedHex1.slice(2)}abacadaba`)
 
-    await expect(() => deserializeBatch(bytes)).toBeRejected()
+    await expect(() => deserializeBatch(bytes)).toBeRejectedWith(
+      'input bytes is not multiple',
+    )
   })
 })
