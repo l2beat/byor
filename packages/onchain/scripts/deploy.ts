@@ -1,19 +1,19 @@
-import hre, { ethers } from 'hardhat'
-
 import net from 'node:net'
 
-const DEFAULT_HARDHAT_NODE_PORT =
-  hre.tasks['node']?.paramDefinitions['port']?.defaultValue
+import hre, { ethers } from 'hardhat'
+
+const DEFAULT_HARDHAT_NODE_PORT = hre.tasks.node?.paramDefinitions.port
+  ?.defaultValue as number
 
 async function isPortReachable(
   port: number,
   host: string,
-  timeout: number = 100,
+  timeout = 100,
 ): Promise<boolean> {
   const promise = new Promise((resolve, reject) => {
     const socket = new net.Socket()
 
-    const onError = () => {
+    const onError = (): void => {
       socket.destroy()
       reject()
     }
@@ -36,13 +36,15 @@ async function isPortReachable(
   }
 }
 
-async function startPerpetualHardhatNode() {
-  hre.run('node')
+async function startPerpetualHardhatNode(): Promise<boolean> {
+  hre.run('node').finally(() => {
+    console.log('Stopping node')
+  })
 
   return isPortReachable(DEFAULT_HARDHAT_NODE_PORT, '127.0.0.1', 5000)
 }
 
-async function main() {
+async function main(): Promise<void> {
   if (hre.network.name === 'hardhat') {
     // If we don't provide a network, hardhat will create a new one, we will
     // deploy our contract to that node but once this function finishes

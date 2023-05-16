@@ -8,7 +8,7 @@
     "format:fix": "prettier --write .",
     "format": "prettier --check .",
     "lint:fix": "yarn lint --fix",
-    "lint": "eslint --ext .ts,.tsx --max-warnings 0 test"
+    "lint": "eslint --ext .ts,.tsx --max-warnings 0 test scripts"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
@@ -23,10 +23,12 @@
     "@types/node": "^20.1.2",
     "chai": "^4.3.7",
     "ethers": "^5.0.0",
-    "hardhat": "^2.14.0",
     "hardhat-gas-reporter": "^1.0.9",
     "solidity-coverage": "^0.8.2",
     "ts-node": "^10.9.1",
     "typechain": "^8.1.1"
+  },
+  "dependencies": {
+    "hardhat": "^2.14.0"
   }
 }
