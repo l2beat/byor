@@ -19,8 +19,8 @@ const domain = {
   name: 'BYOR Sovereign Rollup',
   version: '1',
   chainId: 1,
-  verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC' as ViemHex,
-}
+  verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+} as const
 
 const types = {
   UnsignedTransaction: [
