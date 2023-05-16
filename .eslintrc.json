@@ -19,6 +19,7 @@
   },
   "plugins": ["simple-import-sort", "no-only-tests", "unused-imports", "react"],
   "rules": {
+    "prefer-arrow-callback": "error",
     "@typescript-eslint/prefer-readonly": ["error"],
     "@typescript-eslint/ban-tslint-comment": "off",
     "@typescript-eslint/explicit-function-return-type": "error",
@@ -36,7 +37,7 @@
       "error",
       { "devDependencies": false }
     ],
-    "import/no-unresolved": ["error", { "ignore": ["^knex/types/tables$"] }],
+    "import/no-unresolved": ["error", { "ignore": ["^viem/.*"] }],
     "import/no-internal-modules": [
       "error",
       {
