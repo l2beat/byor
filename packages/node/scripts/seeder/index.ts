@@ -1,13 +1,13 @@
 import {
-  Unsigned64,
-  Hex,
   EthereumAddress,
-  TransactionBatch,
+  Hex,
   serializeAndSignBatch,
+  TransactionBatch,
+  Unsigned64,
 } from '@byor/shared'
 import { command, positional, run, string, Type } from 'cmd-ts'
 import fs from 'fs'
-import { Hex as ViemHex, PrivateKeyAccount } from 'viem'
+import { Hex as ViemHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
 const HexStream: Type<string, Hex> = {
@@ -54,10 +54,7 @@ async function main(
     })
   }
 
-  const _bytes = await serializeAndSignBatch(
-    batch,
-    account as PrivateKeyAccount,
-  )
+  const _bytes = await serializeAndSignBatch(batch, account)
 }
 
 const cmd = command({
