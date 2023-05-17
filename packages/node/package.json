@@ -7,7 +7,8 @@
     "format:fix": "prettier --write .",
     "format": "prettier --check .",
     "lint:fix": "yarn lint --fix",
-    "lint": "eslint --ext .ts,.tsx --max-warnings 0 src"
+    "lint": "eslint --ext .ts,.tsx --max-warnings 0 src scripts",
+    "seeder": "node -r esbuild-register scripts/seeder"
   },
   "devDependencies": {
     "earl": "^1.1.0",
@@ -15,6 +16,8 @@
     "esbuild-register": "^3.4.2"
   },
   "dependencies": {
-    "viem": "^0.3.22"
+    "@byor/shared": "*",
+    "cmd-ts": "^0.12.1",
+    "viem": "^0.3.27"
   }
 }
