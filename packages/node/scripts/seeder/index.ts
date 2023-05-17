@@ -55,6 +55,7 @@ async function main(
   }
 
   const _bytes = await serializeAndSignBatch(batch, account)
+  // TODO(radomski): Submit these bytes to CTC
 }
 
 const cmd = command({
