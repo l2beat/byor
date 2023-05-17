@@ -60,7 +60,7 @@ async function main(
 
 const cmd = command({
   name: 'seeder',
-  description: 'Seed random addresses with founds from provided account',
+  description: 'Seed random addresses with funds from provided account',
   version: '1.0.0',
   args: {
     genesisFile: positional({ type: string, displayName: 'genesisFile' }),
