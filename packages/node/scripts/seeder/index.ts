@@ -18,13 +18,13 @@ const HexStream: Type<string, Hex> = {
   },
 }
 
-type GenesisStateMap = Record<string, number>
-
 function generateRandomAddress(): Hex {
   const bytes = new Uint8Array(20)
   crypto.getRandomValues(bytes)
   return Hex(Buffer.from(bytes).toString('hex'))
 }
+
+type GenesisStateMap = Record<string, number>
 
 async function main(
   genesisState: GenesisStateMap,
@@ -34,7 +34,7 @@ async function main(
   const accountBalance = genesisState[account.address]
   if (accountBalance === undefined) {
     throw new Error(
-      'Provided private key account does not exist in the genesis file',
+      'Provided private key account does not exist in the genesis state',
     )
   }
 
