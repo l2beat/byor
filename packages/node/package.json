@@ -18,6 +18,6 @@
   "dependencies": {
     "@byor/shared": "*",
     "cmd-ts": "^0.12.1",
-    "viem": "^0.3.27"
+    "viem": "^0.3.22"
   }
 }
