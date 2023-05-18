@@ -1,7 +1,6 @@
-import { InferModel } from 'drizzle-orm'
 import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
-export const transactions = sqliteTable(
+export const transactionsSchema = sqliteTable(
   'transactions',
   {
     id: integer('id').notNull(),
@@ -21,14 +20,8 @@ export const transactions = sqliteTable(
     compositePk: primaryKey(transactions.from, transactions.nonce),
   }),
 )
-export const accounts = sqliteTable('accounts', {
+export const accountsSchema = sqliteTable('accounts', {
   address: text('address').primaryKey(),
   balance: integer('balance').default(0),
   nonce: integer('nonce').default(0),
 })
-
-export type Transaction = InferModel<typeof transactions>
-export type InsertTransaction = InferModel<typeof transactions, 'insert'>
-
-export type Account = InferModel<typeof accounts>
-export type InsertAccount = InferModel<typeof accounts, 'insert'>
