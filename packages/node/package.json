@@ -10,6 +10,7 @@
     "build": "tsc -p tsconfig.build.json",
     "postbuild": "yarn build:database",
     "build:database": "drizzle-kit generate:sqlite --breakpoints --schema src/db/schema.ts --out build/db/migrations",
+    "start": "node -r esbuild-register src/",
     "format:fix": "prettier --write .",
     "format": "prettier --check .",
     "lint:fix": "yarn lint --fix",
