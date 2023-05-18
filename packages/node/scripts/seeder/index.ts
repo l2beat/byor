@@ -8,7 +8,12 @@ import {
 import { command, positional, run, string, Type } from 'cmd-ts'
 import fs from 'fs'
 import { Hex as ViemHex } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
+import {
+  privateKeyToAccount,
+  english,
+  mnemonicToAccount,
+  generateMnemonic,
+} from 'viem/accounts'
 
 const HexValue: Type<string, Hex> = {
   async from(str): Promise<Hex> {
@@ -16,12 +21,6 @@ const HexValue: Type<string, Hex> = {
       resolve(Hex(str))
     })
   },
-}
-
-function generateRandomAddress(): Hex {
-  const bytes = new Uint8Array(20)
-  crypto.getRandomValues(bytes)
-  return Hex(Buffer.from(bytes).toString('hex'))
 }
 
 type GenesisStateMap = Record<string, number>
@@ -44,10 +43,10 @@ async function main(
     (accountBalance - PAYMENTS_COUNT) / PAYMENTS_COUNT,
   )
   for (let i = 0; i < PAYMENTS_COUNT; i++) {
-    const receiver = generateRandomAddress()
+    const receiver = mnemonicToAccount(generateMnemonic(english))
     batch.push({
       from: EthereumAddress(account.address),
-      to: EthereumAddress(Hex.toString(receiver)),
+      to: EthereumAddress(receiver.address),
       value: Unsigned64(PAYMENT_AMOUNT),
       nonce: Unsigned64(i),
       fee: Unsigned64(1),
