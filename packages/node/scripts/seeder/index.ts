@@ -67,7 +67,7 @@ const cmd = command({
     privateKey: positional({ type: HexStream, displayName: 'privateKey' }),
   },
   handler: async ({ genesisFile, privateKey }) => {
-    const jsonContent = fs.readFileSync(genesisFile).toString()
+    const jsonContent = fs.readFileSync(genesisFile, 'utf-8')
     const genesisState = JSON.parse(jsonContent) as GenesisStateMap
 
     await main(genesisState, privateKey)
