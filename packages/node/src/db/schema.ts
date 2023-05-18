@@ -25,7 +25,6 @@ export const accounts = sqliteTable('accounts', {
   address: text('address').primaryKey(),
   balance: integer('balance').default(0),
   nonce: integer('nonce').default(0),
-  withdrawn: integer('withdrawn').default(0),
 })
 
 export type Transaction = InferModel<typeof transactions>
