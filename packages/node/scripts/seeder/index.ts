@@ -76,4 +76,5 @@ const cmd = command({
 
 run(cmd, process.argv.slice(2)).catch((e) => {
   console.log(e)
+  process.exit(1)
 })
