@@ -3,6 +3,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "build:dependencies": "wsrun -p @byor/shared -recsm build",
     "test": "wsrun -ecam test",
     "format:fix": "wsrun -ecam format:fix",
     "format": "wsrun -ecam format",

@@ -1,15 +1,20 @@
 {
   "name": "@byor/shared",
   "version": "0.1.0",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "scripts": {
-    "test": "mocha",
+    "build": "tsc -p tsconfig.build.json",
+    "prebuild": "yarn clean",
     "clean": "rm -rf build",
+    "test": "mocha",
     "format:fix": "prettier --write .",
     "format": "prettier --check .",
     "lint:fix": "yarn lint --fix",
     "lint": "eslint --ext .ts,.tsx --max-warnings 0 src"
   },
   "devDependencies": {
+    "@types/ws": "^8.5.4",
     "earl": "^1.1.0",
     "esbuild": "^0.17.18",
     "esbuild-register": "^3.4.2"
