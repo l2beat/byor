@@ -15,14 +15,6 @@ import {
   generateMnemonic,
 } from 'viem/accounts'
 
-const HexValue: Type<string, Hex> = {
-  async from(str): Promise<Hex> {
-    return new Promise((resolve, _) => {
-      resolve(Hex(str))
-    })
-  },
-}
-
 type GenesisStateMap = Record<string, number>
 
 async function main(
@@ -55,6 +47,14 @@ async function main(
 
   const _bytes = await serializeAndSignBatch(batch, account)
   // TODO(radomski): Submit these bytes to CTC
+}
+
+const HexValue: Type<string, Hex> = {
+  async from(str): Promise<Hex> {
+    return new Promise((resolve, _) => {
+      resolve(Hex(str))
+    })
+  },
 }
 
 const cmd = command({
