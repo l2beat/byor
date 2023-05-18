@@ -10,7 +10,7 @@ import fs from 'fs'
 import { Hex as ViemHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
-const HexStream: Type<string, Hex> = {
+const HexValue: Type<string, Hex> = {
   async from(str): Promise<Hex> {
     return new Promise((resolve, _) => {
       resolve(Hex(str))
@@ -64,7 +64,7 @@ const cmd = command({
   version: '1.0.0',
   args: {
     genesisFile: positional({ type: string, displayName: 'genesisFile' }),
-    privateKey: positional({ type: HexStream, displayName: 'privateKey' }),
+    privateKey: positional({ type: HexValue, displayName: 'privateKey' }),
   },
   handler: async ({ genesisFile, privateKey }) => {
     const jsonContent = fs.readFileSync(genesisFile, 'utf-8')
