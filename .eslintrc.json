@@ -37,7 +37,7 @@
       "error",
       { "devDependencies": false }
     ],
-    "import/no-unresolved": ["error", { "ignore": ["^viem/.*"] }],
+    "import/no-unresolved": ["error", { "ignore": ["^viem/.*", "^drizzle-orm/.*"] }],
     "import/no-internal-modules": [
       "error",
       {

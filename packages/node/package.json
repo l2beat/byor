@@ -18,6 +18,9 @@
   "dependencies": {
     "@byor/shared": "*",
     "cmd-ts": "^0.12.1",
+    "@types/better-sqlite3": "^7.6.4",
+    "better-sqlite3": "^8.3.0",
+    "drizzle-orm": "^0.25.4",
     "viem": "^0.3.22"
   }
 }
