@@ -1,19 +1,19 @@
 import {
+  assert,
   EthereumAddress,
   Hex,
   serializeAndSignBatch,
   TransactionBatch,
   Unsigned64,
-  assert,
 } from '@byor/shared'
 import { command, positional, run, string, Type } from 'cmd-ts'
 import fs from 'fs'
 import { Hex as ViemHex } from 'viem'
 import {
-  privateKeyToAccount,
   english,
-  mnemonicToAccount,
   generateMnemonic,
+  mnemonicToAccount,
+  privateKeyToAccount,
 } from 'viem/accounts'
 
 type GenesisStateMap = Record<string, number>
