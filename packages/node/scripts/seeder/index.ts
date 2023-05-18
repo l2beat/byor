@@ -4,6 +4,7 @@ import {
   serializeAndSignBatch,
   TransactionBatch,
   Unsigned64,
+  assert,
 } from '@byor/shared'
 import { command, positional, run, string, Type } from 'cmd-ts'
 import fs from 'fs'
@@ -23,11 +24,10 @@ async function main(
 ): Promise<void> {
   const account = privateKeyToAccount(privateKey.toString() as ViemHex)
   const accountBalance = genesisState[account.address]
-  if (accountBalance === undefined) {
-    throw new Error(
-      'Provided private key account does not exist in the genesis state',
-    )
-  }
+  assert(
+    accountBalance !== undefined,
+    'Provided private key account does not exist in the genesis state',
+  )
 
   const batch: TransactionBatch = []
   const PAYMENTS_COUNT = 100
