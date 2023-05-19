@@ -16,7 +16,7 @@ describe(AccountRepository.name, () => {
   })
 
   describe(AccountRepository.prototype.addOrUpdateMany.name, () => {
-    it('updates many account', async () => {
+    it('updates many accounts', async () => {
       const accounts1: AccountInsertRecord[] = [
         { address: '0xdeadbeef', balance: 0, nonce: 0 },
         { address: '0xcafebabe', balance: 59, nonce: 777 },
