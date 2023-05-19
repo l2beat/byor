@@ -59,4 +59,35 @@ describe(AccountRepository.name, () => {
       expect(repository.getAll()).toEqual([])
     })
   })
+
+  describe(AccountRepository.prototype.getCount.name, () => {
+    it('zero on empty', async () => {
+      expect(repository.getCount()).toEqual(0)
+    })
+
+    it('many accounts', async () => {
+      const accounts: AccountInsertRecord[] = [
+        { address: '0xdeadbeef', balance: 0, nonce: 0 },
+        { address: '0xcafebabe', balance: 59, nonce: 777 },
+      ]
+
+      repository.addOrUpdateMany(accounts)
+      const result = repository.getCount()
+
+      expect(result).toEqual(accounts.length)
+    })
+
+    it('many accounts with deletion', async () => {
+      const accounts: AccountInsertRecord[] = [
+        { address: '0xdeadbeef', balance: 0, nonce: 0 },
+        { address: '0xcafebabe', balance: 59, nonce: 777 },
+      ]
+
+      repository.addOrUpdateMany(accounts)
+      repository.deleteAll()
+      const result = repository.getCount()
+
+      expect(result).toEqual(0)
+    })
+  })
 })

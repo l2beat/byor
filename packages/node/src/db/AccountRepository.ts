@@ -1,4 +1,4 @@
-import { InferModel } from 'drizzle-orm'
+import { InferModel, sql } from 'drizzle-orm'
 
 import { BaseRepository } from './BaseRepository'
 import { accountsSchema } from './schema'
@@ -31,5 +31,13 @@ export class AccountRepository extends BaseRepository {
   deleteAll(): void {
     const drizzle = this.drizzle()
     drizzle.delete(accountsSchema).run()
+  }
+
+  getCount(): number {
+    const drizzle = this.drizzle()
+    return drizzle
+      .select({ count: sql<number>`count(*)` })
+      .from(accountsSchema)
+      .get().count
   }
 }
