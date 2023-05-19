@@ -97,8 +97,16 @@ export class L1StateManager {
         assert(tx.from != Hex(0) && tx.to != Hex(0))
 
         const from = tx.from.toString()
+        const to = tx.to.toString()
         if (state[from] === undefined) {
           state[from] = {
+            balance: Unsigned64(10000),
+            nonce: Unsigned64(0),
+          }
+        }
+
+        if (state[to] === undefined) {
+          state[to] = {
             balance: Unsigned64(0),
             nonce: Unsigned64(0),
           }
@@ -110,15 +118,30 @@ export class L1StateManager {
         )
         state[from]!.nonce = tx.nonce
 
-        // // Step 2. Subtract spending
-        // assert(state[tx.from].value >= tx.value + tx.fee)
-        // state[tx.from].value -= tx.value + tx.fee
+        // Step 2. Subtract spending
+        console.log(
+          Unsigned64.toBigInt(state[from]!.balance),
+          Unsigned64.toBigInt(tx.value),
+          Unsigned64.toBigInt(tx.fee),
+        )
+        assert(
+          Unsigned64.toBigInt(state[from]!.balance) >=
+            Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(tx.fee),
+        )
+        state[from]!.balance = Unsigned64(
+          Unsigned64.toBigInt(state[from]!.balance) -
+            Unsigned64.toBigInt(tx.value) +
+            Unsigned64.toBigInt(tx.fee),
+        )
 
-        // // Step 3. Transfer value
-        // state[tx.to].value += tx.value
+        // Step 3. Transfer value
+        state[to]!.balance = Unsigned64(
+          Unsigned64.toBigInt(tx.value) +
+            Unsigned64.toBigInt(state[to]!.balance),
+        )
 
-        // // Step 4. Pay fee
-        // state[tx.feeRecipient].value += tx.fee
+        // Step 4. Pay fee
+        state[tx.feeRecipient].value += tx.fee
       }
     }
 
@@ -126,5 +149,6 @@ export class L1StateManager {
     for (const batch of batches) {
       executeBatch(state, batch)
     }
+    console.log(state)
   }
 }

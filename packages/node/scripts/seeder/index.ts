@@ -9,17 +9,24 @@ import {
   Unsigned64,
 } from '@byor/shared'
 import { command, positional, run, string, Type } from 'cmd-ts'
-import { Hex as ViemHex } from 'viem'
+import {
+  createWalletClient,
+  http,
+  PrivateKeyAccount,
+  Hex as ViemHex,
+} from 'viem'
 import {
   english,
   generateMnemonic,
   mnemonicToAccount,
   privateKeyToAccount,
 } from 'viem/accounts'
+import { Chain, mainnet } from 'viem/chains'
 
 async function main(
   genesisState: GenesisStateMap,
   privateKey: Hex,
+  rpcUrl: string,
 ): Promise<void> {
   const account = privateKeyToAccount(privateKey.toString() as ViemHex)
   const accountBalance = genesisState[account.address]
@@ -39,13 +46,57 @@ async function main(
       from: EthereumAddress(account.address),
       to: EthereumAddress(receiver.address),
       value: Unsigned64(PAYMENT_AMOUNT),
-      nonce: Unsigned64(i),
+      nonce: Unsigned64(i + 1),
       fee: Unsigned64(1),
     })
   }
 
-  const _bytes = await serializeAndSignBatch(batch, account)
-  // TODO(radomski): Submit these bytes to CTC
+  const bytes = await serializeAndSignBatch(batch, account)
+  submitToL1(account, rpcUrl, bytes)
+}
+
+async function submitToL1(
+  account: PrivateKeyAccount,
+  rpcUrl: string,
+  serializedBatchBytes: Hex,
+): Promise<void> {
+  const chain = { ...mainnet } as Chain
+  console.log(chain.rpcUrls)
+  chain.id = 31337
+  chain.rpcUrls = {
+    default: { http: [rpcUrl] },
+    public: { http: [rpcUrl] },
+  }
+
+  const client = createWalletClient({
+    account,
+    chain,
+    transport: http(),
+  })
+
+  const wagmiAbi = [
+    {
+      inputs: [
+        {
+          internalType: 'bytes',
+          name: '',
+          type: 'bytes',
+        },
+      ],
+      name: 'appendBatch',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ] as const
+
+  client.writeContract({
+    // TODO(radomski: start using config I guess
+    address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+    abi: wagmiAbi,
+    functionName: 'appendBatch',
+    args: [serializedBatchBytes.toString() as ViemHex],
+  })
 }
 
 const HexValue: Type<string, Hex> = {
@@ -63,11 +114,12 @@ const cmd = command({
   args: {
     genesisFile: positional({ type: string, displayName: 'genesisFile' }),
     privateKey: positional({ type: HexValue, displayName: 'privateKey' }),
+    rpcUrl: positional({ type: string, displayName: 'rpcUrl' }),
   },
-  handler: async ({ genesisFile, privateKey }) => {
+  handler: async ({ genesisFile, privateKey, rpcUrl }) => {
     const genesisState = getGenesisState(genesisFile)
 
-    await main(genesisState, privateKey)
+    await main(genesisState, privateKey, rpcUrl)
   },
 })
 
