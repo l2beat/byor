@@ -4,24 +4,6 @@ import { Config } from './config'
 import { AccountInsertRecord, AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
 
-function applyGenesisState(
-  genesisState: GenesisStateMap,
-  database: Database,
-): void {
-  const accountRepository = new AccountRepository(database)
-
-  const accounts: AccountInsertRecord[] = Object.entries(genesisState).map(
-    ([address, value]) => {
-      return {
-        address: address,
-        balance: value,
-      }
-    },
-  )
-
-  accountRepository.addOrUpdateMany(accounts)
-}
-
 export class Application {
   start: () => Promise<void>
 
@@ -38,4 +20,22 @@ export class Application {
       })
     }
   }
+}
+
+function applyGenesisState(
+  genesisState: GenesisStateMap,
+  database: Database,
+): void {
+  const accountRepository = new AccountRepository(database)
+
+  const accounts: AccountInsertRecord[] = Object.entries(genesisState).map(
+    ([address, balance]) => {
+      return {
+        address,
+        balance,
+      }
+    },
+  )
+
+  accountRepository.addOrUpdateMany(accounts)
 }
