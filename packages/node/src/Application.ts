@@ -1,17 +1,15 @@
-import { GenesisStateMap, getGenesisState } from '@byor/shared'
-
 import { Config } from './config'
-import { AccountInsertRecord, AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
+import { GenesisStateLoader } from './GenesisStateLoader'
 
 export class Application {
   start: () => Promise<void>
 
   constructor(config: Config) {
-    const genesisState = getGenesisState(config.genesisFilePath)
     const database = new Database(config.databasePath)
+    const genesisStateLoader = new GenesisStateLoader(config.genesisFilePath)
 
-    applyGenesisState(genesisState, database)
+    genesisStateLoader.apply(database)
 
     this.start = async (): Promise<void> => {
       console.log('Starting...')
@@ -20,22 +18,4 @@ export class Application {
       })
     }
   }
-}
-
-function applyGenesisState(
-  genesisState: GenesisStateMap,
-  database: Database,
-): void {
-  const accountRepository = new AccountRepository(database)
-
-  const accounts: AccountInsertRecord[] = Object.entries(genesisState).map(
-    ([address, balance]) => {
-      return {
-        address,
-        balance,
-      }
-    },
-  )
-
-  accountRepository.addOrUpdateMany(accounts)
 }
