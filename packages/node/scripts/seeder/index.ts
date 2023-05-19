@@ -1,13 +1,14 @@
 import {
   assert,
   EthereumAddress,
+  GenesisStateMap,
+  getGenesisState,
   Hex,
   serializeAndSignBatch,
   TransactionBatch,
   Unsigned64,
 } from '@byor/shared'
 import { command, positional, run, string, Type } from 'cmd-ts'
-import fs from 'fs'
 import { Hex as ViemHex } from 'viem'
 import {
   english,
@@ -15,8 +16,6 @@ import {
   mnemonicToAccount,
   privateKeyToAccount,
 } from 'viem/accounts'
-
-type GenesisStateMap = Record<string, number>
 
 async function main(
   genesisState: GenesisStateMap,
@@ -66,8 +65,7 @@ const cmd = command({
     privateKey: positional({ type: HexValue, displayName: 'privateKey' }),
   },
   handler: async ({ genesisFile, privateKey }) => {
-    const jsonContent = fs.readFileSync(genesisFile, 'utf-8')
-    const genesisState = JSON.parse(jsonContent) as GenesisStateMap
+    const genesisState = getGenesisState(genesisFile)
 
     await main(genesisState, privateKey)
   },
