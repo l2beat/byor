@@ -8,7 +8,7 @@ import {
   TransactionBatch,
   Unsigned64,
 } from '@byor/shared'
-import { command, positional, run, string, Type } from 'cmd-ts'
+import { command, number, positional, run, string, Type } from 'cmd-ts'
 import {
   createWalletClient,
   Hex as ViemHex,
@@ -26,7 +26,9 @@ import { Chain, mainnet } from 'viem/chains'
 async function main(
   genesisState: GenesisStateMap,
   privateKey: Hex,
+  contractAddress: EthereumAddress,
   rpcUrl: string,
+  chainId: number,
 ): Promise<void> {
   const account = privateKeyToAccount(privateKey.toString() as ViemHex)
   const accountBalance = genesisState[account.address]
@@ -52,16 +54,18 @@ async function main(
   }
 
   const bytes = await serializeAndSignBatch(batch, account)
-  await submitToL1(account, rpcUrl, bytes)
+  await submitToL1(account, contractAddress, rpcUrl, bytes, chainId)
 }
 
 async function submitToL1(
   account: PrivateKeyAccount,
+  contractAddress: EthereumAddress,
   rpcUrl: string,
   serializedBatchBytes: Hex,
+  chainId: number,
 ): Promise<void> {
   const chain = { ...mainnet } as Chain
-  chain.id = 31337
+  chain.id = chainId
   chain.rpcUrls = {
     default: { http: [rpcUrl] },
     public: { http: [rpcUrl] },
@@ -90,8 +94,7 @@ async function submitToL1(
   ] as const
 
   await client.writeContract({
-    // TODO(radomski: start using config I guess
-    address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+    address: contractAddress,
     abi: wagmiAbi,
     functionName: 'appendBatch',
     args: [serializedBatchBytes.toString() as ViemHex],
@@ -106,6 +109,14 @@ const HexValue: Type<string, Hex> = {
   },
 }
 
+const EthereumAddressValue: Type<string, EthereumAddress> = {
+  async from(str): Promise<EthereumAddress> {
+    return new Promise((resolve, _) => {
+      resolve(EthereumAddress(str))
+    })
+  },
+}
+
 const cmd = command({
   name: 'seeder',
   description: 'Seed random addresses with funds from provided account',
@@ -113,12 +124,23 @@ const cmd = command({
   args: {
     genesisFile: positional({ type: string, displayName: 'genesisFile' }),
     privateKey: positional({ type: HexValue, displayName: 'privateKey' }),
+    contractAddress: positional({
+      type: EthereumAddressValue,
+      displayName: 'contractAddress',
+    }),
     rpcUrl: positional({ type: string, displayName: 'rpcUrl' }),
+    chainId: positional({ type: number, displayName: 'chainId' }),
   },
-  handler: async ({ genesisFile, privateKey, rpcUrl }) => {
+  handler: async ({
+    genesisFile,
+    privateKey,
+    contractAddress,
+    rpcUrl,
+    chainId,
+  }) => {
     const genesisState = getGenesisState(genesisFile)
 
-    await main(genesisState, privateKey, rpcUrl)
+    await main(genesisState, privateKey, contractAddress, rpcUrl, chainId)
   },
 })
 
