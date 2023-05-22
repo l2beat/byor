@@ -45,7 +45,7 @@ export class L1StateManager {
     })
   }
 
-  async getNewLogs(lastBlock: bigint): Promise<BatchAppendedLogsType> {
+  async getLogsSince(lastBlock: bigint): Promise<BatchAppendedLogsType> {
     const logsPromise = this.client.getLogs({
       address: this.contractAddress,
       event: abi,
@@ -56,7 +56,7 @@ export class L1StateManager {
   }
 
   async getWholeL1State(): Promise<BatchAppendedLogsType> {
-    return this.getNewLogs(0n)
+    return this.getLogsSince(0n)
   }
 
   async eventsToCallData(events: BatchAppendedLogsType): Promise<Hex[]> {
@@ -106,6 +106,11 @@ export class L1StateManager {
       l1State.map((hex) => deserializeBatch(hex)),
     )
 
+    assert(
+      batches.length === callDataPosters.length,
+      'The amount of decoded batches is not equal to the amount of poster address',
+    )
+
     const initialState: StateMap = {}
     const accountRepository = new AccountRepository(database)
     accountRepository.getAll().forEach(
@@ -118,12 +123,9 @@ export class L1StateManager {
 
     const txExecutor = new TransactionExecutor(initialState)
 
-    assert(
-      batches.length === callDataPosters.length,
-      'The amount of decoded batches is not equal to the amount of poster address',
-    )
     for (let i = 0; i < batches.length; i++) {
-      // NOTE(radomski): We know that it won't be undefined because of the assert above this for loop
+      // NOTE(radomski): We know that it won't be undefined
+      // because of the assert at the beginning of this function
       // eslint-disable-next-line
       txExecutor.executeBatch(batches[i]!, callDataPosters[i]!)
     }
