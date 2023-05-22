@@ -23,6 +23,8 @@ import {
 } from 'viem/accounts'
 import { Chain, mainnet } from 'viem/chains'
 
+import { abi } from './abi'
+
 async function main(
   genesisState: GenesisStateMap,
   privateKey: Hex,
@@ -77,25 +79,9 @@ async function submitToL1(
     transport: http(),
   })
 
-  const wagmiAbi = [
-    {
-      inputs: [
-        {
-          internalType: 'bytes',
-          name: '',
-          type: 'bytes',
-        },
-      ],
-      name: 'appendBatch',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-  ] as const
-
   await client.writeContract({
     address: contractAddress,
-    abi: wagmiAbi,
+    abi: abi,
     functionName: 'appendBatch',
     args: [serializedBatchBytes.toString() as ViemHex],
   })
