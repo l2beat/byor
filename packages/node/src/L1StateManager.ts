@@ -73,6 +73,8 @@ export class L1StateManager {
     )
 
     const decoded = txs.map((tx) => {
+      // Remove hex prefix (0x) and 4 bytes of
+      // function signature (4 bytes -> 8 hex characters)
       const calldata = `0x${tx.input.slice(10)}` as const
       const params = decodeAbiParameters(
         [{ name: '', type: 'bytes' }],
