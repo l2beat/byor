@@ -197,6 +197,37 @@ export class L1StateManager {
       executeBatch(state, batches[i]!, callDataPosters[i]!)
     }
 
+    accountRepository.addOrUpdateMany(
+      Object.entries(state).map(([address, value]) => {
+        // WARNING(radomski): This can fail very badly if the value represented
+        // by 'BigInt' is so big that the floating point nature of 'number'
+        // causes it to lose precision. This can happen when the value is
+        // bigger then Number.MAX_SAFE_INTEGER. drizzle-orm should support
+        // passing values as bigints into the query but it currently does
+        // not (see https://github.com/drizzle-team/drizzle-orm/issues/611).
+        // For real applications where the upper parts of the 64bit values
+        // are needed please consider removing drizzle-orm!
+
+        assert(
+          Unsigned64.toBigInt(value.balance) <= BigInt(Number.MAX_SAFE_INTEGER),
+          'The Unsigned64 value is bigger than the biggest safely representable value',
+        )
+        assert(
+          Unsigned64.toBigInt(value.nonce) <= BigInt(Number.MAX_SAFE_INTEGER),
+          'The Unsigned64 value is bigger than the biggest safely representable value',
+        )
+
+        const balanceAsNumber = parseInt(value.balance.toString(), 10)
+        const nonceAsNumber = parseInt(value.nonce.toString(), 10)
+
+        return {
+          address: address,
+          balance: balanceAsNumber,
+          nonce: nonceAsNumber,
+        }
+      }),
+    )
+
     console.log(state)
   }
 }
