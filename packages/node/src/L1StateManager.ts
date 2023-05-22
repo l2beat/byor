@@ -48,7 +48,7 @@ export class L1StateManager {
   async getNewLogs(lastBlock: bigint): Promise<BatchAppendedLogsType> {
     const logsPromise = this.client.getLogs({
       address: this.contractAddress,
-      event: parseAbiItem('event BatchAppended(address sender)'),
+      event: abi,
       fromBlock: lastBlock,
     })
 
