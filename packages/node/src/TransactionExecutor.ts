@@ -18,6 +18,8 @@ export class TransactionExecutor {
     this.state = state
   }
 
+  // TODO(radomski): Define what is the correct way to handle any of the
+  // assertions below firing.
   executeBatch(batch: TransactionBatch, batchPoster: EthereumAddress): void {
     const feeRecipientAccount = getOrInsert(
       this.state,
