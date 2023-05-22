@@ -12,7 +12,7 @@ export class GenesisStateLoader {
 
   apply(database: Database): void {
     const accountRepository = new AccountRepository(database)
-    if (accountRepository.getCount() === 0) {
+    if (accountRepository.getCount() !== 0) {
       return
     }
 
