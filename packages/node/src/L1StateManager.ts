@@ -10,6 +10,7 @@ import {
   Hex as ViemHex,
 } from 'viem'
 import {
+  EthereumAddress,
   Hex,
   TransactionBatch,
   Unsigned64,
@@ -17,6 +18,11 @@ import {
   deserializeBatch,
 } from '@byor/shared'
 import { Database } from './db/Database'
+import { Statement } from 'better-sqlite3'
+
+const abi = parseAbiItem('event BatchAppended(address sender)')
+type EventAbiType = typeof abi
+type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
 
 export class L1StateManager {
   private client: PublicClient
@@ -26,7 +32,6 @@ export class L1StateManager {
     this.contractAddress = Hex.toString(config.ctcContractAddress) as ViemHex
 
     const chain = { ...mainnet } as Chain
-    console.log(chain.rpcUrls)
     chain.rpcUrls = {
       default: { http: [config.rpcUrl] },
       public: { http: [config.rpcUrl] },
@@ -38,7 +43,7 @@ export class L1StateManager {
     })
   }
 
-  async getNewLogs(lastBlock: bigint): Promise<GetLogsReturnType> {
+  async getNewLogs(lastBlock: bigint): Promise<BatchAppendedLogsType> {
     const logsPromise = this.client.getLogs({
       address: this.contractAddress,
       event: parseAbiItem('event BatchAppended(address sender)'),
@@ -48,11 +53,11 @@ export class L1StateManager {
     return logsPromise
   }
 
-  async getWholeL1State(): Promise<GetLogsReturnType> {
+  async getWholeL1State(): Promise<BatchAppendedLogsType> {
     return this.getNewLogs(0n)
   }
 
-  async eventsToCallData(events: GetLogsReturnType): Promise<Hex[]> {
+  async eventsToCallData(events: BatchAppendedLogsType): Promise<Hex[]> {
     const txs = await Promise.all(
       events.map((event) =>
         this.client.getTransaction({
@@ -77,77 +82,118 @@ export class L1StateManager {
     return decoded
   }
 
-  async applyWholeState(database: Database): Promise<void> {
-    const existingL1CallData = await this.eventsToCallData(
-      await this.getWholeL1State(),
-    )
-    this.apply(existingL1CallData, database)
+  async eventsToPosters(
+    events: BatchAppendedLogsType,
+  ): Promise<EthereumAddress[]> {
+    return events.map((e) => EthereumAddress(e.args.sender))
   }
 
-  async apply(l1State: Hex[], database: Database): Promise<void> {
+  async applyWholeState(database: Database): Promise<void> {
+    const l1State = await this.getWholeL1State()
+    const existingL1CallData = await this.eventsToCallData(l1State)
+    const callDataPosters = await this.eventsToPosters(l1State)
+    this.apply(existingL1CallData, callDataPosters, database)
+  }
+
+  async apply(
+    l1State: Hex[],
+    callDataPosters: EthereumAddress[],
+    database: Database,
+  ): Promise<void> {
     const batches = await Promise.all(
       l1State.map((hex) => deserializeBatch(hex)),
     )
 
-    type StateMap = Record<string, { balance: Unsigned64; nonce: Unsigned64 }>
+    interface StateMapValue {
+      balance: Unsigned64
+      nonce: Unsigned64
+    }
+    type StateMap = Record<string, StateMapValue>
 
-    const executeBatch = (state: StateMap, batch: TransactionBatch) => {
+    const executeBatch = (
+      state: StateMap,
+      batch: TransactionBatch,
+      batchPoster: EthereumAddress,
+    ) => {
+      const getOrInsert = (
+        state: StateMap,
+        key: string,
+        defaultValue: StateMapValue,
+      ): StateMapValue => {
+        const result = state[key]
+        if (result !== undefined) {
+          return result
+        } else {
+          state[key] = { ...defaultValue }
+          return state[key]!
+        }
+      }
+
+      const defaultState1: StateMapValue = {
+        balance: Unsigned64(10000),
+        nonce: Unsigned64(0),
+      }
+
+      const defaultState2: StateMapValue = {
+        balance: Unsigned64(0),
+        nonce: Unsigned64(0),
+      }
+
+      const feeRecipientAccount = getOrInsert(
+        state,
+        batchPoster.toString(),
+        defaultState1,
+      )
       for (const tx of batch) {
         // Step 0. Check transaction type
         assert(tx.from != Hex(0) && tx.to != Hex(0))
 
-        const from = tx.from.toString()
-        const to = tx.to.toString()
-        if (state[from] === undefined) {
-          state[from] = {
-            balance: Unsigned64(10000),
-            nonce: Unsigned64(0),
-          }
-        }
-
-        if (state[to] === undefined) {
-          state[to] = {
-            balance: Unsigned64(0),
-            nonce: Unsigned64(0),
-          }
-        }
+        const fromAccount = getOrInsert(
+          state,
+          tx.from.toString(),
+          defaultState1,
+        )
+        const toAccount = getOrInsert(state, tx.to.toString(), defaultState2)
 
         // Step 1. Update nonce
         assert(
-          state[from]?.nonce == Unsigned64(Unsigned64.toBigInt(tx.nonce) - 1n),
+          fromAccount.nonce == Unsigned64(Unsigned64.toBigInt(tx.nonce) - 1n),
         )
-        state[from]!.nonce = tx.nonce
+        fromAccount.nonce = tx.nonce
 
         // Step 2. Subtract spending
-        console.log(
-          Unsigned64.toBigInt(state[from]!.balance),
-          Unsigned64.toBigInt(tx.value),
-          Unsigned64.toBigInt(tx.fee),
-        )
         assert(
-          Unsigned64.toBigInt(state[from]!.balance) >=
+          Unsigned64.toBigInt(fromAccount.balance) >=
             Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(tx.fee),
         )
-        state[from]!.balance = Unsigned64(
-          Unsigned64.toBigInt(state[from]!.balance) -
+
+        fromAccount.balance = Unsigned64(
+          Unsigned64.toBigInt(fromAccount.balance) -
             Unsigned64.toBigInt(tx.value) +
             Unsigned64.toBigInt(tx.fee),
         )
 
         // Step 3. Transfer value
-        state[to]!.balance = Unsigned64(
+        toAccount.balance = Unsigned64(
           Unsigned64.toBigInt(tx.value) +
-            Unsigned64.toBigInt(state[to]!.balance),
+            Unsigned64.toBigInt(toAccount.balance),
         )
 
         // Step 4. Pay fee
-        state[tx.feeRecipient].value += tx.fee
+        feeRecipientAccount.balance = Unsigned64(
+          Unsigned64.toBigInt(tx.fee) +
+            Unsigned64.toBigInt(feeRecipientAccount.balance),
+        )
       }
     }
 
     const state: StateMap = {}
-    for (const batch of batches) {
-      executeBatch(state, batch)
+    assert(
+      batches.length === callDataPosters.length,
+      'The amount of decoded batches is not equal to the amount of poster address',
+    )
+    for (let i = 0; i < batches.length; i++) {
+      executeBatch(state, batches[i]!, callDataPosters[i]!)
     }
     console.log(state)
   }
