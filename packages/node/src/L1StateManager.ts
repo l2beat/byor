@@ -18,7 +18,6 @@ import {
   deserializeBatch,
 } from '@byor/shared'
 import { Database } from './db/Database'
-import { Statement } from 'better-sqlite3'
 import { AccountRepository } from './db/AccountRepository'
 
 const abi = parseAbiItem('event BatchAppended(address sender)')
