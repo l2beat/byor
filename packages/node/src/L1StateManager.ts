@@ -63,9 +63,10 @@ export class L1StateManager {
   async eventsToCallData(events: BatchAppendedLogsType): Promise<Hex[]> {
     const txs = await Promise.all(
       events.map((event) => {
-        if (event.transactionHash === null) {
-          throw new Error("Event's transaction hash is null")
-        }
+        assert(
+          event.transactionHash !== null,
+          'Expected the transaction hash in the event to be non-null',
+        )
 
         return this.client.getTransaction({
           hash: event.transactionHash,
