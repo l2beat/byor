@@ -229,7 +229,5 @@ export class L1StateManager {
         }
       }),
     )
-
-    console.log(state)
   }
 }
