@@ -169,8 +169,7 @@ export class L1StateManager {
 
         fromAccount.balance = Unsigned64(
           Unsigned64.toBigInt(fromAccount.balance) -
-            Unsigned64.toBigInt(tx.value) +
-            Unsigned64.toBigInt(tx.fee),
+            (Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(tx.fee)),
         )
 
         // Step 3. Transfer value
