@@ -1,14 +1,13 @@
 import {
   assert,
   EthereumAddress,
-  GenesisStateMap,
   getGenesisState,
   Hex,
   serializeAndSignBatch,
   TransactionBatch,
   Unsigned64,
 } from '@byor/shared'
-import { command, number, positional, run, string, Type } from 'cmd-ts'
+import { command, positional, run, string, Type } from 'cmd-ts'
 import {
   createWalletClient,
   Hex as ViemHex,
@@ -23,15 +22,11 @@ import {
 } from 'viem/accounts'
 import { Chain, mainnet } from 'viem/chains'
 
+import { Config, getConfig } from '../../src/config'
 import { abi } from './abi'
 
-async function main(
-  genesisState: GenesisStateMap,
-  privateKey: Hex,
-  contractAddress: EthereumAddress,
-  rpcUrl: string,
-  chainId: number,
-): Promise<void> {
+async function main(config: Config, privateKey: Hex): Promise<void> {
+  const genesisState = getGenesisState(config.genesisFilePath)
   const account = privateKeyToAccount(privateKey.toString() as ViemHex)
   const accountBalance = genesisState[account.address]
   assert(
@@ -56,21 +51,19 @@ async function main(
   }
 
   const bytes = await serializeAndSignBatch(batch, account)
-  await submitToL1(account, contractAddress, rpcUrl, bytes, chainId)
+  await submitToL1(account, config, bytes)
 }
 
 async function submitToL1(
   account: PrivateKeyAccount,
-  contractAddress: EthereumAddress,
-  rpcUrl: string,
+  config: Config,
   serializedBatchBytes: Hex,
-  chainId: number,
 ): Promise<void> {
   const chain = { ...mainnet } as Chain
-  chain.id = chainId
+  chain.id = 31337
   chain.rpcUrls = {
-    default: { http: [rpcUrl] },
-    public: { http: [rpcUrl] },
+    default: { http: [config.rpcUrl] },
+    public: { http: [config.rpcUrl] },
   }
 
   const client = createWalletClient({
@@ -80,7 +73,7 @@ async function submitToL1(
   })
 
   await client.writeContract({
-    address: contractAddress,
+    address: config.ctcContractAddress,
     abi: abi,
     functionName: 'appendBatch',
     args: [serializedBatchBytes.toString() as ViemHex],
@@ -95,38 +88,18 @@ const HexValue: Type<string, Hex> = {
   },
 }
 
-const EthereumAddressValue: Type<string, EthereumAddress> = {
-  async from(str): Promise<EthereumAddress> {
-    return new Promise((resolve, _) => {
-      resolve(EthereumAddress(str))
-    })
-  },
-}
-
 const cmd = command({
   name: 'seeder',
   description: 'Seed random addresses with funds from provided account',
   version: '1.0.0',
   args: {
-    genesisFile: positional({ type: string, displayName: 'genesisFile' }),
+    configPath: positional({ type: string, displayName: 'configPath' }),
     privateKey: positional({ type: HexValue, displayName: 'privateKey' }),
-    contractAddress: positional({
-      type: EthereumAddressValue,
-      displayName: 'contractAddress',
-    }),
-    rpcUrl: positional({ type: string, displayName: 'rpcUrl' }),
-    chainId: positional({ type: number, displayName: 'chainId' }),
   },
-  handler: async ({
-    genesisFile,
-    privateKey,
-    contractAddress,
-    rpcUrl,
-    chainId,
-  }) => {
-    const genesisState = getGenesisState(genesisFile)
+  handler: async ({ configPath, privateKey }) => {
+    const config = getConfig(configPath)
 
-    await main(genesisState, privateKey, contractAddress, rpcUrl, chainId)
+    await main(config, privateKey)
   },
 })
 
