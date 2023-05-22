@@ -19,6 +19,7 @@ import {
 } from '@byor/shared'
 import { Database } from './db/Database'
 import { Statement } from 'better-sqlite3'
+import { AccountRepository } from './db/AccountRepository'
 
 const abi = parseAbiItem('event BatchAppended(address sender)')
 type EventAbiType = typeof abi
@@ -129,12 +130,7 @@ export class L1StateManager {
         }
       }
 
-      const defaultState1: StateMapValue = {
-        balance: Unsigned64(10000),
-        nonce: Unsigned64(0),
-      }
-
-      const defaultState2: StateMapValue = {
+      const defaultState: StateMapValue = {
         balance: Unsigned64(0),
         nonce: Unsigned64(0),
       }
@@ -142,18 +138,14 @@ export class L1StateManager {
       const feeRecipientAccount = getOrInsert(
         state,
         batchPoster.toString(),
-        defaultState1,
+        defaultState,
       )
       for (const tx of batch) {
         // Step 0. Check transaction type
         assert(tx.from != Hex(0) && tx.to != Hex(0))
 
-        const fromAccount = getOrInsert(
-          state,
-          tx.from.toString(),
-          defaultState1,
-        )
-        const toAccount = getOrInsert(state, tx.to.toString(), defaultState2)
+        const fromAccount = getOrInsert(state, tx.from.toString(), defaultState)
+        const toAccount = getOrInsert(state, tx.to.toString(), defaultState)
 
         // Step 1. Update nonce
         assert(
@@ -186,14 +178,25 @@ export class L1StateManager {
       }
     }
 
-    const state: StateMap = {}
     assert(
       batches.length === callDataPosters.length,
       'The amount of decoded batches is not equal to the amount of poster address',
     )
+
+    const state: StateMap = {}
+    const accountRepository = new AccountRepository(database)
+    accountRepository.getAll().forEach(
+      (acc) =>
+        (state[acc.address] = {
+          balance: Unsigned64(acc.balance),
+          nonce: Unsigned64(acc.nonce),
+        }),
+    )
+
     for (let i = 0; i < batches.length; i++) {
       executeBatch(state, batches[i]!, callDataPosters[i]!)
     }
+
     console.log(state)
   }
 }
