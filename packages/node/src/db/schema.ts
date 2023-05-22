@@ -22,6 +22,6 @@ export const transactionsSchema = sqliteTable(
 )
 export const accountsSchema = sqliteTable('accounts', {
   address: text('address').primaryKey(),
-  balance: integer('balance').default(0),
-  nonce: integer('nonce').default(0),
+  balance: integer('balance').default(0).notNull(),
+  nonce: integer('nonce').default(0).notNull(),
 })
