@@ -7,7 +7,7 @@ import {
 } from '@byor/shared'
 import {
   createPublicClient,
-  decodeAbiParameters,
+  decodeFunctionData,
   GetLogsReturnType,
   Hex as ViemHex,
   http,
@@ -16,13 +16,14 @@ import {
 } from 'viem'
 import { Chain, mainnet } from 'viem/chains'
 
+import { abi } from '../scripts/seeder/abi'
 import { Config } from './config'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
 import { StateMap, TransactionExecutor } from './TransactionExecutor'
 
-const abi = parseAbiItem('event BatchAppended(address sender)')
-type EventAbiType = typeof abi
+const eventAbi = parseAbiItem('event BatchAppended(address sender)')
+type EventAbiType = typeof eventAbi
 type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
 
 export class L1StateManager {
@@ -48,7 +49,7 @@ export class L1StateManager {
   async getLogsSince(lastBlock: bigint): Promise<BatchAppendedLogsType> {
     const logsPromise = this.client.getLogs({
       address: this.contractAddress,
-      event: abi,
+      event: eventAbi,
       fromBlock: lastBlock,
     })
 
@@ -73,14 +74,12 @@ export class L1StateManager {
     )
 
     const decoded = txs.map((tx) => {
-      // Remove hex prefix (0x) and 4 bytes of
-      // function signature (4 bytes -> 8 hex characters)
-      const calldata = `0x${tx.input.slice(10)}` as const
-      const params = decodeAbiParameters(
-        [{ name: '', type: 'bytes' }],
-        calldata,
-      )
-      return Hex(params[0])
+      const { args } = decodeFunctionData({
+        abi: abi,
+        data: tx.input,
+      })
+
+      return Hex(args[0])
     })
 
     return decoded
