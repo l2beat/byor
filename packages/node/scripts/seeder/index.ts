@@ -11,9 +11,9 @@ import {
 import { command, positional, run, string, Type } from 'cmd-ts'
 import {
   createWalletClient,
+  Hex as ViemHex,
   http,
   PrivateKeyAccount,
-  Hex as ViemHex,
 } from 'viem'
 import {
   english,
@@ -52,7 +52,7 @@ async function main(
   }
 
   const bytes = await serializeAndSignBatch(batch, account)
-  submitToL1(account, rpcUrl, bytes)
+  await submitToL1(account, rpcUrl, bytes)
 }
 
 async function submitToL1(
@@ -89,7 +89,7 @@ async function submitToL1(
     },
   ] as const
 
-  client.writeContract({
+  await client.writeContract({
     // TODO(radomski: start using config I guess
     address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     abi: wagmiAbi,

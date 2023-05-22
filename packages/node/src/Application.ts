@@ -1,19 +1,6 @@
-import {
-  GenesisStateMap,
-  Hex,
-  deserializeBatch,
-  getGenesisState,
-} from '@byor/shared'
 import { Config } from './config'
 import { Database } from './db/Database'
 import { GenesisStateLoader } from './GenesisStateLoader'
-import {
-  createPublicClient,
-  http,
-  parseAbiItem,
-  Transaction,
-  Hex as ViemHex,
-} from 'viem'
 import { L1StateManager } from './L1StateManager'
 
 export class Application {
@@ -29,7 +16,7 @@ export class Application {
     this.start = async (): Promise<void> => {
       console.log('Starting...')
 
-      l1Manager.applyWholeState(database)
+      await l1Manager.applyWholeState(database)
     }
   }
 }

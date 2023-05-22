@@ -1,32 +1,33 @@
-import { Config } from './config'
-import { Chain, mainnet } from 'viem/chains'
 import {
-  createPublicClient,
-  decodeAbiParameters,
-  GetLogsReturnType,
-  http,
-  parseAbiItem,
-  PublicClient,
-  Hex as ViemHex,
-} from 'viem'
-import {
+  assert,
+  deserializeBatch,
   EthereumAddress,
   Hex,
   TransactionBatch,
   Unsigned64,
-  assert,
-  deserializeBatch,
 } from '@byor/shared'
-import { Database } from './db/Database'
+import {
+  createPublicClient,
+  decodeAbiParameters,
+  GetLogsReturnType,
+  Hex as ViemHex,
+  http,
+  parseAbiItem,
+  PublicClient,
+} from 'viem'
+import { Chain, mainnet } from 'viem/chains'
+
+import { Config } from './config'
 import { AccountRepository } from './db/AccountRepository'
+import { Database } from './db/Database'
 
 const abi = parseAbiItem('event BatchAppended(address sender)')
 type EventAbiType = typeof abi
 type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
 
 export class L1StateManager {
-  private client: PublicClient
-  private contractAddress: ViemHex
+  private readonly client: PublicClient
+  private readonly contractAddress: ViemHex
 
   constructor(config: Config) {
     this.contractAddress = Hex.toString(config.ctcContractAddress) as ViemHex
@@ -59,22 +60,22 @@ export class L1StateManager {
 
   async eventsToCallData(events: BatchAppendedLogsType): Promise<Hex[]> {
     const txs = await Promise.all(
-      events.map((event) =>
-        this.client.getTransaction({
-          hash: event.transactionHash as ViemHex,
-        }),
-      ),
+      events.map((event) => {
+        if (event.transactionHash === null) {
+          throw new Error("Event's transaction hash is null")
+        }
+
+        return this.client.getTransaction({
+          hash: event.transactionHash,
+        })
+      }),
     )
 
     const decoded = txs.map((tx) => {
-      const calldata = `0x${tx.input.slice(10)}` as ViemHex
+      const calldata = `0x${tx.input.slice(10)}` as const
       const params = decodeAbiParameters(
         [{ name: '', type: 'bytes' }],
         calldata,
-      )
-      assert(
-        params.length === 1,
-        'Invalid number of params decoded from calldata',
       )
       return Hex(params[0])
     })
@@ -82,17 +83,15 @@ export class L1StateManager {
     return decoded
   }
 
-  async eventsToPosters(
-    events: BatchAppendedLogsType,
-  ): Promise<EthereumAddress[]> {
+  eventsToPosters(events: BatchAppendedLogsType): EthereumAddress[] {
     return events.map((e) => EthereumAddress(e.args.sender))
   }
 
   async applyWholeState(database: Database): Promise<void> {
     const l1State = await this.getWholeL1State()
     const existingL1CallData = await this.eventsToCallData(l1State)
-    const callDataPosters = await this.eventsToPosters(l1State)
-    this.apply(existingL1CallData, callDataPosters, database)
+    const callDataPosters = this.eventsToPosters(l1State)
+    await this.apply(existingL1CallData, callDataPosters, database)
   }
 
   async apply(
@@ -114,7 +113,7 @@ export class L1StateManager {
       state: StateMap,
       batch: TransactionBatch,
       batchPoster: EthereumAddress,
-    ) => {
+    ): void => {
       const getOrInsert = (
         state: StateMap,
         key: string,
@@ -125,6 +124,8 @@ export class L1StateManager {
           return result
         } else {
           state[key] = { ...defaultValue }
+          // NOTE(radomski): We know that it won't be undefined we insert into that slot in the above line
+          // eslint-disable-next-line
           return state[key]!
         }
       }
@@ -141,14 +142,14 @@ export class L1StateManager {
       )
       for (const tx of batch) {
         // Step 0. Check transaction type
-        assert(tx.from != Hex(0) && tx.to != Hex(0))
+        assert(tx.from !== Hex(0) && tx.to !== Hex(0))
 
         const fromAccount = getOrInsert(state, tx.from.toString(), defaultState)
         const toAccount = getOrInsert(state, tx.to.toString(), defaultState)
 
         // Step 1. Update nonce
         assert(
-          fromAccount.nonce == Unsigned64(Unsigned64.toBigInt(tx.nonce) - 1n),
+          fromAccount.nonce === Unsigned64(Unsigned64.toBigInt(tx.nonce) - 1n),
         )
         fromAccount.nonce = tx.nonce
 
@@ -177,11 +178,6 @@ export class L1StateManager {
       }
     }
 
-    assert(
-      batches.length === callDataPosters.length,
-      'The amount of decoded batches is not equal to the amount of poster address',
-    )
-
     const state: StateMap = {}
     const accountRepository = new AccountRepository(database)
     accountRepository.getAll().forEach(
@@ -192,7 +188,13 @@ export class L1StateManager {
         }),
     )
 
+    assert(
+      batches.length === callDataPosters.length,
+      'The amount of decoded batches is not equal to the amount of poster address',
+    )
     for (let i = 0; i < batches.length; i++) {
+      // NOTE(radomski): We know that it won't be undefined because of the assert above this for loop
+      // eslint-disable-next-line
       executeBatch(state, batches[i]!, callDataPosters[i]!)
     }
 
