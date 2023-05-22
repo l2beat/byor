@@ -33,6 +33,7 @@ export class L1StateManager {
     this.contractAddress = Hex.toString(config.ctcContractAddress) as ViemHex
 
     const chain = { ...mainnet } as Chain
+    chain.id = config.chainId
     chain.rpcUrls = {
       default: { http: [config.rpcUrl] },
       public: { http: [config.rpcUrl] },

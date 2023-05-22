@@ -60,7 +60,7 @@ async function submitToL1(
   serializedBatchBytes: Hex,
 ): Promise<void> {
   const chain = { ...mainnet } as Chain
-  chain.id = 31337
+  chain.id = config.chainId
   chain.rpcUrls = {
     default: { http: [config.rpcUrl] },
     public: { http: [config.rpcUrl] },
