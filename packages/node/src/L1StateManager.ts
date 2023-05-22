@@ -16,8 +16,8 @@ import {
 } from 'viem'
 import { Chain, mainnet } from 'viem/chains'
 
-import { abi } from '../scripts/seeder/abi'
 import { Config } from './config'
+import { abi } from './config/abi'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
 import { StateMap, TransactionExecutor } from './TransactionExecutor'

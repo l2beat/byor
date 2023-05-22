@@ -23,7 +23,7 @@ import {
 import { Chain, mainnet } from 'viem/chains'
 
 import { Config, getConfig } from '../../src/config'
-import { abi } from './abi'
+import { abi } from '../../src/config/abi'
 
 async function main(config: Config, privateKey: Hex): Promise<void> {
   const genesisState = getGenesisState(config.genesisFilePath)
