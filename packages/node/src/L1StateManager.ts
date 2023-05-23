@@ -5,6 +5,7 @@ import {
   Hex,
   Unsigned64,
 } from '@byor/shared'
+import { zip } from 'lodash'
 import {
   createPublicClient,
   decodeFunctionData,
@@ -123,11 +124,11 @@ export class L1StateManager {
 
     const txExecutor = new TransactionExecutor(initialState)
 
-    for (let i = 0; i < batches.length; i++) {
+    for (const [batch, poster] of zip(batches, callDataPosters)) {
       // NOTE(radomski): We know that it won't be undefined
       // because of the assert at the beginning of this function
       // eslint-disable-next-line
-      txExecutor.executeBatch(batches[i]!, callDataPosters[i]!)
+      txExecutor.executeBatch(batch!, poster!)
     }
 
     const updatedState = txExecutor.finalize()
