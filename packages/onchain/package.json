@@ -2,6 +2,7 @@
   "name": "@byor/onchain",
   "version": "0.1.0",
   "scripts": {
+    "deploy": "hardhat run scripts/deploy.ts",
     "test": "hardhat test",
     "compile": "hardhat compile",
     "clean": "rm -rf build",
