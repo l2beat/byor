@@ -20,6 +20,28 @@ export class L1StateFetcher {
     this.client = client
   }
 
+  async getWholeState(): Promise<L1EventStateType[]> {
+    const l1State = await this.client.getLogsSinceGenesis(
+      eventAbi,
+      this.contractAddress,
+    )
+    const calldata = await this.eventsToCallData(l1State)
+    const posters = this.eventsToPosters(l1State)
+
+    assert(
+      l1State.length === posters.length,
+      'The amount of calldata is not equal to the amount of poster address',
+    )
+
+    return zipWith(
+      posters,
+      calldata,
+      (poster: EthereumAddress, calldata: Hex) => {
+        return { poster, calldata }
+      },
+    )
+  }
+
   async eventsToCallData(events: BatchAppendedLogsType): Promise<Hex[]> {
     const txs = await Promise.all(
       events.map((event) => {
@@ -44,29 +66,7 @@ export class L1StateFetcher {
     return decoded
   }
 
-  eventsToPosters(events: BatchAppendedLogsType): EthereumAddress[] {
+  private eventsToPosters(events: BatchAppendedLogsType): EthereumAddress[] {
     return events.map((e) => EthereumAddress(e.args.sender))
-  }
-
-  async getWholeState(): Promise<L1EventStateType[]> {
-    const l1State = await this.client.getLogsSinceGenesis(
-      eventAbi,
-      this.contractAddress,
-    )
-    const calldata = await this.eventsToCallData(l1State)
-    const posters = this.eventsToPosters(l1State)
-
-    assert(
-      l1State.length === posters.length,
-      'The amount of calldata is not equal to the amount of poster address',
-    )
-
-    return zipWith(
-      posters,
-      calldata,
-      (poster: EthereumAddress, calldata: Hex) => {
-        return { poster, calldata }
-      },
-    )
   }
 }
