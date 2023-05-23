@@ -1,7 +1,9 @@
-import { Hex } from '@byor/shared'
+import { EthereumAddress } from '@byor/shared'
 import fs from 'fs'
 
 import { Config } from './Config'
+
+export * from './createChain'
 
 export type { Config }
 
@@ -21,7 +23,7 @@ export function getConfig(configPath: string): Config {
     rpcUrl: configJson.RPC_URL,
     chainId: configJson.CHAIN_ID,
     databasePath: configJson.DB_PATH,
-    ctcContractAddress: Hex(configJson.CTC_CONTRACT_ADDRESS),
+    ctcContractAddress: EthereumAddress(configJson.CTC_CONTRACT_ADDRESS),
     genesisFilePath: configJson.GENESIS_FILE_PATH,
   }
 
