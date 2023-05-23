@@ -27,6 +27,8 @@ export class TransactionExecutor {
       defaultState,
     )
 
+    assert(batchPoster !== Hex(0x0000000000000000000000000000000000000000))
+
     for (const tx of batch) {
       // Step 0. Check transaction type
       assert(tx.from !== Hex(0) && tx.to !== Hex(0))
