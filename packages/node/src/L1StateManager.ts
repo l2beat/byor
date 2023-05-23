@@ -3,16 +3,24 @@ import { zip } from 'lodash'
 
 import { AccountRepository } from './db/AccountRepository'
 import { L1EventStateType } from './L1EventStateType'
+import { L1StateFetcher } from './L1StateFetcher'
 import { StateMap, TransactionExecutor } from './TransactionExecutor'
 
 export class L1StateManager {
   private readonly accountRepository: AccountRepository
+  private readonly l1Fetcher: L1StateFetcher
 
-  constructor(accountRepository: AccountRepository) {
+  constructor(accountRepository: AccountRepository, l1Fetcher: L1StateFetcher) {
     this.accountRepository = accountRepository
+    this.l1Fetcher = l1Fetcher
   }
 
-  async apply(l1States: L1EventStateType[]): Promise<void> {
+  async start(): Promise<void> {
+    const eventState = await this.l1Fetcher.getWholeState()
+    await this.apply(eventState)
+  }
+
+  private async apply(l1States: L1EventStateType[]): Promise<void> {
     const batches = await Promise.all(
       l1States.map((state) => deserializeBatch(state.calldata)),
     )

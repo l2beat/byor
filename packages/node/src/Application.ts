@@ -27,15 +27,14 @@ export class Application {
       accountRepository,
     )
     const l1Fetcher = new L1StateFetcher(config, ethereumClient)
-    const l1Manager = new L1StateManager(accountRepository)
+    const l1Manager = new L1StateManager(accountRepository, l1Fetcher)
 
     genesisStateLoader.apply()
 
     this.start = async (): Promise<void> => {
       console.log('Starting...')
 
-      const eventState = await l1Fetcher.getWholeState()
-      await l1Manager.apply(eventState)
+      await l1Manager.start()
     }
   }
 }
