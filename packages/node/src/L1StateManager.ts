@@ -1,10 +1,4 @@
-import {
-  assert,
-  deserializeBatch,
-  EthereumAddress,
-  Hex,
-  Unsigned64,
-} from '@byor/shared'
+import { assert, deserializeBatch, EthereumAddress, Hex } from '@byor/shared'
 import { zip } from 'lodash'
 import {
   createPublicClient,
@@ -20,7 +14,6 @@ import { Chain, mainnet } from 'viem/chains'
 import { Config } from './config'
 import { abi } from './config/abi'
 import { AccountRepository } from './db/AccountRepository'
-import { Database } from './db/Database'
 import { StateMap, TransactionExecutor } from './TransactionExecutor'
 
 const eventAbi = parseAbiItem('event BatchAppended(address sender)')
@@ -30,9 +23,11 @@ type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
 export class L1StateManager {
   private readonly client: PublicClient
   private readonly contractAddress: ViemHex
+  private readonly accountRepository: AccountRepository
 
-  constructor(config: Config) {
+  constructor(config: Config, accountRepository: AccountRepository) {
     this.contractAddress = Hex.toString(config.ctcContractAddress) as ViemHex
+    this.accountRepository = accountRepository
 
     const chain = { ...mainnet } as Chain
     chain.id = config.chainId
@@ -91,17 +86,16 @@ export class L1StateManager {
     return events.map((e) => EthereumAddress(e.args.sender))
   }
 
-  async applyWholeState(database: Database): Promise<void> {
+  async applyWholeState(): Promise<void> {
     const l1State = await this.getWholeL1State()
     const existingL1CallData = await this.eventsToCallData(l1State)
     const callDataPosters = this.eventsToPosters(l1State)
-    await this.apply(existingL1CallData, callDataPosters, database)
+    await this.apply(existingL1CallData, callDataPosters)
   }
 
   async apply(
     l1State: Hex[],
     callDataPosters: EthereumAddress[],
-    database: Database,
   ): Promise<void> {
     const batches = await Promise.all(
       l1State.map((hex) => deserializeBatch(hex)),
@@ -113,12 +107,11 @@ export class L1StateManager {
     )
 
     const initialState: StateMap = {}
-    const accountRepository = new AccountRepository(database)
-    accountRepository.getAll().forEach(
+    this.accountRepository.getAll().forEach(
       (acc) =>
-        (initialState[acc.address] = {
-          balance: Unsigned64(acc.balance),
-          nonce: Unsigned64(acc.nonce),
+        (initialState[acc.address.toString()] = {
+          balance: acc.balance,
+          nonce: acc.nonce,
         }),
     )
 
@@ -132,33 +125,13 @@ export class L1StateManager {
     }
 
     const updatedState = txExecutor.finalize()
-    accountRepository.addOrUpdateMany(
+    console.log(updatedState)
+    this.accountRepository.addOrUpdateMany(
       Object.entries(updatedState).map(([address, value]) => {
-        // WARNING(radomski): This can fail very badly if the value represented
-        // by 'BigInt' is so big that the floating point nature of 'number'
-        // causes it to lose precision. This can happen when the value is
-        // bigger then Number.MAX_SAFE_INTEGER. drizzle-orm should support
-        // passing values as bigints into the query but it currently does
-        // not (see https://github.com/drizzle-team/drizzle-orm/issues/611).
-        // For real applications where the upper parts of the 64bit values
-        // are needed please consider removing drizzle-orm!
-
-        assert(
-          Unsigned64.toBigInt(value.balance) <= BigInt(Number.MAX_SAFE_INTEGER),
-          'The Unsigned64 value is bigger than the biggest safely representable value',
-        )
-        assert(
-          Unsigned64.toBigInt(value.nonce) <= BigInt(Number.MAX_SAFE_INTEGER),
-          'The Unsigned64 value is bigger than the biggest safely representable value',
-        )
-
-        const balanceAsNumber = parseInt(value.balance.toString(), 10)
-        const nonceAsNumber = parseInt(value.nonce.toString(), 10)
-
         return {
-          address: address,
-          balance: balanceAsNumber,
-          nonce: nonceAsNumber,
+          address: EthereumAddress(address),
+          balance: value.balance,
+          nonce: value.nonce,
         }
       }),
     )

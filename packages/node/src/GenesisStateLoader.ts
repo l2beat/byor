@@ -1,30 +1,36 @@
-import { GenesisStateMap, getGenesisState } from '@byor/shared'
+import {
+  EthereumAddress,
+  GenesisStateMap,
+  getGenesisState,
+  Unsigned64,
+} from '@byor/shared'
 
-import { AccountInsertRecord, AccountRepository } from './db/AccountRepository'
-import { Database } from './db/Database'
+import { AccountRecord, AccountRepository } from './db/AccountRepository'
 
 export class GenesisStateLoader {
-  readonly genesisState: GenesisStateMap
+  private readonly genesisState: GenesisStateMap
+  private readonly accountRepository: AccountRepository
 
-  constructor(genesisFilePath: string) {
+  constructor(genesisFilePath: string, accountRepository: AccountRepository) {
     this.genesisState = getGenesisState(genesisFilePath)
+    this.accountRepository = accountRepository
   }
 
-  apply(database: Database): void {
-    const accountRepository = new AccountRepository(database)
-    if (accountRepository.getCount() !== 0) {
+  apply(): void {
+    if (this.accountRepository.getCount() !== 0) {
       return
     }
 
-    const accounts: AccountInsertRecord[] = Object.entries(
-      this.genesisState,
-    ).map(([address, balance]) => {
-      return {
-        address,
-        balance,
-      }
-    })
+    const accounts: AccountRecord[] = Object.entries(this.genesisState).map(
+      ([address, balance]) => {
+        return {
+          address: EthereumAddress(address),
+          balance: Unsigned64(balance),
+          nonce: Unsigned64(0),
+        }
+      },
+    )
 
-    accountRepository.addOrUpdateMany(accounts)
+    this.accountRepository.addOrUpdateMany(accounts)
   }
 }
