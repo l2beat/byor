@@ -44,7 +44,6 @@ export class L1StateManager {
     }
 
     const updatedState = txExecutor.finalize()
-    console.log(updatedState)
     this.accountRepository.addOrUpdateMany(
       Object.entries(updatedState).map(([address, value]) => {
         return {
