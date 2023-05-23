@@ -27,6 +27,12 @@ describe('Hex', () => {
     expect(value).toEqual('0x7d377eccf0b5e000' as unknown as Hex)
   })
 
+  it('transforms a just the prefix to zero', async () => {
+    const value = Hex('0x')
+
+    expect(value).toEqual('0x0' as unknown as Hex)
+  })
+
   it('transforms a valid hex string', async () => {
     const value = Hex('0xdeadcafe')
 

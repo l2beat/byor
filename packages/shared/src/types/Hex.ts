@@ -13,6 +13,10 @@ export function Hex(value: bigint | number | string): Hex {
     value = value.slice(2)
   }
 
+  if (value === '') {
+    value = '0'
+  }
+
   if (/^[0-9a-fA-F]+$/.test(value)) {
     return `0x${value}` as unknown as Hex
   } else {
