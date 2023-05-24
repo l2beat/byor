@@ -20,10 +20,10 @@ import {
   mnemonicToAccount,
   privateKeyToAccount,
 } from 'viem/accounts'
-import { Chain, mainnet } from 'viem/chains'
 
 import { Config, getConfig } from '../../src/config'
 import { abi } from '../../src/config/abi'
+import { createChain } from '../../src/config/createChain'
 
 async function main(config: Config, privateKey: Hex): Promise<void> {
   const genesisState = getGenesisState(config.genesisFilePath)
@@ -59,12 +59,7 @@ async function submitToL1(
   config: Config,
   serializedBatchBytes: Hex,
 ): Promise<void> {
-  const chain = { ...mainnet } as Chain
-  chain.id = config.chainId
-  chain.rpcUrls = {
-    default: { http: [config.rpcUrl] },
-    public: { http: [config.rpcUrl] },
-  }
+  const chain = createChain(config)
 
   const client = createWalletClient({
     account,
@@ -73,7 +68,7 @@ async function submitToL1(
   })
 
   await client.writeContract({
-    address: config.ctcContractAddress,
+    address: config.ctcContractAddress.toString() as ViemHex,
     abi: abi,
     functionName: 'appendBatch',
     args: [serializedBatchBytes.toString() as ViemHex],

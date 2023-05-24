@@ -9,7 +9,8 @@
     "format:fix": "prettier --write .",
     "format": "prettier --check .",
     "lint:fix": "yarn lint --fix",
-    "lint": "eslint --ext .ts,.tsx --max-warnings 0 test scripts"
+    "lint": "eslint --ext .ts,.tsx --max-warnings 0 test scripts",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
