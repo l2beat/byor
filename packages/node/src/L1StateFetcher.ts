@@ -33,13 +33,9 @@ export class L1StateFetcher {
       'The amount of calldata is not equal to the amount of poster address',
     )
 
-    return zipWith(
-      posters,
-      calldata,
-      (poster: EthereumAddress, calldata: Hex) => {
-        return { poster, calldata }
-      },
-    )
+    return zipWith(posters, calldata, (poster, calldata) => {
+      return { poster, calldata }
+    })
   }
 
   async eventsToCallData(events: BatchAppendedLogsType): Promise<Hex[]> {
