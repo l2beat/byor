@@ -1,5 +1,4 @@
-import { Logger } from '@byor/shared'
-import { LogLevel } from '@byor/shared/build/tools/ILogger'
+import { Logger, LogLevel } from '@byor/shared'
 import { createPublicClient, http } from 'viem'
 
 import { Config, createChain } from './config'
