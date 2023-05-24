@@ -1,5 +1,5 @@
 import { assert, EthereumAddress, Unsigned64 } from '@byor/shared'
-import { InferModel, sql } from 'drizzle-orm'
+import { eq, InferModel, sql } from 'drizzle-orm'
 
 import { BaseRepository } from './BaseRepository'
 import { accountsSchema } from './schema'
@@ -37,6 +37,27 @@ export class AccountRepository extends BaseRepository {
       .from(accountsSchema)
       .all()
       .map((acc) => fromInternalAccount(acc))
+  }
+
+  getByAddressInsertOnEmpty(address: EthereumAddress): AccountRecord {
+    const drizzle = this.drizzle()
+    let res = drizzle
+      .select()
+      .from(accountsSchema)
+      .where(eq(accountsSchema.address, address.toString()))
+      .get()
+
+    if (!res) {
+      let res = {
+        address,
+        balance: Unsigned64(0n),
+        nonce: Unsigned64(0n),
+      }
+
+      this.addOrUpdateMany([res])
+      return res
+    }
+    return fromInternalAccount(res)
   }
 
   deleteAll(): void {

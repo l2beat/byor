@@ -54,6 +54,22 @@ describe(AccountRepository.name, () => {
     })
   })
 
+  describe(AccountRepository.prototype.getByAddressInsertOnEmpty.name, () => {
+    it('returns empty account on one that was not inserted', async () => {
+      expect(
+        repository.getByAddressInsertOnEmpty(modelAccounts1[0]!.address),
+      ).toEqual(modelAccounts1[0]!)
+    })
+
+    it('returns the account that was previously inserted', async () => {
+      repository.addOrUpdateMany(modelAccounts1)
+
+      expect(
+        repository.getByAddressInsertOnEmpty(modelAccounts1[1]!.address),
+      ).toEqual(modelAccounts1[1]!)
+    })
+  })
+
   describe(AccountRepository.prototype.deleteAll.name, () => {
     it('deletes all', async () => {
       repository.addOrUpdateMany(modelAccounts1)
