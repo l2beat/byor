@@ -26,13 +26,9 @@ export class ApiServer {
     this.listenCallback = server.listen
   }
 
-  listen(): Promise<void> {
-    return new Promise<void>((resolve) => {
-      this.logger.info('Listening', { port: this.port })
-      resolve()
-
-      this.listenCallback(this.port)
-    })
+  listen(): void {
+    this.logger.info('Listening', { port: this.port })
+    this.listenCallback(this.port)
   }
 
   getHTTPServer(): http.Server {

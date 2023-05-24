@@ -50,7 +50,7 @@ export class Application {
       logger.info('Starting...')
 
       await l1Manager.start()
-      await apiServer.listen()
+      apiServer.listen()
     }
   }
 }
