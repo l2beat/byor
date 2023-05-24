@@ -1,4 +1,4 @@
-import { EthereumAddress, Hex, Unsigned64 } from '@byor/shared'
+import { EthereumAddress, Hex, Logger, Unsigned64 } from '@byor/shared'
 import { expect, mockFn, mockObject } from 'earl'
 
 import { AccountRepository } from './db/AccountRepository'
@@ -32,7 +32,11 @@ describe(L1StateManager.name, () => {
           },
         ]),
       })
-      const l1Manager = new L1StateManager(accountRepository, l1Fetcher)
+      const l1Manager = new L1StateManager(
+        accountRepository,
+        l1Fetcher,
+        Logger.SILENT,
+      )
 
       await l1Manager.start()
 

@@ -1,5 +1,6 @@
 export * from './Batch'
 export * from './EthereumAddress'
 export * from './Hex'
+export * from './json'
 export * from './Transactions'
 export * from './UnsignedSized'

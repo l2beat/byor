@@ -1,4 +1,4 @@
-import { EthereumAddress, Hex } from '@byor/shared'
+import { EthereumAddress, Hex, Logger } from '@byor/shared'
 import { AbiEvent } from 'abitype'
 import {
   GetLogsReturnType,
@@ -8,10 +8,11 @@ import {
 } from 'viem'
 
 export class EthereumClient {
-  private readonly provider: PublicClient
-
-  constructor(provider: PublicClient) {
-    this.provider = provider
+  constructor(
+    private readonly provider: PublicClient,
+    private readonly logger: Logger,
+  ) {
+    this.logger = this.logger.for(this)
   }
 
   async getLogsInRange<TAbiEvent extends AbiEvent>(
@@ -20,6 +21,13 @@ export class EthereumClient {
     fromBlock: bigint,
     toBlock?: bigint,
   ): Promise<GetLogsReturnType<TAbiEvent>> {
+    this.logger.debug('Getting event logs in range', {
+      abi: abi.name,
+      contractAddress: contractAddress.toString(),
+      fromBlock: fromBlock.toString(),
+      toBlock: toBlock ? toBlock.toString() : 'NONE',
+    })
+
     const result = await this.provider.getLogs({
       address: contractAddress.toString() as ViemHex,
       event: abi,

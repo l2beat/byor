@@ -1,3 +1,4 @@
+import { Logger, LogLevel } from '@byor/shared'
 import { createPublicClient, http } from 'viem'
 
 import { Config, createChain } from './config'
@@ -14,28 +15,31 @@ export class Application {
   constructor(config: Config) {
     const database = new Database(config.databasePath)
     const accountRepository = new AccountRepository(database)
+    const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
 
     const chain = createChain(config)
     const provider = createPublicClient({
       chain,
       transport: http(),
     })
-    const ethereumClient = new EthereumClient(provider)
+    const ethereumClient = new EthereumClient(provider, logger)
 
     const genesisStateLoader = new GenesisStateLoader(
       config.genesisFilePath,
       accountRepository,
+      logger,
     )
     const l1Fetcher = new L1StateFetcher(
       ethereumClient,
       config.ctcContractAddress,
+      logger,
     )
-    const l1Manager = new L1StateManager(accountRepository, l1Fetcher)
+    const l1Manager = new L1StateManager(accountRepository, l1Fetcher, logger)
 
     genesisStateLoader.apply()
 
     this.start = async (): Promise<void> => {
-      console.log('Starting...')
+      logger.info('Starting...')
 
       await l1Manager.start()
     }

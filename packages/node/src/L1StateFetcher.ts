@@ -1,4 +1,4 @@
-import { assert, EthereumAddress, Hex } from '@byor/shared'
+import { assert, EthereumAddress, Hex, Logger } from '@byor/shared'
 import { zipWith } from 'lodash'
 import { decodeFunctionData, GetLogsReturnType, parseAbiItem } from 'viem'
 
@@ -14,9 +14,19 @@ export class L1StateFetcher {
   constructor(
     private readonly client: EthereumClient,
     private readonly contractAddress: EthereumAddress,
-  ) {}
+    private readonly logger: Logger,
+  ) {
+    this.logger = logger.for(this)
+  }
 
   async getWholeState(): Promise<L1EventStateType[]> {
+    this.logger.debug(
+      'Fetching all batch append events since the genesis block',
+      {
+        contractAddress: this.contractAddress.toString(),
+        eventAbi: eventAbi.name,
+      },
+    )
     const l1State = await this.client.getLogsSinceGenesis(
       eventAbi,
       this.contractAddress,
