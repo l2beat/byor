@@ -13,6 +13,10 @@ export function EthereumAddress(value: string): EthereumAddress {
   }
 }
 
+EthereumAddress.ZERO = EthereumAddress(
+  '0x0000000000000000000000000000000000000000',
+)
+
 EthereumAddress.check = function check(value: string): boolean {
   try {
     return EthereumAddress(value).toString() === value
