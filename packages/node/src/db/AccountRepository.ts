@@ -39,7 +39,7 @@ export class AccountRepository extends BaseRepository {
       .map((acc) => fromInternalAccount(acc))
   }
 
-  getByAddressInsertOnEmpty(address: EthereumAddress): AccountRecord {
+  getByAddressOrDefault(address: EthereumAddress): AccountRecord {
     const drizzle = this.drizzle()
     const res = drizzle
       .select()
@@ -57,7 +57,6 @@ export class AccountRepository extends BaseRepository {
         nonce: Unsigned64(0n),
       }
 
-      this.addOrUpdateMany([res])
       return res
     }
     return fromInternalAccount(res)
