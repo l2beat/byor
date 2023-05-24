@@ -3,7 +3,7 @@ import { AnyRouter } from '@trpc/server'
 import { z } from 'zod'
 
 import { AccountRepository } from '../../db/AccountRepository'
-import { publicProcedure, router } from '../trpc/trpc'
+import { publicProcedure, router } from '../trpc'
 
 export function createAccountRouter(
   accountRepository: AccountRepository,
