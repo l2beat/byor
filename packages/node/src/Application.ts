@@ -26,7 +26,10 @@ export class Application {
       config.genesisFilePath,
       accountRepository,
     )
-    const l1Fetcher = new L1StateFetcher(config, ethereumClient)
+    const l1Fetcher = new L1StateFetcher(
+      ethereumClient,
+      config.ctcContractAddress,
+    )
     const l1Manager = new L1StateManager(accountRepository, l1Fetcher)
 
     genesisStateLoader.apply()

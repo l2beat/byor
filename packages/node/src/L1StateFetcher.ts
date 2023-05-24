@@ -2,7 +2,6 @@ import { assert, EthereumAddress, Hex } from '@byor/shared'
 import { zipWith } from 'lodash'
 import { decodeFunctionData, GetLogsReturnType, parseAbiItem } from 'viem'
 
-import { Config } from './config'
 import { abi } from './config/abi'
 import { L1EventStateType } from './L1EventStateType'
 import { EthereumClient } from './peripherals/ethereum/EthereumClient'
@@ -12,13 +11,10 @@ type EventAbiType = typeof eventAbi
 type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
 
 export class L1StateFetcher {
-  private readonly client: EthereumClient
-  private readonly contractAddress: EthereumAddress
-
-  constructor(config: Config, client: EthereumClient) {
-    this.contractAddress = config.ctcContractAddress
-    this.client = client
-  }
+  constructor(
+    private readonly client: EthereumClient,
+    private readonly contractAddress: EthereumAddress,
+  ) {}
 
   async getWholeState(): Promise<L1EventStateType[]> {
     const l1State = await this.client.getLogsSinceGenesis(

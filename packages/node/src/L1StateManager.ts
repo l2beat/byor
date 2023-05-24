@@ -7,13 +7,10 @@ import { L1EventStateType } from './L1EventStateType'
 import { L1StateFetcher } from './L1StateFetcher'
 
 export class L1StateManager {
-  private readonly accountRepository: AccountRepository
-  private readonly l1Fetcher: L1StateFetcher
-
-  constructor(accountRepository: AccountRepository, l1Fetcher: L1StateFetcher) {
-    this.accountRepository = accountRepository
-    this.l1Fetcher = l1Fetcher
-  }
+  constructor(
+    private readonly accountRepository: AccountRepository,
+    private readonly l1Fetcher: L1StateFetcher,
+  ) {}
 
   async start(): Promise<void> {
     const eventState = await this.l1Fetcher.getWholeState()
