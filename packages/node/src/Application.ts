@@ -8,6 +8,8 @@ import { GenesisStateLoader } from './GenesisStateLoader'
 import { L1StateFetcher } from './L1StateFetcher'
 import { L1StateManager } from './L1StateManager'
 import { EthereumClient } from './peripherals/ethereum/EthereumClient'
+import { ApiServer } from './api/ApiServer'
+import { createAccountRouter } from './api/routers/AccountRouter'
 
 export class Application {
   start: () => Promise<void>
@@ -36,12 +38,17 @@ export class Application {
     )
     const l1Manager = new L1StateManager(accountRepository, l1Fetcher, logger)
 
+    const routers = [createAccountRouter(accountRepository)]
+
+    const apiServer = new ApiServer(config.rpcServePort, logger, routers)
+
     genesisStateLoader.apply()
 
     this.start = async (): Promise<void> => {
       logger.info('Starting...')
 
       await l1Manager.start()
+      await apiServer.listen()
     }
   }
 }

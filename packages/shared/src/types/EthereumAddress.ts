@@ -13,6 +13,14 @@ export function EthereumAddress(value: string): EthereumAddress {
   }
 }
 
+EthereumAddress.check = function check(value: string) {
+  try {
+    return EthereumAddress(value).toString() === value
+  } catch {
+    return false
+  }
+}
+
 EthereumAddress.toHex = function toHex(a: EthereumAddress): Hex {
   return Hex(a as unknown as string)
 }

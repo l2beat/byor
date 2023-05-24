@@ -16,18 +16,18 @@ export class ApiServer {
   }
 
   listen(): Promise<void> {
-    // TODO(radomski): DI?
-    const _port = this.port
-    const _logger = this.logger
+    const server = createHTTPServer({
+      router: this.router,
+      createContext() {
+        return {}
+      },
+    })
 
     return new Promise<void>((resolve) => {
-      createHTTPServer({
-        router: this.router,
-        createContext() {
-          _logger.info(`Listening on port ${_port}`)
-          resolve()
-        },
-      }).listen(this.port)
+      this.logger.info('Listening', { port: this.port })
+      resolve()
+
+      server.listen(this.port)
     })
   }
 }
