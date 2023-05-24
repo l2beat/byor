@@ -1,4 +1,4 @@
-import { EthereumAddress, branded } from '@byor/shared'
+import { branded, EthereumAddress } from '@byor/shared'
 import { AnyRouter } from '@trpc/server'
 import { z } from 'zod'
 
@@ -13,9 +13,7 @@ export function createAccountRouter(
       .input(branded(z.string(), EthereumAddress))
       .query((opts) => {
         const { input } = opts
-        const account = accountRepository.getByAddressInsertOnEmpty(
-          EthereumAddress(input),
-        )
+        const account = accountRepository.getByAddressOrDefault(input)
 
         // NOTE(radomski): JSON is incapable of serializing a BigInt lol
         return {

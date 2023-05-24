@@ -65,7 +65,7 @@ describe(AccountRepository.name, () => {
       expect(
         repository.getByAddressOrDefault(modelAccounts1[0]!.address),
       ).toEqual(modelAccounts1[0]!)
-      expect( repository.getCount(),).toEqual(0)
+      expect(repository.getCount()).toEqual(0)
     })
 
     it('returns the account that was previously inserted', async () => {
