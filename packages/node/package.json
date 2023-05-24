@@ -15,6 +15,7 @@
     "format": "prettier --check .",
     "lint:fix": "yarn lint --fix",
     "lint": "eslint --ext .ts,.tsx --max-warnings 0 src scripts",
+    "typecheck": "tsc --noEmit",
     "seeder": "node -r esbuild-register scripts/seeder"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
 import { EthereumAddress, Unsigned64 } from '@byor/shared'
 import { expect } from 'earl'
 
-import { executeBatch } from './executeBatch'
+import { executeBatch, StateMap } from './executeBatch'
 
 describe(executeBatch.name, () => {
   it('executes an empty transaction to update the nonce of the sender only', async () => {
@@ -55,7 +55,7 @@ describe(executeBatch.name, () => {
         balance: Unsigned64(20),
         nonce: Unsigned64(0),
       },
-    }
+    } as StateMap
 
     state = executeBatch(state, batch, batchPoster)
 
@@ -93,7 +93,7 @@ describe(executeBatch.name, () => {
         balance: Unsigned64(20),
         nonce: Unsigned64(0),
       },
-    }
+    } as StateMap
 
     state = executeBatch(state, batch, batchPoster)
 
@@ -135,7 +135,7 @@ describe(executeBatch.name, () => {
         balance: Unsigned64(100),
         nonce: Unsigned64(0),
       },
-    }
+    } as StateMap
 
     state = executeBatch(state, batch, batchPoster)
 
@@ -184,7 +184,7 @@ describe(executeBatch.name, () => {
         balance: Unsigned64(100),
         nonce: Unsigned64(0),
       },
-    }
+    } as StateMap
 
     state = executeBatch(state, batch, batchPoster)
 
@@ -233,7 +233,7 @@ describe(executeBatch.name, () => {
         balance: Unsigned64(100),
         nonce: Unsigned64(0),
       },
-    }
+    } as StateMap
 
     state = executeBatch(state, batch, batchPoster)
 
@@ -282,7 +282,7 @@ describe(executeBatch.name, () => {
         balance: Unsigned64(100),
         nonce: Unsigned64(0),
       },
-    }
+    } as StateMap
 
     state = executeBatch(state, batch, batchPoster)
 

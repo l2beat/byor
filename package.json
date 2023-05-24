@@ -8,7 +8,8 @@
     "format:fix": "wsrun -ecam format:fix",
     "format": "wsrun -ecam format",
     "lint:fix": "wsrun -ecam lint:fix",
-    "lint": "wsrun -ecam lint"
+    "lint": "wsrun -ecam lint",
+    "typecheck": "wsrun -ecam typecheck"
   },
   "workspaces": {
     "packages": [
