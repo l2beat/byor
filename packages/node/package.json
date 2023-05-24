@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@byor/shared": "*",
+    "@trpc/server": "^10.27.1",
     "@types/better-sqlite3": "^7.6.4",
     "@types/lodash": "^4.14.194",
     "abitype": "^0.8.4",

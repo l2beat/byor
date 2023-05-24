@@ -1024,6 +1024,11 @@
   dependencies:
     antlr4ts "^0.5.0-alpha.4"
 
+"@trpc/server@^10.27.1":
+  version "10.27.1"
+  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-10.27.1.tgz#5a3e996c7ac83ab7a366f9517b66af1287bcf275"
+  integrity sha512-oMTNpei0+CAet0BuDdBE9cup0SseJAOlWRhWhcTAU05rETsJnzCA5DfNkf+aP3XiAM8rMJfrTfC0Z3aeADhHaA==
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
   resolved "https://registry.npmjs.org/@tsconfig/node10/-/node10-1.0.9.tgz"
