@@ -26,7 +26,7 @@ export class L1StateFetcher {
       this.contractAddress,
     )
     const calldata = await this.eventsToCallData(l1State)
-    const posters = this.eventsToPosters(l1State)
+    const posters = eventsToPosters(l1State)
 
     assert(
       l1State.length === posters.length,
@@ -61,8 +61,8 @@ export class L1StateFetcher {
 
     return decoded
   }
+}
 
-  private eventsToPosters(events: BatchAppendedLogsType): EthereumAddress[] {
-    return events.map((e) => EthereumAddress(e.args.sender))
-  }
+function eventsToPosters(events: BatchAppendedLogsType): EthereumAddress[] {
+  return events.map((e) => EthereumAddress(e.args.sender))
 }

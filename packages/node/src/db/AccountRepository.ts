@@ -15,9 +15,7 @@ export interface AccountRecord {
 export class AccountRepository extends BaseRepository {
   addOrUpdateMany(accounts: AccountRecord[]): void {
     const drizzle = this.drizzle()
-    const internalAccounts = accounts.map((acc) =>
-      AccountRepository.toInternalAccount(acc),
-    )
+    const internalAccounts = accounts.map((acc) => toInternalAccount(acc))
 
     drizzle.transaction((tx) => {
       internalAccounts.forEach((account) => {
@@ -38,7 +36,7 @@ export class AccountRepository extends BaseRepository {
       .select()
       .from(accountsSchema)
       .all()
-      .map((acc) => AccountRepository.fromInternalAccount(acc))
+      .map((acc) => fromInternalAccount(acc))
   }
 
   deleteAll(): void {
@@ -53,40 +51,38 @@ export class AccountRepository extends BaseRepository {
       .from(accountsSchema)
       .get().count
   }
+}
 
-  private static toInternalAccount(acc: AccountRecord): InternalAccountRecord {
-    // WARNING(radomski): This can fail very badly if the value represented
-    // by 'BigInt' is so big that the floating point nature of 'number'
-    // causes it to lose precision. This can happen when the value is
-    // bigger then Number.MAX_SAFE_INTEGER. drizzle-orm should support
-    // passing values as bigints into the query but it currently does
-    // not (see https://github.com/drizzle-team/drizzle-orm/issues/611).
-    // For real applications where the upper parts of the 64bit values
-    // are needed please consider removing drizzle-orm!
+function toInternalAccount(acc: AccountRecord): InternalAccountRecord {
+  // WARNING(radomski): This can fail very badly if the value represented
+  // by 'BigInt' is so big that the floating point nature of 'number'
+  // causes it to lose precision. This can happen when the value is
+  // bigger then Number.MAX_SAFE_INTEGER. drizzle-orm should support
+  // passing values as bigints into the query but it currently does
+  // not (see https://github.com/drizzle-team/drizzle-orm/issues/611).
+  // For real applications where the upper parts of the 64bit values
+  // are needed please consider removing drizzle-orm!
 
-    assert(
-      Unsigned64.toBigInt(acc.balance) <= BigInt(Number.MAX_SAFE_INTEGER),
-      'The Unsigned64 value is bigger than the biggest safely representable value',
-    )
-    assert(
-      Unsigned64.toBigInt(acc.nonce) <= BigInt(Number.MAX_SAFE_INTEGER),
-      'The Unsigned64 value is bigger than the biggest safely representable value',
-    )
+  assert(
+    Unsigned64.toBigInt(acc.balance) <= BigInt(Number.MAX_SAFE_INTEGER),
+    'The Unsigned64 value is bigger than the biggest safely representable value',
+  )
+  assert(
+    Unsigned64.toBigInt(acc.nonce) <= BigInt(Number.MAX_SAFE_INTEGER),
+    'The Unsigned64 value is bigger than the biggest safely representable value',
+  )
 
-    return {
-      address: acc.address.toString(),
-      balance: parseInt(acc.balance.toString(), 10),
-      nonce: parseInt(acc.nonce.toString(), 10),
-    }
+  return {
+    address: acc.address.toString(),
+    balance: parseInt(acc.balance.toString(), 10),
+    nonce: parseInt(acc.nonce.toString(), 10),
   }
+}
 
-  private static fromInternalAccount(
-    acc: InternalAccountRecord,
-  ): AccountRecord {
-    return {
-      address: EthereumAddress(acc.address),
-      balance: Unsigned64(acc.balance),
-      nonce: Unsigned64(acc.nonce),
-    }
+function fromInternalAccount(acc: InternalAccountRecord): AccountRecord {
+  return {
+    address: EthereumAddress(acc.address),
+    balance: Unsigned64(acc.balance),
+    nonce: Unsigned64(acc.nonce),
   }
 }
