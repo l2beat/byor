@@ -1,4 +1,4 @@
-import { deserializeBatch, EthereumAddress } from '@byor/shared'
+import { deserializeBatch, EthereumAddress, Logger } from '@byor/shared'
 import { zip } from 'lodash'
 
 import { AccountRepository } from './db/AccountRepository'
@@ -10,14 +10,22 @@ export class L1StateManager {
   constructor(
     private readonly accountRepository: AccountRepository,
     private readonly l1Fetcher: L1StateFetcher,
-  ) {}
+    private readonly logger: Logger,
+  ) {
+    this.logger = logger.for(this)
+  }
 
   async start(): Promise<void> {
+    this.logger.info('Starting')
+
     const eventState = await this.l1Fetcher.getWholeState()
     await this.apply(eventState)
   }
 
   private async apply(l1States: L1EventStateType[]): Promise<void> {
+    this.logger.debug('Applying events', {
+      eventCount: l1States.length,
+    })
     const batches = await Promise.all(
       l1States.map((state) => deserializeBatch(state.calldata)),
     )

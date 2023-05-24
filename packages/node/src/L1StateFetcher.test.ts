@@ -1,4 +1,4 @@
-import { EthereumAddress, Hex } from '@byor/shared'
+import { EthereumAddress, Hex, Logger } from '@byor/shared'
 import { expect, mockFn, mockObject } from 'earl'
 import { parseAbiItem } from 'viem'
 
@@ -25,7 +25,11 @@ describe(L1StateFetcher.name, () => {
             '0x96677ca200000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000006aabbccddeeff0000000000000000000000000000000000000000000000000000',
         }),
       })
-      const l1Fetcher = new L1StateFetcher(client, ctcContractAddress)
+      const l1Fetcher = new L1StateFetcher(
+        client,
+        ctcContractAddress,
+        Logger.SILENT,
+      )
 
       const result = await l1Fetcher.getWholeState()
 
@@ -59,7 +63,11 @@ describe(L1StateFetcher.name, () => {
             '0x96677ca200000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000',
         }),
       })
-      const l1Fetcher = new L1StateFetcher(client, ctcContractAddress)
+      const l1Fetcher = new L1StateFetcher(
+        client,
+        ctcContractAddress,
+        Logger.SILENT,
+      )
 
       const result = await l1Fetcher.getWholeState()
 
@@ -93,7 +101,11 @@ describe(L1StateFetcher.name, () => {
             '0x96677ca20000000000000000000000000000000000000000000000000000000000000020',
         }),
       })
-      const l1Fetcher = new L1StateFetcher(client, ctcContractAddress)
+      const l1Fetcher = new L1StateFetcher(
+        client,
+        ctcContractAddress,
+        Logger.SILENT,
+      )
 
       await expect(l1Fetcher.getWholeState).toBeRejected()
     })
@@ -115,7 +127,11 @@ describe(L1StateFetcher.name, () => {
           input: '0x96677ca2234567890',
         }),
       })
-      const l1Fetcher = new L1StateFetcher(client, ctcContractAddress)
+      const l1Fetcher = new L1StateFetcher(
+        client,
+        ctcContractAddress,
+        Logger.SILENT,
+      )
 
       await expect(l1Fetcher.getWholeState).toBeRejected()
     })

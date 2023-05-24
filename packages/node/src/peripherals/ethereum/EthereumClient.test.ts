@@ -1,4 +1,4 @@
-import { Hex } from '@byor/shared'
+import { Hex, Logger } from '@byor/shared'
 import { expect, mockFn, mockObject } from 'earl'
 import { parseAbiItem, PublicClient } from 'viem'
 
@@ -10,7 +10,7 @@ describe(EthereumClient.name, () => {
       const provider = mockObject<PublicClient>({
         getLogs: mockFn().returnsOnce([]),
       })
-      const ethereumClient = new EthereumClient(provider)
+      const ethereumClient = new EthereumClient(provider, Logger.SILENT)
       const eventAbi = parseAbiItem('event BatchAppended(address sender)')
 
       await ethereumClient.getLogsSinceGenesis(eventAbi, Hex('0x1234'))
