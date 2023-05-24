@@ -1,9 +1,9 @@
+import { EthereumAddress } from '@byor/shared'
 import { AnyRouter } from '@trpc/server'
+import { z } from 'zod'
 
 import { AccountRepository } from '../../db/AccountRepository'
 import { publicProcedure, router } from '../trpc/trpc'
-import { z } from 'zod'
-import { EthereumAddress } from '@byor/shared'
 
 export function createAccountRouter(
   accountRepository: AccountRepository,
@@ -11,7 +11,7 @@ export function createAccountRouter(
   return router({
     getState: publicProcedure
       .input(z.string().refine(EthereumAddress.check))
-      .query(async (opts) => {
+      .query((opts) => {
         const { input } = opts
         const account = accountRepository.getByAddressInsertOnEmpty(
           EthereumAddress(input),

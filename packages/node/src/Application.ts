@@ -1,6 +1,8 @@
 import { Logger, LogLevel } from '@byor/shared'
 import { createPublicClient, http } from 'viem'
 
+import { ApiServer } from './api/ApiServer'
+import { createAccountRouter } from './api/routers/AccountRouter'
 import { Config, createChain } from './config'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
@@ -8,8 +10,6 @@ import { GenesisStateLoader } from './GenesisStateLoader'
 import { L1StateFetcher } from './L1StateFetcher'
 import { L1StateManager } from './L1StateManager'
 import { EthereumClient } from './peripherals/ethereum/EthereumClient'
-import { ApiServer } from './api/ApiServer'
-import { createAccountRouter } from './api/routers/AccountRouter'
 
 export class Application {
   start: () => Promise<void>
@@ -38,7 +38,9 @@ export class Application {
     )
     const l1Manager = new L1StateManager(accountRepository, l1Fetcher, logger)
 
-    const routers = [createAccountRouter(accountRepository)]
+    const routers = {
+      accounts: createAccountRouter(accountRepository),
+    }
 
     const apiServer = new ApiServer(config.rpcServePort, logger, routers)
 

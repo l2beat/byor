@@ -1,18 +1,18 @@
 import { Logger } from '@byor/shared'
-import { AnyRouter } from '@trpc/server'
+import { AnyRouter, ProcedureRouterRecord } from '@trpc/server'
 import { createHTTPServer } from '@trpc/server/adapters/standalone'
 
-import { mergeRouters } from './trpc/trpc'
+import { router } from './trpc/trpc'
 
 export class ApiServer {
   private readonly router: AnyRouter
   constructor(
     private readonly port: number,
     private readonly logger: Logger,
-    routers: AnyRouter[],
+    routers: ProcedureRouterRecord,
   ) {
     this.logger = logger.for(this)
-    this.router = mergeRouters(...routers)
+    this.router = router(routers)
   }
 
   listen(): Promise<void> {

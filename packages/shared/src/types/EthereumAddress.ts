@@ -13,7 +13,7 @@ export function EthereumAddress(value: string): EthereumAddress {
   }
 }
 
-EthereumAddress.check = function check(value: string) {
+EthereumAddress.check = function check(value: string): boolean {
   try {
     return EthereumAddress(value).toString() === value
   } catch {

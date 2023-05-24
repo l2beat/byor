@@ -41,14 +41,17 @@ export class AccountRepository extends BaseRepository {
 
   getByAddressInsertOnEmpty(address: EthereumAddress): AccountRecord {
     const drizzle = this.drizzle()
-    let res = drizzle
+    const res = drizzle
       .select()
       .from(accountsSchema)
       .where(eq(accountsSchema.address, address.toString()))
       .get()
 
+    // NOTE(radomski): Even though the inffered type says
+    // that it can not be undefined it can
+    // eslint-disable-next-line
     if (!res) {
-      let res = {
+      const res = {
         address,
         balance: Unsigned64(0n),
         nonce: Unsigned64(0n),
