@@ -18,7 +18,7 @@ export function createTransactionRouter(
         } catch (e) {
           throw new TRPCError({
             code: 'BAD_REQUEST',
-            message: 'Invalid batch data',
+            message: `Invalid batch data ${e}`,
             cause: e,
           })
         }

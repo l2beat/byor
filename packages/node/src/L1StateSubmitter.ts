@@ -14,6 +14,7 @@ export class L1StateSubmitter {
   }
 
   start(): void {
+    this.logger.info('Starting')
     setInterval(() => {
       this.mempoolSubmit().catch((err) => {
         this.logger.error(err)
@@ -22,11 +23,14 @@ export class L1StateSubmitter {
   }
 
   private async mempoolSubmit(): Promise<void> {
-    this.logger.info('Submitting mempool state to L1')
     const transactions = this.mempool.getTransactionsInPool()
-    const batch = transactions.reduce((l, r) =>
-      Hex(Hex.removePrefix(l) + Hex.removePrefix(r)),
-    )
-    await this.client.writeToCTCContract(batch)
+    this.logger.info('Submitting mempool state to L1', {transactionsLength: transactions.length})
+    this.mempool.empty()
+    if (transactions.length > 0) {
+      const batch = transactions.reduce((l, r) =>
+        Hex(Hex.removePrefix(l) + Hex.removePrefix(r)),
+      )
+      await this.client.writeToCTCContract(batch)
+    }
   }
 }
