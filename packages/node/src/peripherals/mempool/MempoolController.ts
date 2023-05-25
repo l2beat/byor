@@ -1,15 +1,25 @@
 import { deserializeBatch, EthereumAddress, Hex, Logger } from '@byor/shared'
 
 import { executeBatch, StateMap } from '../../executeBatch'
+import {
+  L1StateManager,
+  TRANSACTIONS_COMMITED_EVENT,
+} from '../../L1StateManager'
 import { Mempool } from './Mempool'
 
 export class MempoolController {
+  private state: StateMap
   constructor(
-    private state: StateMap,
+    private readonly l1StateManager: L1StateManager,
     private readonly mempool: Mempool,
     private readonly logger: Logger,
   ) {
     this.logger = logger.for(this)
+    this.state = {}
+    this.l1StateManager.on(TRANSACTIONS_COMMITED_EVENT, () => {
+      this.state = this.l1StateManager.getState()
+      this.mempool.empty()
+    })
   }
 
   async tryToAdd(batchBytes: Hex): Promise<void> {

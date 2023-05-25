@@ -2,9 +2,10 @@ import { Logger, LogLevel } from '@byor/shared'
 import {
   createPublicClient,
   createWalletClient,
-  http,
   Hex as ViemHex,
+  http,
 } from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
 
 import { ApiServer } from './api/ApiServer'
 import { createAccountRouter } from './api/routers/AccountRouter'
@@ -15,11 +16,9 @@ import { Database } from './db/Database'
 import { GenesisStateLoader } from './GenesisStateLoader'
 import { L1StateFetcher } from './L1StateFetcher'
 import { L1StateManager } from './L1StateManager'
-import { EthereumClient } from './peripherals/ethereum/EthereumClient'
+import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from './peripherals/mempool/Mempool'
 import { MempoolController } from './peripherals/mempool/MempoolController'
-import { privateKeyToAccount } from 'viem/accounts'
-import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 
 export class Application {
   start: () => Promise<void>

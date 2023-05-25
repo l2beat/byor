@@ -1,7 +1,7 @@
 import { Hex, Logger } from '@byor/shared'
-import { Mempool } from './peripherals/mempool/Mempool'
-import { abi } from './config/abi'
+
 import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
+import { Mempool } from './peripherals/mempool/Mempool'
 
 export class L1StateSubmitter {
   constructor(
@@ -11,8 +11,13 @@ export class L1StateSubmitter {
     private readonly logger: Logger,
   ) {
     this.logger = logger.for(this)
-    setInterval(async () => {
-      await this.mempoolSubmit()
+  }
+
+  start(): void {
+    setInterval(() => {
+      this.mempoolSubmit().catch((err) => {
+        this.logger.error(err)
+      })
     }, this.flushPeriodSec * 1000)
   }
 

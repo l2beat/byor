@@ -1,4 +1,4 @@
-import { Hex, Logger, Transaction } from '@byor/shared'
+import { Hex, Logger } from '@byor/shared'
 
 export class Mempool {
   private pool: Hex[]
