@@ -16,7 +16,7 @@ describe('EthereumAddress', () => {
 
   it('transformes a valid address to EIP-1191', async () => {
     const address: EthereumAddress = EthereumAddress(
-      '0xa35cdbd9a448b82cdec0767b687ad3fa543613df'
+      '0xa35cdbd9a448b82cdec0767b687ad3fa543613df',
     )
 
     expect(address).toBeA(String)

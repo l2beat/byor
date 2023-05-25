@@ -8,9 +8,9 @@ import {
   modelTxSerializedHex1,
   modelTxSerializedHex2,
 } from './test/modelTestConstats'
+import { EthereumAddress } from './types'
 import { Hex } from './types/Hex'
 import { Transaction } from './types/Transactions'
-import { EthereumAddress } from './types'
 
 describe('serializeBatch', () => {
   it('serializes a single valid transaction', async () => {
