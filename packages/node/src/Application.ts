@@ -53,11 +53,21 @@ export class Application {
       config.ctcContractAddress,
       logger,
     )
-    const l1Manager = new L1StateManager(accountRepository, l1Fetcher, logger)
+    const l1Manager = new L1StateManager(
+      config.probePeriodSec,
+      accountRepository,
+      l1Fetcher,
+      logger,
+    )
 
     const mempool = new Mempool(logger)
     const mempoolController = new MempoolController(l1Manager, mempool, logger)
-    const l1Submitter = new L1StateSubmitter(3, ethereumClient, mempool, logger)
+    const l1Submitter = new L1StateSubmitter(
+      config.flushPeriodSec,
+      ethereumClient,
+      mempool,
+      logger,
+    )
 
     const routers = {
       accounts: createAccountRouter(accountRepository),

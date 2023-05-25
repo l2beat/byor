@@ -38,6 +38,7 @@ describe(L1StateManager.name, () => {
 
     let modelTx1SerializedHex: Hex
     let modelTx2SerializedHex: Hex
+    const PROBE_PERIOD_SEC = 1
 
     let time: InstalledClock
 
@@ -78,13 +79,14 @@ describe(L1StateManager.name, () => {
         ]),
       })
       const l1Manager = new L1StateManager(
+        PROBE_PERIOD_SEC,
         accountRepository,
         l1Fetcher,
         Logger.SILENT,
       )
 
       await l1Manager.start()
-      time.tick(3000)
+      time.tick(PROBE_PERIOD_SEC * 3000)
 
       expect(l1Fetcher.getWholeState).toHaveBeenCalledTimes(1)
       expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(3)
@@ -171,16 +173,17 @@ describe(L1StateManager.name, () => {
           ]),
       })
       const l1Manager = new L1StateManager(
+        PROBE_PERIOD_SEC,
         accountRepository,
         l1Fetcher,
         Logger.SILENT,
       )
 
       await l1Manager.start()
-      time.tick(1000)
-      time.tick(1000)
+      time.tick(PROBE_PERIOD_SEC * 1000)
+      time.tick(PROBE_PERIOD_SEC * 1000)
       await once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
-      time.tick(1000)
+      time.tick(PROBE_PERIOD_SEC * 1000)
 
       expect(l1Fetcher.getWholeState).toHaveBeenCalledTimes(1)
       expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(3)

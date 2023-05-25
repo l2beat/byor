@@ -10,13 +10,17 @@ import { L1StateFetcher } from './L1StateFetcher'
 export const TRANSACTIONS_COMMITED_EVENT = 'TRANSACTIONS_COMMITED_EVENT'
 
 export class L1StateManager extends EventEmitter {
+  private readonly probePeriodMs: number
+
   constructor(
+    probePeriodSec: number,
     private readonly accountRepository: AccountRepository,
     private readonly l1Fetcher: L1StateFetcher,
     private readonly logger: Logger,
   ) {
     super()
     this.logger = logger.for(this)
+    this.probePeriodMs = probePeriodSec * 1000
   }
 
   async start(): Promise<void> {
@@ -34,7 +38,7 @@ export class L1StateManager extends EventEmitter {
         .catch((err) => {
           this.logger.error(err)
         })
-    }, 1000)
+    }, this.probePeriodMs)
   }
 
   getState(): StateMap {

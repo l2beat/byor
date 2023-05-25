@@ -8,6 +8,8 @@ export * from './createChain'
 export type { Config }
 
 interface ConfigJSON {
+  PROBE_PERIOD_SEC: number
+  FLUSH_PERIOD_SEC: number
   RPC_URL: string
   CHAIN_ID: number
   DB_PATH: string
@@ -21,6 +23,8 @@ export function getConfig(configPath: string): Config {
   const configJson = JSON.parse(jsonContent) as ConfigJSON
 
   const config: Config = {
+    probePeriodSec: configJson.PROBE_PERIOD_SEC,
+    flushPeriodSec: configJson.FLUSH_PERIOD_SEC,
     rpcUrl: configJson.RPC_URL,
     chainId: configJson.CHAIN_ID,
     databasePath: configJson.DB_PATH,

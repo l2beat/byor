@@ -1,4 +1,6 @@
 {
+  "PROBE_PERIOD_SEC": 5,
+  "FLUSH_PERIOD_SEC": 10,
   "RPC_URL": "http://127.0.0.1:8545",
   "CHAIN_ID": 31337,
   "DB_PATH": "main.db",
