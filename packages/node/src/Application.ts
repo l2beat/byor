@@ -1,5 +1,10 @@
 import { Logger, LogLevel } from '@byor/shared'
-import { createPublicClient, http } from 'viem'
+import {
+  createPublicClient,
+  createWalletClient,
+  http,
+  Hex as ViemHex,
+} from 'viem'
 
 import { ApiServer } from './api/ApiServer'
 import { createAccountRouter } from './api/routers/AccountRouter'
@@ -13,6 +18,8 @@ import { L1StateManager } from './L1StateManager'
 import { EthereumClient } from './peripherals/ethereum/EthereumClient'
 import { Mempool } from './peripherals/mempool/Mempool'
 import { MempoolController } from './peripherals/mempool/MempoolController'
+import { privateKeyToAccount } from 'viem/accounts'
+import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 
 export class Application {
   start: () => Promise<void>
@@ -22,12 +29,24 @@ export class Application {
     const accountRepository = new AccountRepository(database)
     const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
 
-    const chain = createChain(config)
-    const provider = createPublicClient({
+    const chain = createChain(config.chainId, config.rpcUrl)
+    const publicProvider = createPublicClient({
       chain,
       transport: http(),
     })
-    const ethereumClient = new EthereumClient(provider, logger)
+    const privateProvider = createWalletClient({
+      chain,
+      account: privateKeyToAccount(
+        config.ctcContractAddress.toString() as ViemHex,
+      ),
+      transport: http(),
+    })
+    const ethereumClient = new EthereumPrivateClient(
+      privateProvider,
+      publicProvider,
+      config.ctcContractAddress,
+      logger,
+    )
 
     const genesisStateLoader = new GenesisStateLoader(
       config.genesisFilePath,

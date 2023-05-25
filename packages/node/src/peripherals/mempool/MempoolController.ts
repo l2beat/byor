@@ -16,7 +16,7 @@ export class MempoolController {
     this.logger.info('Trying to add a batch')
     const batch = await deserializeBatch(batchBytes)
     this.state = executeBatch(this.state, batch, EthereumAddress.ZERO)
-    this.mempool.add(batch)
+    this.mempool.add(batchBytes)
   }
 
   getState(): StateMap {
