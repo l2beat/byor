@@ -1,5 +1,5 @@
 import { assert, EthereumAddress, Unsigned64 } from '@byor/shared'
-import { InferModel, sql } from 'drizzle-orm'
+import { eq, InferModel, sql } from 'drizzle-orm'
 
 import { BaseRepository } from './BaseRepository'
 import { accountsSchema } from './schema'
@@ -37,6 +37,29 @@ export class AccountRepository extends BaseRepository {
       .from(accountsSchema)
       .all()
       .map((acc) => fromInternalAccount(acc))
+  }
+
+  getByAddressOrDefault(address: EthereumAddress): AccountRecord {
+    const drizzle = this.drizzle()
+    const res = drizzle
+      .select()
+      .from(accountsSchema)
+      .where(eq(accountsSchema.address, address.toString()))
+      .get()
+
+    // NOTE(radomski): Even though the inffered type says
+    // that it can not be undefined it can
+    // eslint-disable-next-line
+    if (!res) {
+      const res = {
+        address,
+        balance: Unsigned64(0n),
+        nonce: Unsigned64(0n),
+      }
+
+      return res
+    }
+    return fromInternalAccount(res)
   }
 
   deleteAll(): void {

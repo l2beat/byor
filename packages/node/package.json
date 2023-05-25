@@ -19,13 +19,16 @@
     "seeder": "node -r esbuild-register scripts/seeder"
   },
   "devDependencies": {
+    "@types/supertest": "^2.0.12",
     "drizzle-kit": "^0.17.6",
     "earl": "^1.1.0",
     "esbuild": "^0.17.18",
-    "esbuild-register": "^3.4.2"
+    "esbuild-register": "^3.4.2",
+    "supertest": "^6.3.3"
   },
   "dependencies": {
     "@byor/shared": "*",
+    "@trpc/server": "^10.27.1",
     "@types/better-sqlite3": "^7.6.4",
     "@types/lodash": "^4.14.194",
     "abitype": "^0.8.4",
@@ -33,6 +36,7 @@
     "cmd-ts": "^0.12.1",
     "drizzle-orm": "^0.25.4",
     "lodash": "^4.17.21",
-    "viem": "^0.3.22"
+    "viem": "^0.3.22",
+    "zod": "^3.21.4"
   }
 }

@@ -1,6 +1,8 @@
 import { Logger, LogLevel } from '@byor/shared'
 import { createPublicClient, http } from 'viem'
 
+import { ApiServer } from './api/ApiServer'
+import { createAccountRouter } from './api/routers/AccountRouter'
 import { Config, createChain } from './config'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
@@ -36,12 +38,19 @@ export class Application {
     )
     const l1Manager = new L1StateManager(accountRepository, l1Fetcher, logger)
 
+    const routers = {
+      accounts: createAccountRouter(accountRepository),
+    }
+
+    const apiServer = new ApiServer(config.rpcServePort, logger, routers)
+
     genesisStateLoader.apply()
 
     this.start = async (): Promise<void> => {
       logger.info('Starting...')
 
       await l1Manager.start()
+      apiServer.listen()
     }
   }
 }

@@ -6,4 +6,5 @@ export interface Config {
   readonly databasePath: string
   readonly ctcContractAddress: EthereumAddress
   readonly genesisFilePath: string
+  readonly rpcServePort: number
 }
