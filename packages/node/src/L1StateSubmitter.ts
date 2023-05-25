@@ -24,7 +24,9 @@ export class L1StateSubmitter {
 
   private async mempoolSubmit(): Promise<void> {
     const transactions = this.mempool.getTransactionsInPool()
-    this.logger.info('Submitting mempool state to L1', {transactionsLength: transactions.length})
+    this.logger.info('Submitting mempool state to L1', {
+      transactionsLength: transactions.length,
+    })
     this.mempool.empty()
     if (transactions.length > 0) {
       const batch = transactions.reduce((l, r) =>

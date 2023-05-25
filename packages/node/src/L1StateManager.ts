@@ -26,13 +26,14 @@ export class L1StateManager extends EventEmitter {
     await this.apply(eventState)
 
     setInterval(() => {
-        this.l1Fetcher.getNewState()
+      this.l1Fetcher
+        .getNewState()
         .then((eventState) => {
-            this.apply(eventState)
+          return this.apply(eventState)
         })
         .catch((err) => {
-        this.logger.error(err)
-      })
+          this.logger.error(err)
+        })
     }, 1000)
   }
 
@@ -50,9 +51,9 @@ export class L1StateManager extends EventEmitter {
   }
 
   private async apply(l1States: L1EventStateType[]): Promise<void> {
-      if (l1States.length === 0) {
-          return;
-      }
+    if (l1States.length === 0) {
+      return
+    }
 
     this.logger.debug('Applying events', {
       eventCount: l1States.length,
@@ -79,8 +80,6 @@ export class L1StateManager extends EventEmitter {
         }
       }),
     )
-
-    console.log(accountState)
 
     this.emit(TRANSACTIONS_COMMITED_EVENT)
   }

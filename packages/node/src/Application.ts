@@ -57,12 +57,7 @@ export class Application {
 
     const mempool = new Mempool(logger)
     const mempoolController = new MempoolController(l1Manager, mempool, logger)
-    const l1Submitter = new L1StateSubmitter(
-      3,
-      ethereumClient,
-      mempool,
-      logger,
-    )
+    const l1Submitter = new L1StateSubmitter(3, ethereumClient, mempool, logger)
 
     const routers = {
       accounts: createAccountRouter(accountRepository),

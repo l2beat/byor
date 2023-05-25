@@ -11,14 +11,14 @@ type EventAbiType = typeof eventAbi
 type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
 
 export class L1StateFetcher {
-    private lastFetchedBlock: bigint;
+  private lastFetchedBlock: bigint
   constructor(
     private readonly client: EthereumClient,
     private readonly contractAddress: EthereumAddress,
     private readonly logger: Logger,
   ) {
     this.logger = logger.for(this)
-        this.lastFetchedBlock = 0n;
+    this.lastFetchedBlock = 0n
   }
 
   async getWholeState(): Promise<L1EventStateType[]> {
@@ -41,10 +41,13 @@ export class L1StateFetcher {
       'The amount of calldata is not equal to the amount of poster address',
     )
 
-    for(const event of l1State) {
-        if(event.blockNumber)  {
-            this.lastFetchedBlock = this.lastFetchedBlock > event.blockNumber ? this.lastFetchedBlock : event.blockNumber;
-        }
+    for (const event of l1State) {
+      if (event.blockNumber) {
+        this.lastFetchedBlock =
+          this.lastFetchedBlock > event.blockNumber
+            ? this.lastFetchedBlock
+            : event.blockNumber
+      }
     }
 
     return zipWith(posters, calldata, (poster, calldata) => {
@@ -75,10 +78,13 @@ export class L1StateFetcher {
       'The amount of calldata is not equal to the amount of poster address',
     )
 
-    for(const event of l1State) {
-        if(event.blockNumber)  {
-            this.lastFetchedBlock = this.lastFetchedBlock > event.blockNumber ? this.lastFetchedBlock : event.blockNumber;
-        }
+    for (const event of l1State) {
+      if (event.blockNumber) {
+        this.lastFetchedBlock =
+          this.lastFetchedBlock > event.blockNumber
+            ? this.lastFetchedBlock
+            : event.blockNumber
+      }
     }
 
     return zipWith(posters, calldata, (poster, calldata) => {

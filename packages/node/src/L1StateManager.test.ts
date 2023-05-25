@@ -1,24 +1,69 @@
-import { EthereumAddress, Hex, Logger, Unsigned64 } from '@byor/shared'
+import {
+  EthereumAddress,
+  Hex,
+  Logger,
+  serializeAndSign,
+  Transaction,
+  Unsigned64,
+} from '@byor/shared'
+import { install, InstalledClock } from '@sinonjs/fake-timers'
 import { expect, mockFn, mockObject } from 'earl'
+import { once } from 'events'
+import { privateKeyToAccount } from 'viem/accounts'
 
 import { AccountRepository } from './db/AccountRepository'
 import { L1StateFetcher } from './L1StateFetcher'
-import { L1StateManager } from './L1StateManager'
+import { L1StateManager, TRANSACTIONS_COMMITED_EVENT } from './L1StateManager'
 
 describe(L1StateManager.name, () => {
   describe(L1StateManager.prototype.start.name, () => {
-    const modelTxSerializedHex = Hex(
-      '0x70997970C51812dc3A010C7d01b50e0d17dc79C8000000000000000a00000000000000010000000000000002950e2f5c8514196afc5ba38e0d10638d3f4061d6d0b62573ad47808587f92f9867d72774c53d2e64d4fcc6fb9f5526be2a93a68514109d0292c13656f481d0331b',
+    const modelAccount = privateKeyToAccount(
+      '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
     )
 
-    it('triggers the update since the genesis block and updates database with execution result', async () => {
+    const modelTx1: Transaction = {
+      from: EthereumAddress(modelAccount.address),
+      to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
+      value: Unsigned64(10),
+      nonce: Unsigned64(1),
+      fee: Unsigned64(2),
+    }
+    const modelTx2: Transaction = {
+      from: EthereumAddress(modelAccount.address),
+      to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
+      value: Unsigned64(10),
+      nonce: Unsigned64(2),
+      fee: Unsigned64(2),
+    }
+
+    let modelTx1SerializedHex: Hex
+    let modelTx2SerializedHex: Hex
+
+    let time: InstalledClock
+
+    beforeEach(async () => {
+      modelTx1SerializedHex = await serializeAndSign(modelTx1, modelAccount)
+      modelTx2SerializedHex = await serializeAndSign(modelTx2, modelAccount)
+
+      time = install()
+    })
+
+    afterEach(() => {
+      time.uninstall()
+    })
+
+    it('triggers the update since the genesis block and keeps on updating not emitting events', async () => {
       const l1Fetcher = mockObject<L1StateFetcher>({
         getWholeState: mockFn().returnsOnce([
           {
             poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
-            calldata: modelTxSerializedHex,
+            calldata: modelTx1SerializedHex,
           },
         ]),
+        getNewState: mockFn()
+          .returnsOnce(Promise.resolve([]))
+          .returnsOnce(Promise.resolve([]))
+          .returnsOnce(Promise.resolve([])),
       })
       const accountRepository = mockObject<AccountRepository>({
         addOrUpdateMany: mockFn().returnsOnce([]),
@@ -39,8 +84,10 @@ describe(L1StateManager.name, () => {
       )
 
       await l1Manager.start()
+      time.tick(3000)
 
       expect(l1Fetcher.getWholeState).toHaveBeenCalledTimes(1)
+      expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(3)
       expect(accountRepository.getAll).toHaveBeenCalledTimes(1)
       expect(accountRepository.addOrUpdateMany).toHaveBeenOnlyCalledWith([
         {
@@ -62,6 +109,126 @@ describe(L1StateManager.name, () => {
             '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
           ),
           balance: Unsigned64(10),
+          nonce: Unsigned64(0),
+        },
+      ])
+    })
+
+    it('updates since the genesis and keeps on updating emitting events after new calldata', async () => {
+      const l1Fetcher = mockObject<L1StateFetcher>({
+        getWholeState: mockFn().returnsOnce([
+          {
+            poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+            calldata: modelTx1SerializedHex,
+          },
+        ]),
+        getNewState: mockFn()
+          .returnsOnce(Promise.resolve([]))
+          .returnsOnce(
+            Promise.resolve([
+              {
+                poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+                calldata: modelTx2SerializedHex,
+              },
+            ]),
+          )
+          .returnsOnce(Promise.resolve([])),
+      })
+      const accountRepository = mockObject<AccountRepository>({
+        addOrUpdateMany: mockFn().returns([]),
+        getAll: mockFn()
+          .returnsOnce([
+            {
+              address: EthereumAddress(
+                '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+              ),
+              balance: Unsigned64(1000),
+              nonce: Unsigned64(0),
+            },
+          ])
+          .returnsOnce([
+            {
+              address: EthereumAddress(
+                '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+              ),
+              balance: Unsigned64(988),
+              nonce: Unsigned64(1),
+            },
+            {
+              address: EthereumAddress(
+                '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+              ),
+              balance: Unsigned64(2),
+              nonce: Unsigned64(0),
+            },
+            {
+              address: EthereumAddress(
+                '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+              ),
+              balance: Unsigned64(10),
+              nonce: Unsigned64(0),
+            },
+          ]),
+      })
+      const l1Manager = new L1StateManager(
+        accountRepository,
+        l1Fetcher,
+        Logger.SILENT,
+      )
+
+      await l1Manager.start()
+      time.tick(1000)
+      time.tick(1000)
+      await once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
+      time.tick(1000)
+
+      expect(l1Fetcher.getWholeState).toHaveBeenCalledTimes(1)
+      expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(3)
+      expect(accountRepository.getAll).toHaveBeenCalledTimes(2)
+      expect(accountRepository.addOrUpdateMany).toHaveBeenCalledTimes(2)
+      expect(accountRepository.addOrUpdateMany).toHaveBeenCalledWith([
+        {
+          address: EthereumAddress(
+            '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+          ),
+          balance: Unsigned64(988),
+          nonce: Unsigned64(1),
+        },
+        {
+          address: EthereumAddress(
+            '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+          ),
+          balance: Unsigned64(2),
+          nonce: Unsigned64(0),
+        },
+        {
+          address: EthereumAddress(
+            '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+          ),
+          balance: Unsigned64(10),
+          nonce: Unsigned64(0),
+        },
+      ])
+      expect(accountRepository.addOrUpdateMany).toHaveBeenCalledWith([
+        {
+          address: EthereumAddress(
+            '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+          ),
+          balance: Unsigned64(976),
+          nonce: Unsigned64(2),
+        },
+        {
+          address: EthereumAddress(
+            '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+          ),
+          balance: Unsigned64(4),
+          nonce: Unsigned64(0),
+        },
+        {
+          address: EthereumAddress(
+            '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+          ),
+          balance: Unsigned64(20),
           nonce: Unsigned64(0),
         },
       ])
