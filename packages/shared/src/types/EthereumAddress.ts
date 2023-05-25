@@ -1,4 +1,4 @@
-import { isAddress } from 'viem'
+import { getAddress, isAddress } from 'viem'
 
 import { Hex } from './Hex'
 
@@ -7,7 +7,7 @@ export interface EthereumAddress extends String {
 }
 export function EthereumAddress(value: string): EthereumAddress {
   if (isAddress(value)) {
-    return value as unknown as EthereumAddress
+    return getAddress(value) as unknown as EthereumAddress
   } else {
     throw new Error(`Invalid Ethereum address ${value}`)
   }
