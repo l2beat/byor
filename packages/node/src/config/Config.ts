@@ -1,4 +1,4 @@
-import { EthereumAddress } from '@byor/shared'
+import { EthereumAddress, Hex } from '@byor/shared'
 
 export interface Config {
   readonly probePeriodSec: number
@@ -6,6 +6,7 @@ export interface Config {
   readonly rpcUrl: string
   readonly chainId: number
   readonly databasePath: string
+  readonly privateKey: Hex
   readonly ctcContractAddress: EthereumAddress
   readonly genesisFilePath: string
   readonly rpcServePort: number

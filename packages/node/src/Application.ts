@@ -1,5 +1,10 @@
 import { Logger, LogLevel } from '@byor/shared'
-import { createPublicClient, createWalletClient, http } from 'viem'
+import {
+  createPublicClient,
+  createWalletClient,
+  Hex as ViemHex,
+  http,
+} from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
 import { ApiServer } from './api/ApiServer'
@@ -31,9 +36,7 @@ export class Application {
     })
     const privateProvider = createWalletClient({
       chain,
-      account: privateKeyToAccount(
-        '0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a',
-      ),
+      account: privateKeyToAccount(config.privateKey.toString() as ViemHex),
       transport: http(),
     })
     const ethereumClient = new EthereumPrivateClient(
