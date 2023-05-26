@@ -26,6 +26,10 @@ export function Hex(value: bigint | number | string): Hex {
   }
 }
 
+Hex.concat = function concat(a: Hex, b: Hex): Hex {
+  return Hex(Hex.removePrefix(a) + Hex.removePrefix(b))
+}
+
 Hex.toString = function toString(a: Hex): string {
   return a as unknown as string
 }

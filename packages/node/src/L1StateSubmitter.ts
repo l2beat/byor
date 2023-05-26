@@ -29,9 +29,7 @@ export class L1StateSubmitter {
     })
     this.mempool.empty()
     if (transactions.length > 0) {
-      const batch = transactions.reduce((l, r) =>
-        Hex(Hex.removePrefix(l) + Hex.removePrefix(r)),
-      )
+      const batch = transactions.reduce((l, r) => Hex.concat(l, r))
       await this.client.writeToCTCContract(batch)
     }
   }

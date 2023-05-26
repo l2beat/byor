@@ -62,4 +62,25 @@ describe('Hex', () => {
       Hex('0xdeadcafebabebeefabacadaba0987foo321234567890'),
     ).toThrow()
   })
+
+  describe(Hex.concat.name, () => {
+    it('should concat two valid Hex objects', async () => {
+      expect(Hex.concat(Hex('0xabaaba'), Hex('0xebeebe'))).toEqual(
+        Hex('0xabaabaebeebe'),
+      )
+      expect(Hex.concat(Hex('0xebeebe'), Hex('0xabaaba'))).toEqual(
+        Hex('0xebeebeabaaba'),
+      )
+    })
+
+    it('should concat one valid and one empty Hex object', async () => {
+      expect(Hex.concat(Hex('0xabaaba'), Hex(''))).toEqual(Hex('0xabaaba0'))
+      expect(Hex.concat(Hex(''), Hex('0xebeebe'))).toEqual(Hex('0x0ebeebe'))
+    })
+
+    it('should concat two empty Hex objects', async () => {
+      expect(Hex.concat(Hex(''), Hex(''))).toEqual(Hex('0x00'))
+      expect(Hex.concat(Hex(''), Hex(''))).toEqual(Hex('0x00'))
+    })
+  })
 })

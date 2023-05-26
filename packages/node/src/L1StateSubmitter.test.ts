@@ -88,10 +88,7 @@ describe(L1StateSubmitter.name, () => {
       )
       expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
         3,
-        Hex(
-          Hex.removePrefix(modelTx1SerializedHex) +
-            Hex.removePrefix(modelTx2SerializedHex),
-        ),
+        Hex.concat(modelTx1SerializedHex, modelTx2SerializedHex),
       )
     })
 
@@ -124,10 +121,7 @@ describe(L1StateSubmitter.name, () => {
       )
       expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
         2,
-        Hex(
-          Hex.removePrefix(modelTx1SerializedHex) +
-            Hex.removePrefix(modelTx2SerializedHex),
-        ),
+        Hex.concat(modelTx1SerializedHex, modelTx2SerializedHex),
       )
     })
   })

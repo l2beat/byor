@@ -243,10 +243,7 @@ describe(MempoolController.name, () => {
         mempool,
         Logger.SILENT,
       )
-      const batch = Hex(
-        Hex.removePrefix(modelTx1SerializedHex) +
-          Hex.removePrefix(modelTx2SerializedHex),
-      )
+      const batch = Hex.concat(modelTx1SerializedHex, modelTx2SerializedHex)
 
       await mempoolController.tryToAdd(batch)
 
