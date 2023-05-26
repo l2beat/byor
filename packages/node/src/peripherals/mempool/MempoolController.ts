@@ -1,4 +1,5 @@
 import { deserializeBatch, EthereumAddress, Hex, Logger } from '@byor/shared'
+import { cloneDeep } from 'lodash'
 
 import { executeBatch, StateMap } from '../../executeBatch'
 import {
@@ -25,7 +26,11 @@ export class MempoolController {
   async tryToAdd(batchBytes: Hex): Promise<void> {
     this.logger.info('Trying to add a batch')
     const batch = await deserializeBatch(batchBytes)
-    this.state = executeBatch(this.state, batch, EthereumAddress.ZERO)
+    this.state = executeBatch(
+      cloneDeep(this.state),
+      batch,
+      EthereumAddress.ZERO,
+    )
     this.mempool.add(batchBytes)
   }
 
