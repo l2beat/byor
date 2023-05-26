@@ -42,10 +42,12 @@ describe(L1StateManager.name, () => {
 
     let time: InstalledClock
 
-    beforeEach(async () => {
+    before(async () => {
       modelTx1SerializedHex = await serializeAndSign(modelTx1, modelAccount)
       modelTx2SerializedHex = await serializeAndSign(modelTx2, modelAccount)
+    })
 
+    beforeEach(async () => {
       time = install()
     })
 

@@ -15,19 +15,19 @@ import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateCli
 import { Mempool } from './peripherals/mempool/Mempool'
 
 describe(L1StateSubmitter.name, () => {
-  const modelAccount1 = privateKeyToAccount(
+  const modelAccount = privateKeyToAccount(
     '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
   )
 
   const modelTx1: Transaction = {
-    from: EthereumAddress(modelAccount1.address),
+    from: EthereumAddress(modelAccount.address),
     to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
     value: Unsigned64(10),
     nonce: Unsigned64(1),
     fee: Unsigned64(2),
   }
   const modelTx2: Transaction = {
-    from: EthereumAddress(modelAccount1.address),
+    from: EthereumAddress(modelAccount.address),
     to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
     value: Unsigned64(10),
     nonce: Unsigned64(2),
@@ -40,8 +40,8 @@ describe(L1StateSubmitter.name, () => {
   let time: InstalledClock
 
   before(async () => {
-    modelTx1SerializedHex = await serializeAndSign(modelTx1, modelAccount1)
-    modelTx2SerializedHex = await serializeAndSign(modelTx2, modelAccount1)
+    modelTx1SerializedHex = await serializeAndSign(modelTx1, modelAccount)
+    modelTx2SerializedHex = await serializeAndSign(modelTx2, modelAccount)
   })
 
   beforeEach(async () => {

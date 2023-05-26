@@ -49,7 +49,7 @@ describe(MempoolController.name, () => {
     let modelTx2SerializedHex: Hex
     let modelTx3SerializedHex: Hex
 
-    beforeEach(async () => {
+    before(async () => {
       modelTx1SerializedHex = await serializeAndSign(modelTx1, modelAccount1)
       modelTx2SerializedHex = await serializeAndSign(modelTx2, modelAccount1)
       modelTx3SerializedHex = await serializeAndSign(modelTx3, modelAccount2)
