@@ -13,7 +13,7 @@ describe(Mempool.name, () => {
       expect(mempool.getTransactionsInPool()).toEqual([Hex('0x123456')])
     })
 
-    it('adds multiple bytes arrays', () => {
+    it('adds multiple byte arrays', () => {
       const mempool = new Mempool(Logger.SILENT)
 
       mempool.add(Hex('0x123456'))

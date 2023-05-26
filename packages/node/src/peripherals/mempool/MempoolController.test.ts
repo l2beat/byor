@@ -107,7 +107,6 @@ describe(MempoolController.name, () => {
       expect(mempool.add).toHaveBeenCalledWith(modelTx1SerializedHex)
       expect(mempool.add).toHaveBeenCalledWith(modelTx2SerializedHex)
       expect(mempool.empty).toHaveBeenCalledTimes(2)
-      console.log('tests end')
       expect(mempoolController.getState()).toEqual({
         '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
           balance: Unsigned64(76n),
