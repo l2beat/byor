@@ -236,5 +236,108 @@ describe(L1StateManager.name, () => {
         },
       ])
     })
+
+    it('updates since the genesis and while updating does not apply error data', async () => {
+      const l1Fetcher = mockObject<L1StateFetcher>({
+        getWholeState: mockFn().returnsOnce([
+          {
+            poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+            calldata: modelTx1SerializedHex,
+          },
+        ]),
+        getNewState: mockFn()
+          .returnsOnce(
+            Promise.resolve([
+              {
+                poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+                calldata: '0x1234',
+              },
+            ]),
+          )
+          .returnsOnce(
+            Promise.resolve([
+              {
+                poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+                calldata: modelTx2SerializedHex,
+              },
+            ]),
+          ),
+      })
+      const accountRepository = mockObject<AccountRepository>({
+        addOrUpdateMany: mockFn().returns([]),
+        getAll: mockFn()
+          .returnsOnce([
+            {
+              address: EthereumAddress(
+                '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+              ),
+              balance: Unsigned64(1000),
+              nonce: Unsigned64(0),
+            },
+          ])
+          .returnsOnce([
+            {
+              address: EthereumAddress(
+                '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+              ),
+              balance: Unsigned64(988),
+              nonce: Unsigned64(1),
+            },
+            {
+              address: EthereumAddress(
+                '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+              ),
+              balance: Unsigned64(2),
+              nonce: Unsigned64(0),
+            },
+            {
+              address: EthereumAddress(
+                '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+              ),
+              balance: Unsigned64(10),
+              nonce: Unsigned64(0),
+            },
+          ]),
+      })
+      const l1Manager = new L1StateManager(
+        PROBE_PERIOD_SEC,
+        accountRepository,
+        l1Fetcher,
+        Logger.SILENT,
+      )
+
+      await l1Manager.start()
+      time.tick(PROBE_PERIOD_SEC * 1000)
+      time.tick(PROBE_PERIOD_SEC * 1000)
+      await once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
+
+      expect(l1Fetcher.getWholeState).toHaveBeenCalledTimes(1)
+      expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(2)
+      expect(accountRepository.getAll).toHaveBeenCalledTimes(2)
+      expect(accountRepository.addOrUpdateMany).toHaveBeenCalledTimes(2)
+      expect(accountRepository.addOrUpdateMany).toHaveBeenCalledWith([
+        {
+          address: EthereumAddress(
+            '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+          ),
+          balance: Unsigned64(988),
+          nonce: Unsigned64(1),
+        },
+        {
+          address: EthereumAddress(
+            '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+          ),
+          balance: Unsigned64(2),
+          nonce: Unsigned64(0),
+        },
+        {
+          address: EthereumAddress(
+            '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+          ),
+          balance: Unsigned64(10),
+          nonce: Unsigned64(0),
+        },
+      ])
+    })
   })
 })
