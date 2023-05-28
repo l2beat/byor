@@ -34,13 +34,13 @@ export class Application {
       chain,
       transport: http(),
     })
-    const privateProvider = createWalletClient({
+    const signer = createWalletClient({
       chain,
       account: privateKeyToAccount(config.privateKey.toString() as ViemHex),
       transport: http(),
     })
     const ethereumClient = new EthereumPrivateClient(
-      privateProvider,
+      signer,
       publicProvider,
       config.ctcContractAddress,
       logger,
