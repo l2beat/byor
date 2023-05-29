@@ -65,6 +65,7 @@ export class Application {
     const mempool = new Mempool(logger)
     const l1Submitter = new L1StateSubmitter(
       config.flushPeriodSec,
+      l1Manager,
       ethereumClient,
       mempool,
       logger,
