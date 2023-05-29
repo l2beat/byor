@@ -19,7 +19,6 @@ import { L1StateManager } from './L1StateManager'
 import { L1StateSubmitter } from './L1StateSubmitter'
 import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from './peripherals/mempool/Mempool'
-import { MempoolController } from './peripherals/mempool/MempoolController'
 
 export class Application {
   start: () => Promise<void>
@@ -64,7 +63,6 @@ export class Application {
     )
 
     const mempool = new Mempool(logger)
-    const mempoolController = new MempoolController(l1Manager, mempool, logger)
     const l1Submitter = new L1StateSubmitter(
       config.flushPeriodSec,
       ethereumClient,
@@ -74,7 +72,7 @@ export class Application {
 
     const routers = {
       accounts: createAccountRouter(accountRepository),
-      transactions: createTransactionRouter(mempoolController),
+      transactions: createTransactionRouter(mempool),
     }
 
     const apiServer = new ApiServer(config.rpcServePort, logger, routers)

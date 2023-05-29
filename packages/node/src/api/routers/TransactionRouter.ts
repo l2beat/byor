@@ -1,12 +1,12 @@
-import { branded, Hex } from '@byor/shared'
+import { branded, deserializeBatch, Hex } from '@byor/shared'
 import { AnyRouter, TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
-import { MempoolController } from '../../peripherals/mempool/MempoolController'
+import { Mempool } from '../../peripherals/mempool/Mempool'
 import { publicProcedure, router } from '../trpc'
 
 export function createTransactionRouter(
-  mempoolController: MempoolController,
+  transactionMempool: Mempool,
 ): AnyRouter {
   return router({
     submit: publicProcedure
@@ -14,7 +14,8 @@ export function createTransactionRouter(
       .mutation(async (opts) => {
         const { input } = opts
         try {
-          await mempoolController.tryToAdd(input)
+          await deserializeBatch(input) // Validate bytes
+          transactionMempool.add(input)
         } catch (e) {
           throw new TRPCError({
             code: 'BAD_REQUEST',
