@@ -46,7 +46,9 @@ export class MempoolController {
         try {
           await this.tryToAdd(tx)
         } catch (err) {
-          this.logger.error(err)
+          this.logger.warn(
+            'Transaction from the mempool cannot be re-added after state update',
+          )
         }
       }
     }
