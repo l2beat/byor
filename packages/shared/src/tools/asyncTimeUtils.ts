@@ -1,6 +1,6 @@
 import { Logger } from './Logger'
 
-async function delay(timeoutPeriodMs: number): Promise<void> {
+export async function delay(timeoutPeriodMs: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, timeoutPeriodMs))
 }
 
