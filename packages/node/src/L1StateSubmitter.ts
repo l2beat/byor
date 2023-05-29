@@ -16,13 +16,11 @@ export class L1StateSubmitter {
   start(): void {
     this.logger.info('Starting')
     setIntervalAsync(
-      () => {
-        return this.mempoolSubmit()
-      },
+      () => this.mempoolSubmit(),
       this.flushPeriodSec * 1000,
       this.logger,
-    ).catch((err) => {
-      this.logger.error(err)
+    ).catch((err: Error) => {
+      this.logger.warn('Failed to submit batch to L1', { error: err.message })
     })
   }
 
