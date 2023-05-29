@@ -3,6 +3,7 @@ import {
   EthereumAddress,
   Logger,
   setIntervalAsync,
+  unreachableCodePath,
 } from '@byor/shared'
 import { zip } from 'lodash'
 import { EventEmitter } from 'stream'
@@ -41,8 +42,8 @@ export class L1StateManager extends EventEmitter {
       },
       this.probePeriodMs,
       this.logger,
-    ).catch((err) => {
-      this.logger.error(err)
+    ).catch((_) => {
+      unreachableCodePath()
     })
   }
 
