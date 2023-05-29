@@ -88,7 +88,7 @@ describe(L1StateManager.name, () => {
       )
 
       await l1Manager.start()
-      time.tick(PROBE_PERIOD_SEC * 3000)
+      await time.tickAsync(PROBE_PERIOD_SEC * 3000)
 
       expect(l1Fetcher.getWholeState).toHaveBeenCalledTimes(1)
       expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(3)
@@ -181,11 +181,14 @@ describe(L1StateManager.name, () => {
         Logger.SILENT,
       )
 
+      let emitPromise = once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
       await l1Manager.start()
-      time.tick(PROBE_PERIOD_SEC * 1000)
-      time.tick(PROBE_PERIOD_SEC * 1000)
-      await once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
-      time.tick(PROBE_PERIOD_SEC * 1000)
+      await emitPromise
+      await time.tickAsync(PROBE_PERIOD_SEC * 1000)
+      emitPromise = once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
+      await time.tickAsync(PROBE_PERIOD_SEC * 1000)
+      await emitPromise
+      await time.tickAsync(PROBE_PERIOD_SEC * 1000)
 
       expect(l1Fetcher.getWholeState).toHaveBeenCalledTimes(1)
       expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(3)
@@ -308,10 +311,13 @@ describe(L1StateManager.name, () => {
         Logger.SILENT,
       )
 
+      let emitPromise = once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
       await l1Manager.start()
-      time.tick(PROBE_PERIOD_SEC * 1000)
-      time.tick(PROBE_PERIOD_SEC * 1000)
-      await once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
+      await emitPromise
+      await time.tickAsync(PROBE_PERIOD_SEC * 1000)
+      emitPromise = once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
+      await time.tickAsync(PROBE_PERIOD_SEC * 1000)
+      await emitPromise
 
       expect(l1Fetcher.getWholeState).toHaveBeenCalledTimes(1)
       expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(2)

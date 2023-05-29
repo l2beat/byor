@@ -1,4 +1,9 @@
-import { deserializeBatch, EthereumAddress, Logger } from '@byor/shared'
+import {
+  deserializeBatch,
+  EthereumAddress,
+  Logger,
+  setIntervalAsync,
+} from '@byor/shared'
 import { zip } from 'lodash'
 import { EventEmitter } from 'stream'
 
@@ -29,16 +34,16 @@ export class L1StateManager extends EventEmitter {
     const eventState = await this.l1Fetcher.getWholeState()
     await this.apply(eventState)
 
-    setInterval(() => {
-      this.l1Fetcher
-        .getNewState()
-        .then((eventState) => {
-          return this.apply(eventState)
-        })
-        .catch((err) => {
-          this.logger.error(err)
-        })
-    }, this.probePeriodMs)
+    setIntervalAsync(
+      async () => {
+        const eventState = await this.l1Fetcher.getNewState()
+        await this.apply(eventState)
+      },
+      this.probePeriodMs,
+      this.logger,
+    ).catch((err) => {
+      this.logger.error(err)
+    })
   }
 
   getState(): StateMap {
@@ -65,7 +70,6 @@ export class L1StateManager extends EventEmitter {
     const batches = await Promise.all(
       l1States.map((state) => deserializeBatch(state.calldata)),
     )
-
     let accountState = this.getState()
 
     for (const [batch, state] of zip(batches, l1States)) {

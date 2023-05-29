@@ -73,7 +73,7 @@ describe(L1StateSubmitter.name, () => {
         Logger.SILENT,
       )
       l1Submitter.start()
-      time.tick(FLUSH_PERIOD_SEC * 3000)
+      await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
 
       expect(mempool.empty).toHaveBeenCalledTimes(3)
       expect(mempool.getTransactionsInPool).toHaveBeenCalledTimes(3)
@@ -110,7 +110,7 @@ describe(L1StateSubmitter.name, () => {
         Logger.SILENT,
       )
       l1Submitter.start()
-      time.tick(FLUSH_PERIOD_SEC * 3000)
+      await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
 
       expect(mempool.empty).toHaveBeenCalledTimes(3)
       expect(mempool.getTransactionsInPool).toHaveBeenCalledTimes(3)
