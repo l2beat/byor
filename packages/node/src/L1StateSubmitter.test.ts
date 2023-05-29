@@ -124,5 +124,44 @@ describe(L1StateSubmitter.name, () => {
         Hex.concat(modelTx1SerializedHex, modelTx2SerializedHex),
       )
     })
+
+    it('client throwing should not stop the execution', async () => {
+      const client = mockObject<EthereumPrivateClient>({
+        writeToCTCContract: mockFn()
+          .throwsOnce(new Error('failed'))
+          .returns(null),
+      })
+      const mempool = mockObject<Mempool>({
+        getTransactionsInPool: mockFn()
+          .returnsOnce([modelTx1SerializedHex])
+          .returnsOnce([modelTx2SerializedHex])
+          .returnsOnce([modelTx1SerializedHex, modelTx2SerializedHex]),
+        empty: mockFn().returns(null),
+      })
+      const l1Submitter = new L1StateSubmitter(
+        FLUSH_PERIOD_SEC,
+        client,
+        mempool,
+        Logger.SILENT,
+      )
+      l1Submitter.start()
+      await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
+
+      expect(mempool.empty).toHaveBeenCalledTimes(3)
+      expect(mempool.getTransactionsInPool).toHaveBeenCalledTimes(3)
+      expect(client.writeToCTCContract).toHaveBeenCalledTimes(3)
+      expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
+        1,
+        modelTx1SerializedHex,
+      )
+      expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
+        2,
+        modelTx2SerializedHex,
+      )
+      expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
+        3,
+        Hex.concat(modelTx1SerializedHex, modelTx2SerializedHex),
+      )
+    })
   })
 })

@@ -35,14 +35,21 @@ export class L1StateManager extends EventEmitter {
     const eventState = await this.l1Fetcher.getWholeState()
     await this.apply(eventState)
 
-    setIntervalAsync(
-      async () => {
-        const eventState = await this.l1Fetcher.getNewState()
-        await this.apply(eventState)
-      },
-      this.probePeriodMs,
-      this.logger,
-    ).catch((_) => {
+    setIntervalAsync(async () => {
+      await this.l1Fetcher
+        .getNewState()
+        .then((eventState) => {
+          return this.apply(eventState)
+        })
+        .catch((err: Error) => {
+          this.logger.warn(
+            'Trying to update the state using the L1 resuled in an error',
+            {
+              error: err.message,
+            },
+          )
+        })
+    }, this.probePeriodMs).catch((_) => {
       unreachableCodePath()
     })
   }

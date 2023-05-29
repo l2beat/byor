@@ -1,4 +1,9 @@
-import { Hex, Logger, setIntervalAsync } from '@byor/shared'
+import {
+  Hex,
+  Logger,
+  setIntervalAsync,
+  unreachableCodePath,
+} from '@byor/shared'
 
 import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from './peripherals/mempool/Mempool'
@@ -15,12 +20,12 @@ export class L1StateSubmitter {
 
   start(): void {
     this.logger.info('Starting')
-    setIntervalAsync(
-      () => this.mempoolSubmit(),
-      this.flushPeriodSec * 1000,
-      this.logger,
-    ).catch((err: Error) => {
-      this.logger.warn('Failed to submit batch to L1', { error: err.message })
+    setIntervalAsync(async (): Promise<void> => {
+      await this.mempoolSubmit().catch((err: Error) => {
+        this.logger.warn('Failed to submit batch to L1', { error: err.message })
+      })
+    }, this.flushPeriodSec * 1000).catch((_) => {
+      unreachableCodePath()
     })
   }
 
