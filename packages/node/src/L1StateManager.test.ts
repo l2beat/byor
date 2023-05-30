@@ -8,12 +8,11 @@ import {
 } from '@byor/shared'
 import { install, InstalledClock } from '@sinonjs/fake-timers'
 import { expect, mockFn, mockObject } from 'earl'
-import { once } from 'events'
 import { privateKeyToAccount } from 'viem/accounts'
 
 import { AccountRepository } from './db/AccountRepository'
 import { L1StateFetcher } from './L1StateFetcher'
-import { L1StateManager, TRANSACTIONS_COMMITED_EVENT } from './L1StateManager'
+import { L1StateManager } from './L1StateManager'
 
 describe(L1StateManager.name, () => {
   describe(L1StateManager.prototype.start.name, () => {
@@ -181,13 +180,9 @@ describe(L1StateManager.name, () => {
         Logger.SILENT,
       )
 
-      let emitPromise = once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
       await l1Manager.start()
-      await emitPromise
       await time.tickAsync(PROBE_PERIOD_SEC * 1000)
-      emitPromise = once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
       await time.tickAsync(PROBE_PERIOD_SEC * 1000)
-      await emitPromise
       await time.tickAsync(PROBE_PERIOD_SEC * 1000)
 
       expect(l1Fetcher.getWholeState).toHaveBeenCalledTimes(1)
@@ -311,13 +306,9 @@ describe(L1StateManager.name, () => {
         Logger.SILENT,
       )
 
-      let emitPromise = once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
       await l1Manager.start()
-      await emitPromise
       await time.tickAsync(PROBE_PERIOD_SEC * 1000)
-      emitPromise = once(l1Manager, TRANSACTIONS_COMMITED_EVENT)
       await time.tickAsync(PROBE_PERIOD_SEC * 1000)
-      await emitPromise
 
       expect(l1Fetcher.getWholeState).toHaveBeenCalledTimes(1)
       expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(2)

@@ -56,13 +56,7 @@ describe(L1StateSubmitter.name, () => {
 
   describe(L1StateSubmitter.prototype.start.name, () => {
     it('submits transactions where every one applies every flush period seconds', async () => {
-      let l1ManagerCommitStateCallback: any = undefined
       const l1Manager = mockObject<L1StateManager>({
-        on: mockFn((_: string, callback: any): L1StateManager => {
-          l1ManagerCommitStateCallback = callback
-          l1ManagerCommitStateCallback()
-          return l1Manager
-        }),
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -118,13 +112,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('submits transactions where only some apply every flush period seconds', async () => {
-      let l1ManagerCommitStateCallback: any = undefined
       const l1Manager = mockObject<L1StateManager>({
-        on: mockFn((_: string, callback: any): L1StateManager => {
-          l1ManagerCommitStateCallback = callback
-          l1ManagerCommitStateCallback()
-          return l1Manager
-        }),
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -176,13 +164,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('submits nothing if all transactions can not be applied', async () => {
-      let l1ManagerCommitStateCallback: any = undefined
       const l1Manager = mockObject<L1StateManager>({
-        on: mockFn((_: string, callback: any): L1StateManager => {
-          l1ManagerCommitStateCallback = callback
-          l1ManagerCommitStateCallback()
-          return l1Manager
-        }),
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -230,13 +212,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('does not submit empty transactions', async () => {
-      let l1ManagerCommitStateCallback: any = undefined
       const l1Manager = mockObject<L1StateManager>({
-        on: mockFn((_: string, callback: any): L1StateManager => {
-          l1ManagerCommitStateCallback = callback
-          l1ManagerCommitStateCallback()
-          return l1Manager
-        }),
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -293,13 +269,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('does not submit transaction if balance is too low', async () => {
-      let l1ManagerCommitStateCallback: any = undefined
       const l1Manager = mockObject<L1StateManager>({
-        on: mockFn((_: string, callback: any): L1StateManager => {
-          l1ManagerCommitStateCallback = callback
-          l1ManagerCommitStateCallback()
-          return l1Manager
-        }),
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -347,13 +317,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('does not submit transaction if balance if nonce is wrong', async () => {
-      let l1ManagerCommitStateCallback: any = undefined
       const l1Manager = mockObject<L1StateManager>({
-        on: mockFn((_: string, callback: any): L1StateManager => {
-          l1ManagerCommitStateCallback = callback
-          l1ManagerCommitStateCallback()
-          return l1Manager
-        }),
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -401,13 +365,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('submits transactions every flush period seconds', async () => {
-      let l1ManagerCommitStateCallback: any = undefined
       const l1Manager = mockObject<L1StateManager>({
-        on: mockFn((_: string, callback: any): L1StateManager => {
-          l1ManagerCommitStateCallback = callback
-          l1ManagerCommitStateCallback()
-          return l1Manager
-        }),
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
