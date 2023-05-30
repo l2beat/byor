@@ -9,10 +9,11 @@ import { EthereumAddress } from './types/EthereumAddress'
 import { Hex } from './types/Hex'
 import {
   SIGNED_TX_HEX_SIZE,
+  SignedTransaction,
   Transaction,
   UnsignedTransaction,
 } from './types/Transactions'
-import { Unsigned64 } from './types/UnsignedSized'
+import { Unsigned8, Unsigned64 } from './types/UnsignedSized'
 
 // TODO(radomski): Move this to some configuration file
 const domain = {
@@ -51,21 +52,34 @@ export async function serializeAndSign(
     }),
   )
 
-  return serialize(unsignedTx, signature)
+  const signedTx: SignedTransaction = {
+    ...unsignedTx,
+    r: Hex(signature.substring(2, 66)),
+    s: Hex(signature.substring(66, 130)),
+    v: Unsigned8(parseInt(signature.substring(130, 132), 16)),
+  }
+
+  return serialize(signedTx)
 }
 
-export function serialize(unsignedTx: Transaction, signature: Hex): Hex {
-  const toHex = unsignedTx.to.toString().slice(2)
-  const valueHex = Unsigned64.toHex(unsignedTx.value).slice(2)
-  const nonceHex = Unsigned64.toHex(unsignedTx.nonce).slice(2)
-  const feeHex = Unsigned64.toHex(unsignedTx.fee).slice(2)
+export function serialize(signedTx: SignedTransaction): Hex {
+  const toHex = signedTx.to.toString().slice(2)
+  const valueHex = Unsigned64.toHex(signedTx.value).slice(2)
+  const nonceHex = Unsigned64.toHex(signedTx.nonce).slice(2)
+  const feeHex = Unsigned64.toHex(signedTx.fee).slice(2)
+  const rHex = signedTx.r.toString().slice(2)
+  const sHex = signedTx.s.toString().slice(2)
+  const vHex = Unsigned8.toHex(signedTx.v).slice(2)
+  const signature = `0x${rHex}${sHex}${vHex}`
   const msg = `0x${toHex}${valueHex}${nonceHex}${feeHex}`
 
   const result = Hex(`${msg.slice(2)}${signature.slice(2)}`)
   return result
 }
 
-export async function deserialize(signedTxBytes: Hex): Promise<Transaction> {
+export async function deserialize(
+  signedTxBytes: Hex,
+): Promise<SignedTransaction> {
   if (signedTxBytes.length !== SIGNED_TX_HEX_SIZE) {
     throw new Error(
       `Invalid input size, got/expected = ${signedTxBytes.length}/${SIGNED_TX_HEX_SIZE}`,
@@ -102,13 +116,18 @@ export async function deserialize(signedTxBytes: Hex): Promise<Transaction> {
   tx.from = EthereumAddress(signer)
   tx.hash = Hex(hash)
 
-  return tx
+  const signedTx = unsignedTx as SignedTransaction
+  signedTx.r = Hex(signature.substring(2, 66))
+  signedTx.s = Hex(signature.substring(66, 130))
+  signedTx.v = Unsigned8(parseInt(signature.substring(130, 132), 16))
+
+  return signedTx
 }
 
 export async function deserializeAndVerify(
   signedTxBytes: Hex,
   signerAddress: EthereumAddress,
-): Promise<Transaction> {
+): Promise<SignedTransaction> {
   const tx = await deserialize(signedTxBytes)
 
   if (tx.from === signerAddress) {
