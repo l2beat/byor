@@ -52,4 +52,11 @@ export class EthereumClient {
 
     return result
   }
+
+  getChainId(): number {
+    // NOTE(radomski): If this fires, the design of interaction with
+    // L1 changed, so this is no longer valid
+    // eslint-disable-next-line
+    return this.publicProvider.chain!.id
+  }
 }
