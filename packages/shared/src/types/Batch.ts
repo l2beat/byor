@@ -1,2 +1,3 @@
-import { Transaction } from './Transactions'
+import { SignedTransaction, Transaction } from './Transactions'
 export type TransactionBatch = Transaction[]
+export type SignedTransactionBatch = SignedTransaction[]

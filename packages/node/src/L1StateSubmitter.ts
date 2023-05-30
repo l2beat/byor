@@ -1,8 +1,7 @@
 import {
-  deserializeBatch,
   EthereumAddress,
-  Hex,
   Logger,
+  serializeBatch,
   setIntervalAsync,
   unreachableCodePath,
 } from '@byor/shared'
@@ -40,11 +39,10 @@ export class L1StateSubmitter {
     this.mempool.empty()
 
     if (transactions.length > 0) {
-      const batchBytes = transactions.reduce(Hex.concat)
+      const batchBytes = serializeBatch(transactions)
       const state = this.l1StateManager.getState()
 
-      const batch = await deserializeBatch(batchBytes)
-      executeBatch(state, batch, EthereumAddress.ZERO)
+      executeBatch(state, transactions, EthereumAddress.ZERO)
 
       // Since nothing above us threw, it's safe to write the batch
       await this.client.writeToCTCContract(batchBytes)

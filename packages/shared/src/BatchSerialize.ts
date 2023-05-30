@@ -1,9 +1,9 @@
 import { PrivateKeyAccount } from 'viem'
 
-import { deserialize, serializeAndSign } from './Serialize'
-import { TransactionBatch } from './types/Batch'
+import { deserialize, serialize, serializeAndSign } from './Serialize'
+import { SignedTransactionBatch, TransactionBatch } from './types/Batch'
 import { Hex } from './types/Hex'
-import { SIGNED_TX_ASCII_SIZE, Transaction } from './types/Transactions'
+import { SIGNED_TX_ASCII_SIZE, SignedTransaction } from './types/Transactions'
 
 export async function serializeAndSignBatch(
   unsignedBatch: TransactionBatch,
@@ -18,10 +18,20 @@ export async function serializeAndSignBatch(
   return Hex(parts.join(''))
 }
 
+export function serializeBatch(signedBatch: SignedTransactionBatch): Hex {
+  const parts: string[] = []
+  for (const tx of signedBatch) {
+    const bytes = serialize(tx)
+    parts.push(Hex.removePrefix(bytes))
+  }
+
+  return Hex(parts.join(''))
+}
+
 export async function deserializeBatch(
   signedBatchBytes: Hex,
-): Promise<TransactionBatch> {
-  const result: Transaction[] = []
+): Promise<SignedTransactionBatch> {
+  const result: SignedTransaction[] = []
 
   const bytes = Hex.removePrefix(signedBatchBytes)
   if (bytes.length % SIGNED_TX_ASCII_SIZE !== 0) {

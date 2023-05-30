@@ -14,8 +14,8 @@ export function createTransactionRouter(
       .mutation(async (opts) => {
         const { input } = opts
         try {
-          await deserializeBatch(input) // Validate bytes
-          transactionMempool.add(input)
+          const deserialized = await deserializeBatch(input) // Validate bytes
+          transactionMempool.add(deserialized)
         } catch (e) {
           throw new TRPCError({
             code: 'BAD_REQUEST',

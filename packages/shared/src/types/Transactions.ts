@@ -11,16 +11,15 @@ export interface UnsignedTransaction {
   fee: Unsigned64
 }
 
-export interface SignedTransaction extends UnsignedTransaction {
-  r: ByteArray
-  s: ByteArray
-  v: Unsigned8
-  hash: ByteArray
-}
-
 export interface Transaction extends UnsignedTransaction {
   from: EthereumAddress
   hash?: Hex
+}
+
+export interface SignedTransaction extends Transaction {
+  r: Hex
+  s: Hex
+  v: Unsigned8
 }
 
 export const SIGNED_TX_SIZE = 20 + 8 + 8 + 8 + 32 + 32 + 1

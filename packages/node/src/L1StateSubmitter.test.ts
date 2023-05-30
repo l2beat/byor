@@ -1,8 +1,10 @@
 import {
+  deserialize,
   EthereumAddress,
   Hex,
   Logger,
   serializeAndSign,
+  SignedTransaction,
   Transaction,
   Unsigned64,
 } from '@byor/shared'
@@ -27,6 +29,7 @@ describe(L1StateSubmitter.name, () => {
     nonce: Unsigned64(1),
     fee: Unsigned64(2),
   }
+
   const modelTx2: Transaction = {
     from: EthereumAddress(modelAccount1.address),
     to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
@@ -37,11 +40,15 @@ describe(L1StateSubmitter.name, () => {
 
   let modelTx1SerializedHex: Hex
   let modelTx2SerializedHex: Hex
+  let modelSignedTx1: SignedTransaction
+  let modelSignedTx2: SignedTransaction
   let time: InstalledClock
 
   before(async () => {
     modelTx1SerializedHex = await serializeAndSign(modelTx1, modelAccount1)
     modelTx2SerializedHex = await serializeAndSign(modelTx2, modelAccount1)
+    modelSignedTx1 = await deserialize(modelTx1SerializedHex)
+    modelSignedTx2 = await deserialize(modelTx2SerializedHex)
   })
 
   beforeEach(async () => {
@@ -84,8 +91,8 @@ describe(L1StateSubmitter.name, () => {
       })
       const mempool = mockObject<Mempool>({
         getTransactionsInPool: mockFn()
-          .returnsOnce([modelTx1SerializedHex])
-          .returnsOnce([modelTx2SerializedHex]),
+          .returnsOnce([modelSignedTx1])
+          .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
@@ -140,8 +147,8 @@ describe(L1StateSubmitter.name, () => {
       })
       const mempool = mockObject<Mempool>({
         getTransactionsInPool: mockFn()
-          .returnsOnce([modelTx1SerializedHex])
-          .returnsOnce([modelTx2SerializedHex]),
+          .returnsOnce([modelSignedTx1])
+          .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
@@ -192,8 +199,8 @@ describe(L1StateSubmitter.name, () => {
       })
       const mempool = mockObject<Mempool>({
         getTransactionsInPool: mockFn()
-          .returnsOnce([modelTx1SerializedHex])
-          .returnsOnce([modelTx2SerializedHex]),
+          .returnsOnce([modelSignedTx1])
+          .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
@@ -240,9 +247,9 @@ describe(L1StateSubmitter.name, () => {
       })
       const mempool = mockObject<Mempool>({
         getTransactionsInPool: mockFn()
-          .returnsOnce([modelTx1SerializedHex])
+          .returnsOnce([modelSignedTx1])
           .returnsOnce([])
-          .returnsOnce([modelTx2SerializedHex]),
+          .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
@@ -297,8 +304,8 @@ describe(L1StateSubmitter.name, () => {
       })
       const mempool = mockObject<Mempool>({
         getTransactionsInPool: mockFn()
-          .returnsOnce([modelTx1SerializedHex])
-          .returnsOnce([modelTx2SerializedHex]),
+          .returnsOnce([modelSignedTx1])
+          .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
@@ -345,8 +352,8 @@ describe(L1StateSubmitter.name, () => {
       })
       const mempool = mockObject<Mempool>({
         getTransactionsInPool: mockFn()
-          .returnsOnce([modelTx1SerializedHex])
-          .returnsOnce([modelTx2SerializedHex]),
+          .returnsOnce([modelSignedTx1])
+          .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
@@ -395,8 +402,8 @@ describe(L1StateSubmitter.name, () => {
       })
       const mempool = mockObject<Mempool>({
         getTransactionsInPool: mockFn()
-          .returnsOnce([modelTx1SerializedHex])
-          .returnsOnce([modelTx2SerializedHex]),
+          .returnsOnce([modelSignedTx1])
+          .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
