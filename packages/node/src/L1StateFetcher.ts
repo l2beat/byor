@@ -3,6 +3,7 @@ import { zipWith } from 'lodash'
 import { decodeFunctionData, GetLogsReturnType, parseAbiItem } from 'viem'
 
 import { abi } from './config/abi'
+import { FetcherRecord, FetcherRepository } from './db/FetcherRepository'
 import { L1EventStateType } from './L1EventStateType'
 import { EthereumClient } from './peripherals/ethereum/EthereumClient'
 
@@ -14,45 +15,15 @@ export class L1StateFetcher {
   private lastFetchedBlock: bigint
   constructor(
     private readonly client: EthereumClient,
+    private readonly fetcherRepository: FetcherRepository,
     private readonly contractAddress: EthereumAddress,
     private readonly logger: Logger,
   ) {
     this.logger = logger.for(this)
-    this.lastFetchedBlock = 0n
-  }
-
-  async getWholeState(): Promise<L1EventStateType[]> {
-    this.logger.debug(
-      'Fetching all batch append events since the genesis block',
-      {
-        contractAddress: this.contractAddress.toString(),
-        eventAbi: eventAbi.name,
-      },
+    const fetcher = this.fetcherRepository.getByChainIdOrDefault(
+      client.getChainId(),
     )
-    const l1State = await this.client.getLogsSinceGenesis(
-      eventAbi,
-      this.contractAddress,
-    )
-    const calldata = await this.eventsToCallData(l1State)
-    const posters = eventsToPosters(l1State)
-
-    assert(
-      l1State.length === posters.length,
-      'The amount of calldata is not equal to the amount of poster address',
-    )
-
-    for (const event of l1State) {
-      if (event.blockNumber) {
-        this.lastFetchedBlock =
-          this.lastFetchedBlock > event.blockNumber
-            ? this.lastFetchedBlock
-            : event.blockNumber
-      }
-    }
-
-    return zipWith(posters, calldata, (poster, calldata) => {
-      return { poster, calldata }
-    })
+    this.lastFetchedBlock = fetcher.lastFetchedBlock
   }
 
   async getNewState(): Promise<L1EventStateType[]> {
@@ -87,6 +58,8 @@ export class L1StateFetcher {
       }
     }
 
+    this.updateFetcherDatabase()
+
     return zipWith(posters, calldata, (poster, calldata) => {
       return { poster, calldata }
     })
@@ -114,6 +87,15 @@ export class L1StateFetcher {
     })
 
     return decoded
+  }
+
+  updateFetcherDatabase(): void {
+    const record: FetcherRecord = {
+      chainId: this.client.getChainId(),
+      lastFetchedBlock: this.lastFetchedBlock,
+    }
+
+    this.fetcherRepository.addOrUpdate(record)
   }
 }
 
