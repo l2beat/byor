@@ -9,8 +9,8 @@ import {
 
 export class EthereumClient {
   constructor(
-    private readonly provider: PublicClient,
-    private readonly logger: Logger,
+    private readonly publicProvider: PublicClient,
+    protected logger: Logger,
   ) {
     this.logger = this.logger.for(this)
   }
@@ -28,7 +28,7 @@ export class EthereumClient {
       toBlock: toBlock ? toBlock.toString() : 'NONE',
     })
 
-    const result = await this.provider.getLogs({
+    const result = await this.publicProvider.getLogs({
       address: contractAddress.toString() as ViemHex,
       event: abi,
       fromBlock: fromBlock,
@@ -46,7 +46,7 @@ export class EthereumClient {
   }
 
   async getTransaction(hash: Hex): Promise<Transaction> {
-    const result = this.provider.getTransaction({
+    const result = this.publicProvider.getTransaction({
       hash: hash.toString() as ViemHex,
     })
 

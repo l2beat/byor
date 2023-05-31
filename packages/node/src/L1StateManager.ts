@@ -1,4 +1,10 @@
-import { deserializeBatch, EthereumAddress, Logger } from '@byor/shared'
+import {
+  deserializeBatch,
+  EthereumAddress,
+  Logger,
+  setIntervalAsync,
+  unreachableCodePath,
+} from '@byor/shared'
 import { zip } from 'lodash'
 
 import { AccountRepository } from './db/AccountRepository'
@@ -7,12 +13,16 @@ import { L1EventStateType } from './L1EventStateType'
 import { L1StateFetcher } from './L1StateFetcher'
 
 export class L1StateManager {
+  private readonly probePeriodMs: number
+
   constructor(
+    probePeriodSec: number,
     private readonly accountRepository: AccountRepository,
     private readonly l1Fetcher: L1StateFetcher,
     private readonly logger: Logger,
   ) {
     this.logger = logger.for(this)
+    this.probePeriodMs = probePeriodSec * 1000
   }
 
   async start(): Promise<void> {
@@ -20,17 +30,26 @@ export class L1StateManager {
 
     const eventState = await this.l1Fetcher.getWholeState()
     await this.apply(eventState)
+
+    setIntervalAsync(async () => {
+      await this.l1Fetcher
+        .getNewState()
+        .then((eventState) => {
+          return this.apply(eventState)
+        })
+        .catch((err: Error) => {
+          this.logger.warn(
+            'Trying to update the state using the L1 resuled in an error',
+            {
+              error: err.message,
+            },
+          )
+        })
+    }, this.probePeriodMs).finally(unreachableCodePath)
   }
 
-  private async apply(l1States: L1EventStateType[]): Promise<void> {
-    this.logger.debug('Applying events', {
-      eventCount: l1States.length,
-    })
-    const batches = await Promise.all(
-      l1States.map((state) => deserializeBatch(state.calldata)),
-    )
-
-    let accountState: StateMap = {}
+  getState(): StateMap {
+    const accountState: StateMap = {}
     this.accountRepository.getAll().forEach(
       (acc) =>
         (accountState[acc.address.toString()] = {
@@ -38,6 +57,22 @@ export class L1StateManager {
           nonce: acc.nonce,
         }),
     )
+
+    return accountState
+  }
+
+  private async apply(l1States: L1EventStateType[]): Promise<void> {
+    if (l1States.length === 0) {
+      return
+    }
+
+    this.logger.debug('Applying events', {
+      eventCount: l1States.length,
+    })
+    const batches = await Promise.all(
+      l1States.map((state) => deserializeBatch(state.calldata)),
+    )
+    let accountState = this.getState()
 
     for (const [batch, state] of zip(batches, l1States)) {
       // NOTE(radomski): We know that it won't be undefined

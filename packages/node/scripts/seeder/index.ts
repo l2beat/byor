@@ -59,7 +59,7 @@ async function submitToL1(
   config: Config,
   serializedBatchBytes: Hex,
 ): Promise<void> {
-  const chain = createChain(config)
+  const chain = createChain(config.chainId, config.rpcUrl)
 
   const client = createWalletClient({
     account,

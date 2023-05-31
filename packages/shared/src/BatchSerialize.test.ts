@@ -8,6 +8,7 @@ import {
   modelTxSerializedHex1,
   modelTxSerializedHex2,
 } from './test/modelTestConstats'
+import { EthereumAddress } from './types'
 import { Hex } from './types/Hex'
 import { Transaction } from './types/Transactions'
 
@@ -84,7 +85,7 @@ describe('deserializeBatch', () => {
 
   it('deserializes two different valid transactions', async () => {
     const secondTx = { ...modelTx1 }
-    secondTx.to = Hex('0xcafe7970C51812dc3A010C7d01b50e0d17dc79C8')
+    secondTx.to = EthereumAddress('0xcafe7970C51812dc3A010C7d01b50e0d17dc79C8')
     secondTx.from = Hex('0x491E388D88a808b9cA6547a7507daf29D4954BF7')
     secondTx.hash = Hex(
       '0x6acf80d210e85589d2fe24764e04ef379596d994cac505dab44ac0b2451fe88a',

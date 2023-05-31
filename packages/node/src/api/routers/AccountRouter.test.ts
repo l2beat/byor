@@ -24,7 +24,7 @@ describe(createAccountRouter.name, () => {
       .expect('Content-Type', /json/)
       .expect(
         200,
-        '{"result":{"data":{"address":"0xaabbccddeeffaabbccddeeffaabbccddeeffaabb","balance":"1410","nonce":"59"}}}',
+        '{"result":{"data":{"address":"0xaaBBccDdEeFfAABbCCddeEfFAAbbccddeEffaABB","balance":"1410","nonce":"59"}}}',
       )
   })
 

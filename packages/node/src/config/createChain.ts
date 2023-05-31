@@ -1,10 +1,8 @@
 import { Chain } from 'viem/chains'
 
-import { Config } from './Config'
-
-export function createChain(config: Config): Chain {
+export function createChain(chainId: number, rpcUrl: string): Chain {
   const result = {
-    id: config.chainId,
+    id: chainId,
     name: 'BYOR Destination Net',
     network: 'byordestnet',
     nativeCurrency: {
@@ -13,8 +11,8 @@ export function createChain(config: Config): Chain {
       symbol: 'ETH',
     },
     rpcUrls: {
-      public: { http: [config.rpcUrl] },
-      default: { http: [config.rpcUrl] },
+      public: { http: [rpcUrl] },
+      default: { http: [rpcUrl] },
     },
   } as const satisfies Chain
 
