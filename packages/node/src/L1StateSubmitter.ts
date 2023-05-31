@@ -25,7 +25,7 @@ export class L1StateSubmitter {
 
   start(): void {
     this.logger.info('Starting')
-    setIntervalAsync(async (): Promise<void> => {
+    setIntervalAsync(async () => {
       await this.mempoolSubmit().catch((err: Error) => {
         this.logger.warn('Failed to submit batch to L1', { error: err.message })
       })
