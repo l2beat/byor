@@ -9,11 +9,11 @@ function Statistic({ description, value }): JSX.Element {
   )
 }
 
-export function Overview(): JSX.Element {
+export function Overview({ l2TransactionCount }): JSX.Element {
   return (
     <div className="container flex border rounded p-6 justify-around">
       <div>
-        <Statistic description={'L2 Transactions'} value={`test`} />
+        <Statistic description={'L2 Transactions'} value={`${l2TransactionCount}`} />
         <Separator />
         <Statistic
           description={'L1 Last Batch Upload'}

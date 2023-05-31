@@ -13,6 +13,11 @@
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.0.3",
+    "@tanstack/react-query": "^4.29.12",
+    "@trpc/client": "^10.28.1",
+    "@trpc/next": "^10.28.1",
+    "@trpc/react-query": "^10.28.1",
+    "@trpc/server": "^10.28.1",
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
@@ -29,6 +34,7 @@
     "tailwind-merge": "^1.12.0",
     "tailwindcss": "3.3.2",
     "tailwindcss-animate": "^1.0.5",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "zod": "^3.21.4"
   }
 }
