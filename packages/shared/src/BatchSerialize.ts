@@ -19,13 +19,7 @@ export async function serializeAndSignBatch(
 }
 
 export function serializeBatch(signedBatch: SignedTransactionBatch): Hex {
-  const parts: string[] = []
-  for (const tx of signedBatch) {
-    const bytes = serialize(tx)
-    parts.push(Hex.removePrefix(bytes))
-  }
-
-  return Hex(parts.join(''))
+  return signedBatch.map(serialize).reduce(Hex.concat)
 }
 
 export async function deserializeBatch(
