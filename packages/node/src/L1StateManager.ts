@@ -45,9 +45,7 @@ export class L1StateManager {
             },
           )
         })
-    }, this.probePeriodMs).catch((_) => {
-      unreachableCodePath()
-    })
+    }, this.probePeriodMs).finally(unreachableCodePath)
   }
 
   getState(): StateMap {

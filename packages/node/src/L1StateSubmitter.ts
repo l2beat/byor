@@ -29,9 +29,7 @@ export class L1StateSubmitter {
       await this.mempoolSubmit().catch((err: Error) => {
         this.logger.warn('Failed to submit batch to L1', { error: err.message })
       })
-    }, this.flushPeriodSec * 1000).catch((_) => {
-      unreachableCodePath()
-    })
+    }, this.flushPeriodSec * 1000).finally(unreachableCodePath)
   }
 
   private async mempoolSubmit(): Promise<void> {
