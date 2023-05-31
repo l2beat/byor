@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'BYOR Wallet',
-  description: 'Wallet for connecting with L2Beat\'s Build Your Own Rollup L2',
+  description: "Wallet for connecting with L2Beat's Build Your Own Rollup L2",
 }
 
 // NOTE(radomski): Next.js docs says it has to be the default export
