@@ -1,6 +1,10 @@
 import { expect } from 'earl'
 
-import { deserializeBatch, serializeAndSignBatch } from './BatchSerialize'
+import {
+  deserializeBatch,
+  serializeAndSignBatch,
+  serializeBatch,
+} from './BatchSerialize'
 import {
   modelAccount,
   modelSignedTx1,
@@ -14,7 +18,47 @@ import { EthereumAddress } from './types'
 import { Hex } from './types/Hex'
 import { SignedTransaction, Transaction } from './types/Transactions'
 
-describe('serializeBatch', () => {
+describe(serializeBatch.name, () => {
+  it('serializes a single valid transaction', async () => {
+    const bytes = serializeBatch([modelSignedTx2])
+
+    expect(bytes).toEqual(modelTxSerializedHex2)
+  })
+
+  it('serializes two identical valid transactions', async () => {
+    const bytes = serializeBatch(
+      new Array<SignedTransaction>(2).fill(modelSignedTx1),
+    )
+
+    expect(bytes).toEqual(
+      Hex(Hex.removePrefix(modelTxSerializedHex1).repeat(2)),
+    )
+  })
+
+  it('serializes a hundred identical valid transactions', async () => {
+    const bytes = serializeBatch(
+      new Array<SignedTransaction>(100).fill(modelSignedTx1),
+    )
+
+    expect(bytes).toEqual(
+      Hex(Hex.removePrefix(modelTxSerializedHex1).repeat(100)),
+    )
+  })
+
+  it('serializes two different valid transactions', async () => {
+    const bytes = serializeBatch([modelSignedTx1, modelSignedTx2])
+
+    expect(bytes).toEqual(
+      Hex(
+        `${Hex.removePrefix(modelTxSerializedHex1)}${Hex.removePrefix(
+          modelTxSerializedHex2,
+        )}`,
+      ),
+    )
+  })
+})
+
+describe(serializeAndSignBatch.name, () => {
   it('serializes a single valid transaction', async () => {
     const bytes = await serializeAndSignBatch([modelTx1], modelAccount)
 
@@ -73,7 +117,7 @@ describe('deserializeBatch', () => {
     )
 
     expect(batch.length).toEqual(2)
-    expect(batch).toEqual([modelSignedTx1, modelSignedTx2])
+    expect(batch).toEqual([modelSignedTx1, modelSignedTx1])
   })
 
   it('deserializes a hundred identical valid transactions', async () => {
