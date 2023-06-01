@@ -1,6 +1,6 @@
-import fs from 'fs'
+import { GenesisStateMap } from './types/GenesisStateMap'
 
-export type GenesisStateMap = Record<string, number>
+import fs from 'fs'
 
 export function getGenesisState(path: string): GenesisStateMap {
   const jsonContent = fs.readFileSync(path, 'utf-8')
