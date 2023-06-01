@@ -5,9 +5,7 @@ import { z } from 'zod'
 import { Mempool } from '../../peripherals/mempool/Mempool'
 import { publicProcedure, router } from '../trpc'
 
-export function createTransactionRouter(
-  transactionMempool: Mempool,
-){
+export function createTransactionRouter(transactionMempool: Mempool) {
   return router({
     submit: publicProcedure
       .input(branded(z.string(), Hex))

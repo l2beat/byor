@@ -1,4 +1,4 @@
-import { GenesisStateMap } from './types/GenesisStateMap'
+import { GenesisStateMap } from '@byor/shared'
 
 import fs from 'fs'
 

@@ -1,6 +1,7 @@
 import { httpBatchLink } from '@trpc/client'
 import { createTRPCNext } from '@trpc/next'
-import { RootRouter } from '../../node/src/api/types/AppRouter'
+
+import { RootRouter } from '@byor/node'
 
 export const trpc = createTRPCNext<RootRouter>({
   config() {
@@ -10,7 +11,6 @@ export const trpc = createTRPCNext<RootRouter>({
           url: 'http://localhost:3000',
         }),
       ],
-      ssr: true,
     }
   },
 })
