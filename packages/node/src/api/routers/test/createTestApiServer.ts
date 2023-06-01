@@ -7,6 +7,6 @@ import { ApiServer } from '../../ApiServer'
 export function createTestApiServer(
   routers: ProcedureRouterRecord,
 ): SuperAgentTest {
-  const server = new ApiServer(0, Logger.SILENT, routers).getHTTPServer()
+  const server = new ApiServer(0, Logger.SILENT, routers as any).getHTTPServer()
   return agent(server)
 }

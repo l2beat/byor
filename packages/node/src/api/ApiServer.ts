@@ -4,6 +4,7 @@ import { createHTTPServer } from '@trpc/server/adapters/standalone'
 import http from 'http'
 
 import { router } from './trpc'
+import { AppRouter, makeRouter } from './types/AppRouter'
 
 export class ApiServer {
   private readonly router: AnyRouter
@@ -13,10 +14,10 @@ export class ApiServer {
   constructor(
     private readonly port: number,
     private readonly logger: Logger,
-    routers: ProcedureRouterRecord,
+    routers: AppRouter,
   ) {
     this.logger = logger.for(this)
-    this.router = router(routers)
+    this.router = makeRouter(routers)
 
     const server = createHTTPServer({
       router: this.router,
