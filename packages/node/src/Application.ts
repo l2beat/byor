@@ -20,6 +20,7 @@ import { L1StateManager } from './L1StateManager'
 import { L1StateSubmitter } from './L1StateSubmitter'
 import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from './peripherals/mempool/Mempool'
+import { AppRouter } from './api/types/AppRouter'
 
 export class Application {
   start: () => Promise<void>
@@ -74,7 +75,7 @@ export class Application {
       logger,
     )
 
-    const routers = {
+    const routers: AppRouter = {
       accounts: createAccountRouter(accountRepository),
       transactions: createTransactionRouter(mempool),
     }
