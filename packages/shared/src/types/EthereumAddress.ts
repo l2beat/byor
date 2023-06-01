@@ -17,14 +17,6 @@ EthereumAddress.ZERO = EthereumAddress(
   '0x0000000000000000000000000000000000000000',
 )
 
-EthereumAddress.check = function check(value: string): boolean {
-  try {
-    return EthereumAddress(value).toString() === value
-  } catch {
-    return false
-  }
-}
-
 EthereumAddress.toHex = function toHex(a: EthereumAddress): Hex {
   return Hex(a as unknown as string)
 }

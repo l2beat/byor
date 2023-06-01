@@ -7,14 +7,15 @@ import {
 } from './Serialize'
 import {
   modelAccount,
+  modelSignedTx1,
   modelTx1,
   modelTxSerializedHex1,
 } from './test/modelTestConstats'
 import { EthereumAddress } from './types/EthereumAddress'
 import { Hex } from './types/Hex'
-import { SIGNED_TX_HEX_SIZE } from './types/Transactions'
+import { SIGNED_TX_HEX_SIZE, Transaction } from './types/Transactions'
 
-describe('serialize', () => {
+describe('serializeAndSign', () => {
   it('serializes a valid transaction', async () => {
     const serialized = await serializeAndSign(modelTx1, modelAccount)
 
@@ -37,9 +38,9 @@ describe('deserialize', () => {
       `0xdead${Hex.toString(modelTxSerializedHex1).slice(6)}`,
     )
 
-    const tx = await deserialize(signedTxBytes)
+    const tx = (await deserialize(signedTxBytes)) as Transaction
 
-    expect(tx).not.toEqual(modelTx1)
+    expect(tx).not.toEqual(modelSignedTx1)
   })
 
   it('deserializes but fails verifiction after message corruption', async () => {
@@ -58,9 +59,9 @@ describe('deserialize', () => {
   it('deserializes a valid input', async () => {
     const signedTxBytes = modelTxSerializedHex1
 
-    const tx = await deserialize(signedTxBytes)
+    const tx = (await deserialize(signedTxBytes)) as Transaction
 
-    expect(tx).toEqual(modelTx1)
+    expect(tx).toEqual(modelSignedTx1)
   })
 
   it('deserializes a valid input with verification', async () => {
@@ -71,6 +72,6 @@ describe('deserialize', () => {
       EthereumAddress(modelAccount.address),
     )
 
-    expect(tx).toEqual(modelTx1)
+    expect(tx).toEqual(modelSignedTx1)
   })
 })

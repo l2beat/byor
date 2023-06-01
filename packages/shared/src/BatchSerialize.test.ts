@@ -1,8 +1,14 @@
 import { expect } from 'earl'
 
-import { deserializeBatch, serializeAndSignBatch } from './BatchSerialize'
+import {
+  deserializeBatch,
+  serializeAndSignBatch,
+  serializeBatch,
+} from './BatchSerialize'
 import {
   modelAccount,
+  modelSignedTx1,
+  modelSignedTx2,
   modelTx1,
   modelTx2,
   modelTxSerializedHex1,
@@ -10,9 +16,49 @@ import {
 } from './test/modelTestConstats'
 import { EthereumAddress } from './types'
 import { Hex } from './types/Hex'
-import { Transaction } from './types/Transactions'
+import { SignedTransaction, Transaction } from './types/Transactions'
 
-describe('serializeBatch', () => {
+describe(serializeBatch.name, () => {
+  it('serializes a single valid transaction', async () => {
+    const bytes = serializeBatch([modelSignedTx2])
+
+    expect(bytes).toEqual(modelTxSerializedHex2)
+  })
+
+  it('serializes two identical valid transactions', async () => {
+    const bytes = serializeBatch(
+      new Array<SignedTransaction>(2).fill(modelSignedTx1),
+    )
+
+    expect(bytes).toEqual(
+      Hex(Hex.removePrefix(modelTxSerializedHex1).repeat(2)),
+    )
+  })
+
+  it('serializes a hundred identical valid transactions', async () => {
+    const bytes = serializeBatch(
+      new Array<SignedTransaction>(100).fill(modelSignedTx1),
+    )
+
+    expect(bytes).toEqual(
+      Hex(Hex.removePrefix(modelTxSerializedHex1).repeat(100)),
+    )
+  })
+
+  it('serializes two different valid transactions', async () => {
+    const bytes = serializeBatch([modelSignedTx1, modelSignedTx2])
+
+    expect(bytes).toEqual(
+      Hex(
+        `${Hex.removePrefix(modelTxSerializedHex1)}${Hex.removePrefix(
+          modelTxSerializedHex2,
+        )}`,
+      ),
+    )
+  })
+})
+
+describe(serializeAndSignBatch.name, () => {
   it('serializes a single valid transaction', async () => {
     const bytes = await serializeAndSignBatch([modelTx1], modelAccount)
 
@@ -62,7 +108,7 @@ describe('deserializeBatch', () => {
     const batch = await deserializeBatch(modelTxSerializedHex1)
 
     expect(batch.length).toEqual(1)
-    expect(batch).toEqual([modelTx1])
+    expect(batch).toEqual([modelSignedTx1])
   })
 
   it('deserializes two identical valid transactions', async () => {
@@ -71,7 +117,7 @@ describe('deserializeBatch', () => {
     )
 
     expect(batch.length).toEqual(2)
-    expect(batch).toEqual([modelTx1, modelTx1])
+    expect(batch).toEqual([modelSignedTx1, modelSignedTx1])
   })
 
   it('deserializes a hundred identical valid transactions', async () => {
@@ -80,11 +126,11 @@ describe('deserializeBatch', () => {
     )
 
     expect(batch.length).toEqual(100)
-    expect(batch).toEqual(Array<Transaction>(100).fill(modelTx1))
+    expect(batch).toEqual(Array<SignedTransaction>(100).fill(modelSignedTx1))
   })
 
   it('deserializes two different valid transactions', async () => {
-    const secondTx = { ...modelTx1 }
+    const secondTx = { ...modelSignedTx1 }
     secondTx.to = EthereumAddress('0xcafe7970C51812dc3A010C7d01b50e0d17dc79C8')
     secondTx.from = Hex('0x491E388D88a808b9cA6547a7507daf29D4954BF7')
     secondTx.hash = Hex(
@@ -98,7 +144,7 @@ describe('deserializeBatch', () => {
     const batch = await deserializeBatch(Hex(`${firstTxBytes}${secondTxBytes}`))
 
     expect(batch.length).toEqual(2)
-    expect(batch).toEqual([modelTx1, secondTx])
+    expect(batch).toEqual([modelSignedTx1, secondTx])
   })
 
   it('throws on smaller than a single transaction', async () => {
