@@ -73,25 +73,3 @@ export function Overview(): JSX.Element {
     </div>
   )
 }
-
-/*
-export async function getServerSideProps(
-  context: GetServerSidePropsContext<{ id: string }>,
-) {
-  const helpers = createServerSideHelpers({
-    router: trpc,
-    ctx: {},
-  });
-  const id = context.params?.id as string;
-   * Prefetching the `post.byId` query.
-   * `prefetch` does not return the result and never throws - if you need that behavior, use `fetch` instead.
-  await helpers.post.byId.prefetch({ id });
-  // Make sure to return { props: { trpcState: helpers.dehydrate() } }
-  return {
-    props: {
-      trpcState: helpers.dehydrate(),
-      id,
-    },
-  };
-}
-*/

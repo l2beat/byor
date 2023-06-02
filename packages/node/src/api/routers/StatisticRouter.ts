@@ -1,5 +1,8 @@
 import { publicProcedure, router } from '../trpc'
 
+// NOTE(radomski): We need to propagte the return type
+// from this function, we can not infer it
+// eslint-disable-next-line
 export function createStatisticsRouter() {
   return router({
     getOverview: publicProcedure.query(() => {
