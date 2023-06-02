@@ -1,7 +1,12 @@
 import { Separator } from '@/components/ui/separator'
 import { trpc } from '@/lib/trpc'
 
-function Statistic({ description, value }): JSX.Element {
+interface StatisticProps {
+  description: string
+  value: string
+}
+
+function Statistic({ description, value }: StatisticProps): JSX.Element {
   return (
     <div className="font-sens-serif uppercase py-1">
       <div>{`${description}`}</div>
@@ -28,10 +33,10 @@ function formatUnixTimestamp(timestamp: number): string {
   ]
   const year = date.getUTCFullYear()
   const month = months[date.getUTCMonth()]
-  const day = ('0' + date.getUTCDate()).slice(-2)
-  const hours = ('0' + date.getUTCHours()).slice(-2)
-  const minutes = ('0' + date.getUTCMinutes()).slice(-2)
-  const seconds = ('0' + date.getUTCSeconds()).slice(-2)
+  const day = `0${date.getUTCDate()}`.slice(-2)
+  const hours = `0${date.getUTCHours()}`.slice(-2)
+  const minutes = `0${date.getUTCMinutes()}`.slice(-2)
+  const seconds = `0${date.getUTCSeconds()}`.slice(-2)
 
   return `${year} ${month} ${day} ${hours}:${minutes}:${seconds} (UTC)`
 }
