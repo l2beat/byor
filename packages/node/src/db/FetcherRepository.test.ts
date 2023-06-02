@@ -37,7 +37,7 @@ describe(FetcherRepository.name, () => {
   describe(FetcherRepository.prototype.getByChainIdOrDefault.name, () => {
     const modelEmptyFetcher = {
       ...modelFetcher,
-      lastFetchedBlock: 0n,
+      lastFetchedBlock: -1n,
     }
     it('returns empty fetcher on one that was not inserted', async () => {
       expect(repository.getByChainIdOrDefault(modelFetcher.chainId)).toEqual(
