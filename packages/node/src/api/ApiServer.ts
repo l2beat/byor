@@ -1,9 +1,8 @@
 import { Logger } from '@byor/shared'
-import { AnyRouter, ProcedureRouterRecord } from '@trpc/server'
+import { AnyRouter } from '@trpc/server'
 import { createHTTPServer } from '@trpc/server/adapters/standalone'
 import http from 'http'
 
-import { router } from './trpc'
 import { AppRouter, makeRouter } from './types/AppRouter'
 
 export class ApiServer {

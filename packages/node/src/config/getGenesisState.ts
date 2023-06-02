@@ -1,5 +1,4 @@
 import { GenesisStateMap } from '@byor/shared'
-
 import fs from 'fs'
 
 export function getGenesisState(path: string): GenesisStateMap {

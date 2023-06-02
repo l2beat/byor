@@ -6,7 +6,6 @@ import {
   TransactionBatch,
   Unsigned64,
 } from '@byor/shared'
-import { getGenesisState } from '../../src/config/getGenesisState'
 import { command, positional, run, string, Type } from 'cmd-ts'
 import {
   createWalletClient,
@@ -24,6 +23,7 @@ import {
 import { Config, getConfig } from '../../src/config'
 import { abi } from '../../src/config/abi'
 import { createChain } from '../../src/config/createChain'
+import { getGenesisState } from '../../src/config/getGenesisState'
 
 async function main(config: Config, privateKey: Hex): Promise<void> {
   const genesisState = getGenesisState(config.genesisFilePath)

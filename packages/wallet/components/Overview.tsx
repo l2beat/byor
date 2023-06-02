@@ -1,8 +1,5 @@
-import { EthereumAddress } from '@byor/shared/src/types'
-import { createServerSideHelpers } from '@trpc/react-query/server'
 import { Separator } from '@/components/ui/separator'
 import { trpc } from '@/lib/trpc'
-import { GetServerSidePropsContext } from 'next'
 
 function Statistic({ description, value }): JSX.Element {
   return (
