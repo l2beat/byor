@@ -21,6 +21,7 @@ import { L1StateSubmitter } from './L1StateSubmitter'
 import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from './peripherals/mempool/Mempool'
 import { AppRouter } from './api/types/AppRouter'
+import { createStatisticsRouter } from './api/routers/StatisticRouter'
 
 export class Application {
   start: () => Promise<void>
@@ -78,6 +79,7 @@ export class Application {
     const routers: AppRouter = {
       accounts: createAccountRouter(accountRepository),
       transactions: createTransactionRouter(mempool),
+      statistics: createStatisticsRouter(),
     }
 
     const apiServer = new ApiServer(config.rpcServePort, logger, routers)

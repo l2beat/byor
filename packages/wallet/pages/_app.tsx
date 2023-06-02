@@ -7,4 +7,4 @@ function App({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />
 }
 
-export default trpc.withTRPC(App);
+export default trpc.withTRPC(App)
