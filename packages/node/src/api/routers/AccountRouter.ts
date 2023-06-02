@@ -1,9 +1,9 @@
 import { branded, EthereumAddress } from '@byor/shared'
+import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
 import { AccountRepository } from '../../db/AccountRepository'
 import { publicProcedure, router } from '../trpc'
-import { TRPCError } from '@trpc/server'
 
 export function createAccountRouter(accountRepository: AccountRepository) {
   return router({

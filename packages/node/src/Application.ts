@@ -9,7 +9,9 @@ import { privateKeyToAccount } from 'viem/accounts'
 
 import { ApiServer } from './api/ApiServer'
 import { createAccountRouter } from './api/routers/AccountRouter'
+import { createStatisticsRouter } from './api/routers/StatisticRouter'
 import { createTransactionRouter } from './api/routers/TransactionRouter'
+import { AppRouter } from './api/types/AppRouter'
 import { Config, createChain } from './config'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
@@ -20,8 +22,6 @@ import { L1StateManager } from './L1StateManager'
 import { L1StateSubmitter } from './L1StateSubmitter'
 import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from './peripherals/mempool/Mempool'
-import { AppRouter } from './api/types/AppRouter'
-import { createStatisticsRouter } from './api/routers/StatisticRouter'
 
 export class Application {
   start: () => Promise<void>

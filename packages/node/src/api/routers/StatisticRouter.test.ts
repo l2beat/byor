@@ -1,5 +1,5 @@
-import { createTestApiServer } from './test/createTestApiServer'
 import { createStatisticsRouter } from './StatisticRouter'
+import { createTestApiServer } from './test/createTestApiServer'
 
 describe(createStatisticsRouter.name, () => {
   it('if data is accepted returns success', async () => {
