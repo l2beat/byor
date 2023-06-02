@@ -5,6 +5,9 @@ import { z } from 'zod'
 import { AccountRepository } from '../../db/AccountRepository'
 import { publicProcedure, router } from '../trpc'
 
+// NOTE(radomski): We need to propagte the return type
+// from this function, we can not infer it
+// eslint-disable-next-line
 export function createAccountRouter(accountRepository: AccountRepository) {
   return router({
     getState: publicProcedure.input(z.string()).query((opts) => {

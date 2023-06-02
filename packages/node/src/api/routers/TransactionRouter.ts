@@ -5,6 +5,9 @@ import { z } from 'zod'
 import { Mempool } from '../../peripherals/mempool/Mempool'
 import { publicProcedure, router } from '../trpc'
 
+// NOTE(radomski): We need to propagte the return type
+// from this function, we can not infer it
+// eslint-disable-next-line
 export function createTransactionRouter(transactionMempool: Mempool) {
   return router({
     submit: publicProcedure

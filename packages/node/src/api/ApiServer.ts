@@ -1,19 +1,18 @@
 import { Logger } from '@byor/shared'
-import { AnyRouter } from '@trpc/server'
 import { createHTTPServer } from '@trpc/server/adapters/standalone'
 import http from 'http'
 
-import { AppRouter, makeRouter } from './types/AppRouter'
+import { AppRouters, makeRouter, RootRouter } from './types/AppRouter'
 
 export class ApiServer {
-  private readonly router: AnyRouter
+  private readonly router: RootRouter
   private readonly httpServer: http.Server
   private readonly listenCallback: (port: number) => void
 
   constructor(
     private readonly port: number,
     private readonly logger: Logger,
-    routers: AppRouter,
+    routers: AppRouters,
   ) {
     this.logger = logger.for(this)
     this.router = makeRouter(routers)

@@ -11,7 +11,7 @@ import { ApiServer } from './api/ApiServer'
 import { createAccountRouter } from './api/routers/AccountRouter'
 import { createStatisticsRouter } from './api/routers/StatisticRouter'
 import { createTransactionRouter } from './api/routers/TransactionRouter'
-import { AppRouter } from './api/types/AppRouter'
+import { AppRouters } from './api/types/AppRouter'
 import { Config, createChain } from './config'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
@@ -76,7 +76,7 @@ export class Application {
       logger,
     )
 
-    const routers: AppRouter = {
+    const routers: AppRouters = {
       accounts: createAccountRouter(accountRepository),
       transactions: createTransactionRouter(mempool),
       statistics: createStatisticsRouter(),
