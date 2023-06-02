@@ -6,7 +6,7 @@ import {
   TransactionBatch,
   Unsigned64,
 } from '@byor/shared'
-import { getGenesisState } from '../src/config/getGenesisState'
+import { getGenesisState } from '../../src/config/getGenesisState'
 import { command, positional, run, string, Type } from 'cmd-ts'
 import {
   createWalletClient,

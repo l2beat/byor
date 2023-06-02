@@ -50,7 +50,7 @@ export class FetcherRepository extends BaseRepository {
     if (!res) {
       const res = {
         chainId,
-        lastFetchedBlock: 0n,
+        lastFetchedBlock: -1n,
       }
 
       return res

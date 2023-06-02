@@ -1,6 +1,8 @@
 import { EthereumAddress } from '@byor/shared/src/types';
+import { createServerSideHelpers } from '@trpc/react-query/server';
 import { Separator } from '@/components/ui/separator'
 import { trpc } from '@/lib/trpc';
+import { GetServerSidePropsContext } from 'next';
 
 function Statistic({ description, value }): JSX.Element {
   return (
@@ -12,17 +14,13 @@ function Statistic({ description, value }): JSX.Element {
 }
 
 export function Overview(): JSX.Element {
-    const res = trpc.accounts.getState.useQuery("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
-    // const res = trpc.accounts.getState.useQuery("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
+    const res = trpc.accounts.getState.useQuery("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
 
-    if(res.status !== 'success') {
+    if(!res.data) {
         return (<h1>Loading...</h1>);
     }
 
     const { data } = res;
-    // const data = {
-    // balance: 10,
-    // }
 
   return (
     <div className="container flex border rounded p-6 justify-around">
@@ -31,7 +29,7 @@ export function Overview(): JSX.Element {
         <Separator />
         <Statistic
           description={'L1 Last Batch Upload'}
-          value={'13:43:15 18.05.2023'}
+          value={`${data.nonce}`}
         />
       </div>
       <Separator orientation="vertical" />
@@ -43,3 +41,25 @@ export function Overview(): JSX.Element {
     </div>
   )
 }
+
+/*
+export async function getServerSideProps(
+  context: GetServerSidePropsContext<{ id: string }>,
+) {
+  const helpers = createServerSideHelpers({
+    router: trpc,
+    ctx: {},
+  });
+  const id = context.params?.id as string;
+   * Prefetching the `post.byId` query.
+   * `prefetch` does not return the result and never throws - if you need that behavior, use `fetch` instead.
+  await helpers.post.byId.prefetch({ id });
+  // Make sure to return { props: { trpcState: helpers.dehydrate() } }
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+      id,
+    },
+  };
+}
+*/
