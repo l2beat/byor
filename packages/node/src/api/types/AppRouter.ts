@@ -1,11 +1,9 @@
-import { ProcedureRouterRecord } from '@trpc/server'
-
 import { createAccountRouter } from '../routers/AccountRouter'
 import { createStatisticsRouter } from '../routers/StatisticRouter'
 import { createTransactionRouter } from '../routers/TransactionRouter'
 import { router } from '../trpc'
 
-export interface AppRouters extends ProcedureRouterRecord {
+export type AppRouters = {
   accounts: ReturnType<typeof createAccountRouter>
   transactions: ReturnType<typeof createTransactionRouter>
   statistics: ReturnType<typeof createStatisticsRouter>
