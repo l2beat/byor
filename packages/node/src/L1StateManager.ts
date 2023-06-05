@@ -80,7 +80,8 @@ export class L1StateManager {
     let accountState = this.getState()
 
     for (const [batch, state] of zip(batches, l1States)) {
-      // eslint-disable-next-line
+      // NOTE(radomski): We know that it won't be undefined
+      // because of the assert at the beginning of this function
       /* eslint-disable */
       accountState = executeBatch(accountState, batch!, state!.poster)
 
