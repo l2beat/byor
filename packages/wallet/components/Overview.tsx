@@ -43,10 +43,10 @@ function formatUnixTimestampMs(timestampMs: number): string {
 
 function formatUnixTimestampMsOrDefault(timestampMs: number | null): string {
   if (timestampMs) {
-    return formatUnixTimestampMs(timestampMs);
+    return formatUnixTimestampMs(timestampMs)
   }
 
-  return "No transactions found"
+  return 'No transactions found'
 }
 
 export function Overview(): JSX.Element {
@@ -68,7 +68,9 @@ export function Overview(): JSX.Element {
         <Separator />
         <Statistic
           description={'L1 Last Batch Upload'}
-          value={`${formatUnixTimestampMsOrDefault(data.l1LastBatchUploadTimestamp)}`}
+          value={`${formatUnixTimestampMsOrDefault(
+            data.l1LastBatchUploadTimestamp,
+          )}`}
         />
       </div>
       <Separator orientation="vertical" />
