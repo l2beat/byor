@@ -15,6 +15,13 @@
       "when": 1685437049727,
       "tag": "0001_hard_kronos",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1685729850142,
+      "tag": "0002_kind_shotgun",
+      "breakpoints": true
     }
   ]
 }

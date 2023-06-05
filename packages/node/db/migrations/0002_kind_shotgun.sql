@@ -1,0 +1,1 @@
+ALTER TABLE transactions ADD `l1SubmittedDate` integer NOT NULL;

@@ -1,9 +1,16 @@
+import { mockFn, mockObject } from 'earl'
+
+import { TransactionRepository } from '../../db/TransactionRepository'
 import { createStatisticsRouter } from './StatisticRouter'
 import { createTestApiServer } from './test/createTestApiServer'
 
 describe(createStatisticsRouter.name, () => {
   it('if data is accepted returns success', async () => {
-    const router = createStatisticsRouter()
+    const transactionRepository = mockObject<TransactionRepository>({
+      getCount: mockFn().returnsOnce(955),
+      getCountSinceLast24h: mockFn().returnsOnce(74)
+    })
+    const router = createStatisticsRouter(transactionRepository)
     const server = createTestApiServer({ router })
 
     await server

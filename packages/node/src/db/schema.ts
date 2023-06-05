@@ -10,6 +10,9 @@ export const transactionsSchema = sqliteTable(
     nonce: integer('nonce').notNull(),
     fee: integer('fee').notNull(),
     feeReceipent: text('feeReceipent').notNull(),
+    l1SubmittedDate: integer('l1SubmittedDate', {
+      mode: 'timestamp',
+    }).notNull(),
   },
   (transactions) => ({
     // NOTE(radomski): The best thing to have would be a "UNIQUE" constraint
