@@ -3,6 +3,9 @@ import { createStatisticsRouter } from '../routers/StatisticRouter'
 import { createTransactionRouter } from '../routers/TransactionRouter'
 import { router } from '../trpc'
 
+// NOTE(radomski): Must be a type but eslint refactors it to an interface, but
+// tRPC expects a compile time type definition which interface does not provide
+// eslint-disable-next-line
 export type AppRouters = {
   accounts: ReturnType<typeof createAccountRouter>
   transactions: ReturnType<typeof createTransactionRouter>
