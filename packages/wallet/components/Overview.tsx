@@ -15,8 +15,8 @@ function Statistic({ description, value }: StatisticProps): JSX.Element {
   )
 }
 
-function formatUnixTimestamp(timestamp: number): string {
-  const date = new Date(timestamp * 1000) // Convert seconds to milliseconds
+function formatUnixTimestampMs(timestampMs: number): string {
+  const date = new Date(timestampMs)
   const months = [
     'Jan',
     'Feb',
@@ -41,6 +41,14 @@ function formatUnixTimestamp(timestamp: number): string {
   return `${year} ${month} ${day} ${hours}:${minutes}:${seconds} (UTC)`
 }
 
+function formatUnixTimestampMsOrDefault(timestampMs: number | null): string {
+  if (timestampMs) {
+    return formatUnixTimestampMs(timestampMs);
+  }
+
+  return "No transactions found"
+}
+
 export function Overview(): JSX.Element {
   const res = trpc.statistics.getOverview.useQuery()
 
@@ -60,7 +68,7 @@ export function Overview(): JSX.Element {
         <Separator />
         <Statistic
           description={'L1 Last Batch Upload'}
-          value={`${formatUnixTimestamp(data.l1LastBatchUploadTimestamp)}`}
+          value={`${formatUnixTimestampMsOrDefault(data.l1LastBatchUploadTimestamp)}`}
         />
       </div>
       <Separator orientation="vertical" />

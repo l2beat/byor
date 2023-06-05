@@ -1,37 +1,42 @@
 import { EthereumAddress, Unsigned64 } from '@byor/shared'
 import { expect } from 'earl'
 
-import { TransactionRecord, TransactionRepository } from './TransactionRepository'
 import { setupDatabaseTestSuite } from './test/setup'
+import { TransactionRepository } from './TransactionRepository'
 
 describe(TransactionRepository.name, () => {
   const database = setupDatabaseTestSuite()
   const repository = new TransactionRepository(database)
+  const dateMinus12h = new Date(new Date().getTime() - 12 * 60 * 60 * 1000)
   const modelTransactions = [
-      {
-          from: EthereumAddress("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"),
-          to: EthereumAddress("0x70997970C51812dc3A010C7d01b50e0d17dc79C8"),
-          value: Unsigned64(10),
-          nonce: Unsigned64(4),
-          fee: Unsigned64(2),
-          feeReceipent: EthereumAddress("0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"),
-          l1SubmittedDate: new Date('2000-01-01'),
-      },
-      {
-          from: EthereumAddress("0x70997970C51812dc3A010C7d01b50e0d17dc79C8"),
-          to: EthereumAddress("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"),
-          value: Unsigned64(20),
-          nonce: Unsigned64(7),
-          fee: Unsigned64(999),
-          feeReceipent: EthereumAddress("0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"),
-          l1SubmittedDate: new Date(new Date().getTime() - (12 * 60 * 60 * 1000)),
-      }
+    {
+      from: EthereumAddress('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'),
+      to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
+      value: Unsigned64(10),
+      nonce: Unsigned64(4),
+      fee: Unsigned64(2),
+      feeReceipent: EthereumAddress(
+        '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+      ),
+      l1SubmittedDate: new Date('2000-01-01'),
+    },
+    {
+      from: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
+      to: EthereumAddress('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'),
+      value: Unsigned64(20),
+      nonce: Unsigned64(7),
+      fee: Unsigned64(999),
+      feeReceipent: EthereumAddress(
+        '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+      ),
+      l1SubmittedDate: dateMinus12h,
+    },
   ]
 
   before(() => {
-      modelTransactions[1]?.l1SubmittedDate.setMinutes(0)
-      modelTransactions[1]?.l1SubmittedDate.setSeconds(0)
-      modelTransactions[1]?.l1SubmittedDate.setMilliseconds(0)
+    modelTransactions[1]?.l1SubmittedDate.setMinutes(0)
+    modelTransactions[1]?.l1SubmittedDate.setSeconds(0)
+    modelTransactions[1]?.l1SubmittedDate.setMilliseconds(0)
   })
 
   beforeEach(async () => {
@@ -97,9 +102,42 @@ describe(TransactionRepository.name, () => {
     })
 
     it('no-op if empty', async () => {
-        repository.deleteAll()
+      repository.deleteAll()
 
       expect(repository.getCount()).toEqual(0)
     })
   })
+
+  describe(TransactionRepository.prototype.getDailyTokenVolume.name, () => {
+    it('returns token volume for transactions yonger than 24h', async () => {
+      repository.addMany(modelTransactions)
+
+      expect(repository.getDailyTokenVolume()).toEqual(1019)
+    })
+
+    it('returns zero if all transactions are older than 24h', async () => {
+      repository.addMany(modelTransactions.slice(0, 1))
+
+      expect(repository.getDailyTokenVolume()).toEqual(0)
+    })
+
+    it('no-op if empty', async () => {
+      expect(repository.getDailyTokenVolume()).toEqual(0)
+    })
+  })
+
+  describe(
+    TransactionRepository.prototype.getYoungestTransactionDate.name,
+    () => {
+      it('returns token volume for transactions yonger than 24h', async () => {
+        repository.addMany(modelTransactions)
+
+        expect(repository.getYoungestTransactionDate()).toEqual(dateMinus12h)
+      })
+
+      it('returns token volume for transactions yonger than 24h', async () => {
+        expect(repository.getYoungestTransactionDate()).toEqual(null)
+      })
+    },
+  )
 })
