@@ -11,6 +11,7 @@ import { expect, mockFn, mockObject } from 'earl'
 import { privateKeyToAccount } from 'viem/accounts'
 
 import { AccountRepository } from './db/AccountRepository'
+import { TransactionRepository } from './db/TransactionRepository'
 import { L1StateFetcher } from './L1StateFetcher'
 import { L1StateManager } from './L1StateManager'
 
@@ -79,9 +80,13 @@ describe(L1StateManager.name, () => {
           },
         ]),
       })
+      const transactionRepository = mockObject<TransactionRepository>({
+        addMany: mockFn().returns(null),
+      })
       const l1Manager = new L1StateManager(
         PROBE_PERIOD_SEC,
         accountRepository,
+        transactionRepository,
         l1Fetcher,
         Logger.SILENT,
       )
@@ -172,9 +177,13 @@ describe(L1StateManager.name, () => {
             },
           ]),
       })
+      const transactionRepository = mockObject<TransactionRepository>({
+        addMany: mockFn().returns(null),
+      })
       const l1Manager = new L1StateManager(
         PROBE_PERIOD_SEC,
         accountRepository,
+        transactionRepository,
         l1Fetcher,
         Logger.SILENT,
       )
@@ -297,9 +306,13 @@ describe(L1StateManager.name, () => {
             },
           ]),
       })
+      const transactionRepository = mockObject<TransactionRepository>({
+        addMany: mockFn().returns(null),
+      })
       const l1Manager = new L1StateManager(
         PROBE_PERIOD_SEC,
         accountRepository,
+        transactionRepository,
         l1Fetcher,
         Logger.SILENT,
       )
