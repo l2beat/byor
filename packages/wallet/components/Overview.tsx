@@ -51,7 +51,7 @@ export function Overview(): JSX.Element {
   const { data } = res
 
   return (
-    <div className="container flex border rounded p-6 justify-around">
+    <div className="container flex border rounded mt-10 justify-around">
       <div>
         <Statistic
           description={'L2 Transactions'}
