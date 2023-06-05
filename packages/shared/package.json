@@ -24,7 +24,7 @@
     "esbuild-register": "^3.4.2"
   },
   "dependencies": {
-    "chalk": "^5.2.0",
+    "chalk": "^4.1.2",
     "viem": "^0.3.22",
     "zod": "^3.21.4"
   }
