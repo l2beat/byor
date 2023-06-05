@@ -20,8 +20,14 @@ export const transactionsSchema = sqliteTable(
     compositePk: primaryKey(transactions.from, transactions.nonce),
   }),
 )
+
 export const accountsSchema = sqliteTable('accounts', {
   address: text('address').primaryKey(),
   balance: integer('balance').default(0).notNull(),
   nonce: integer('nonce').default(0).notNull(),
+})
+
+export const fetcherSchema = sqliteTable('fetcherStates', {
+  chainId: integer('chainId').primaryKey(),
+  lastFetchedBlock: integer('lastFetchedBlock').default(0).notNull(),
 })

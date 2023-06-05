@@ -28,7 +28,7 @@ export class L1StateManager {
   async start(): Promise<void> {
     this.logger.info('Starting')
 
-    const eventState = await this.l1Fetcher.getWholeState()
+    const eventState = await this.l1Fetcher.getNewState()
     await this.apply(eventState)
 
     setIntervalAsync(async () => {

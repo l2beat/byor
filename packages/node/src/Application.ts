@@ -13,6 +13,7 @@ import { createTransactionRouter } from './api/routers/TransactionRouter'
 import { Config, createChain } from './config'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
+import { FetcherRepository } from './db/FetcherRepository'
 import { GenesisStateLoader } from './GenesisStateLoader'
 import { L1StateFetcher } from './L1StateFetcher'
 import { L1StateManager } from './L1StateManager'
@@ -26,6 +27,7 @@ export class Application {
   constructor(config: Config) {
     const database = new Database(config.databasePath)
     const accountRepository = new AccountRepository(database)
+    const fetcherRepository = new FetcherRepository(database)
     const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
 
     const chain = createChain(config.chainId, config.rpcUrl)
@@ -52,6 +54,7 @@ export class Application {
     )
     const l1Fetcher = new L1StateFetcher(
       ethereumClient,
+      fetcherRepository,
       config.ctcContractAddress,
       logger,
     )
