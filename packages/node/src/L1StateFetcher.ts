@@ -100,7 +100,7 @@ export class L1StateFetcher {
       events.map((event) => {
         assert(
           event.blockHash !== null,
-          'Expected the transaction hash in the event to be non-null',
+          'Expected the block hash in the event to be non-null',
         )
 
         return this.client.getBlockHeader(Hex(event.blockHash))
