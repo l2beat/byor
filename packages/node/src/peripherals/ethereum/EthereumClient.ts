@@ -39,13 +39,6 @@ export class EthereumClient {
     return result
   }
 
-  async getLogsSinceGenesis<TAbiEvent extends AbiEvent>(
-    abi: TAbiEvent,
-    contractAddress: EthereumAddress,
-  ): Promise<GetLogsReturnType<TAbiEvent>> {
-    return this.getLogsInRange(abi, contractAddress, 0n)
-  }
-
   async getTransaction(hash: Hex): Promise<Transaction> {
     const result = this.publicProvider.getTransaction({
       hash: hash.toString() as ViemHex,
