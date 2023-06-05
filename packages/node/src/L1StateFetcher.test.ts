@@ -28,6 +28,7 @@ describe(L1StateFetcher.name, () => {
                 sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
               },
               transactionHash: '0x1234',
+              blockHash: '0x12341234',
               blockNumber: 10n,
             },
           ])
@@ -37,6 +38,7 @@ describe(L1StateFetcher.name, () => {
                 sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
               },
               transactionHash: '0xaabb',
+              blockHash: '0xaabbaabb',
               blockNumber: 11n,
             },
             {
@@ -44,6 +46,7 @@ describe(L1StateFetcher.name, () => {
                 sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
               },
               transactionHash: '0xffee',
+              blockHash: '0xffeeffee',
               blockNumber: 17n,
             },
             {
@@ -51,6 +54,7 @@ describe(L1StateFetcher.name, () => {
                 sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
               },
               transactionHash: '0xbbcc',
+              blockHash: '0xbbccbbcc',
               blockNumber: 12n,
             },
           ])
@@ -72,6 +76,11 @@ describe(L1StateFetcher.name, () => {
             input:
               '0x96677ca20000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000cffffeeeeddddccccbbbbaaaa0000000000000000000000000000000000000000',
           }),
+        getBlockHeader: mockFn()
+          .returnsOnce({ timestamp: 1646701020n })
+          .returnsOnce({ timestamp: 1645878310n })
+          .returnsOnce({ timestamp: 1608293972n })
+          .returnsOnce({ timestamp: 1749685967n }),
       })
       const l1Fetcher = new L1StateFetcher(
         client,
@@ -106,20 +115,24 @@ describe(L1StateFetcher.name, () => {
         {
           poster: EthereumAddress('0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3'),
           calldata: Hex('0xaabbccddeeff'),
+          timestamp: new Date(1646701020 * 1000),
         },
       ])
       expect(update1).toEqual([
         {
           poster: EthereumAddress('0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3'),
           calldata: Hex('0xaaaabbbbccccddddeeeeffff'),
+          timestamp: new Date(1645878310 * 1000),
         },
         {
           poster: EthereumAddress('0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3'),
           calldata: Hex('0xffeeddccbbaa'),
+          timestamp: new Date(1608293972 * 1000),
         },
         {
           poster: EthereumAddress('0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3'),
           calldata: Hex('0xffffeeeeddddccccbbbbaaaa'),
+          timestamp: new Date(1749685967 * 1000),
         },
       ])
       expect(update2).toEqual([])
@@ -144,12 +157,14 @@ describe(L1StateFetcher.name, () => {
               sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
             },
             transactionHash: '0x1234',
+            blockHash: '0x12341234',
           },
         ]),
         getTransaction: mockFn().returnsOnce({
           input:
             '0x96677ca200000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000006aabbccddeeff0000000000000000000000000000000000000000000000000000',
         }),
+        getBlockHeader: mockFn().returnsOnce({ timestamp: 1646701020n }),
       })
       const l1Fetcher = new L1StateFetcher(
         client,
@@ -169,6 +184,7 @@ describe(L1StateFetcher.name, () => {
         {
           poster: EthereumAddress('0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3'),
           calldata: Hex('0xaabbccddeeff'),
+          timestamp: new Date(1646701020 * 1000),
         },
       ])
     })
@@ -192,12 +208,14 @@ describe(L1StateFetcher.name, () => {
               sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
             },
             transactionHash: '0x1234',
+            blockHash: '0x12341234',
           },
         ]),
         getTransaction: mockFn().returnsOnce({
           input:
             '0x96677ca200000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000',
         }),
+        getBlockHeader: mockFn().returnsOnce({ timestamp: 1646701020n }),
       })
       const l1Fetcher = new L1StateFetcher(
         client,
@@ -217,6 +235,7 @@ describe(L1StateFetcher.name, () => {
         {
           poster: EthereumAddress('0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3'),
           calldata: Hex('0x0'),
+          timestamp: new Date(1646701020 * 1000),
         },
       ])
     })

@@ -1,6 +1,7 @@
 import { EthereumAddress, Hex, Logger } from '@byor/shared'
 import { AbiEvent } from 'abitype'
 import {
+  GetBlockReturnType,
   GetLogsReturnType,
   Hex as ViemHex,
   PublicClient,
@@ -48,6 +49,14 @@ export class EthereumClient {
   async getTransaction(hash: Hex): Promise<Transaction> {
     const result = this.publicProvider.getTransaction({
       hash: hash.toString() as ViemHex,
+    })
+
+    return result
+  }
+
+  async getBlockHeader(hash: Hex): Promise<GetBlockReturnType> {
+    const result = this.publicProvider.getBlock({
+      blockHash: hash.toString() as ViemHex,
     })
 
     return result

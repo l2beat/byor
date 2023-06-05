@@ -65,6 +65,7 @@ export class Application {
     const l1Manager = new L1StateManager(
       config.probePeriodSec,
       accountRepository,
+      transactionRepository,
       l1Fetcher,
       logger,
     )
