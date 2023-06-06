@@ -26,9 +26,13 @@ export function Wallet() {
           <Web3Button />
         </div>
       </div>
-      <div className="basis-full my-2">
-        {ready ? <WalletBalance address={address} /> : <></>}
-      </div>
+      {ready ? (
+        <div className="basis-full my-2">
+          <WalletBalance address={address} />
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   )
 }
@@ -43,7 +47,7 @@ function WalletBalance({ address }: WalletAccountProps) {
 
   return (
     <>
-      {acc && acc.isFetched ? (
+      {acc?.isFetched ? (
         <div>
           <div>
             <span className="text-1xl text-accent-foreground/50">
