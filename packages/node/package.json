@@ -19,6 +19,7 @@
     "seeder": "node -r esbuild-register scripts/seeder"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.13",
     "@types/supertest": "^2.0.12",
     "drizzle-kit": "^0.17.6",
     "earl": "^1.1.0",
@@ -34,6 +35,7 @@
     "abitype": "^0.8.4",
     "better-sqlite3": "^8.3.0",
     "cmd-ts": "^0.12.1",
+    "cors": "^2.8.5",
     "drizzle-orm": "^0.25.4",
     "lodash": "^4.17.21",
     "viem": "^0.3.22",

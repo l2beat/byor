@@ -24,6 +24,8 @@
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
+    "@web3modal/ethereum": "^2.4.3",
+    "@web3modal/react": "^2.4.3",
     "autoprefixer": "10.4.14",
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
@@ -38,6 +40,8 @@
     "tailwindcss": "3.3.2",
     "tailwindcss-animate": "^1.0.5",
     "typescript": "5.0.4",
+    "viem": "^0.3.50",
+    "wagmi": "^1.1.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
