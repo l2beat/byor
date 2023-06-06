@@ -3,6 +3,8 @@ import { command, positional, run, string } from 'cmd-ts'
 import { Application } from './Application'
 import { getConfig } from './config'
 
+export type { RootRouter } from './api/types/AppRouter'
+
 const cmd = command({
   name: 'node',
   description: 'L2 Node for a sovereign rollup',

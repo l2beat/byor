@@ -9,11 +9,14 @@ import { privateKeyToAccount } from 'viem/accounts'
 
 import { ApiServer } from './api/ApiServer'
 import { createAccountRouter } from './api/routers/AccountRouter'
+import { createStatisticsRouter } from './api/routers/StatisticRouter'
 import { createTransactionRouter } from './api/routers/TransactionRouter'
+import { AppRouters } from './api/types/AppRouter'
 import { Config, createChain } from './config'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
 import { FetcherRepository } from './db/FetcherRepository'
+import { TransactionRepository } from './db/TransactionRepository'
 import { GenesisStateLoader } from './GenesisStateLoader'
 import { L1StateFetcher } from './L1StateFetcher'
 import { L1StateManager } from './L1StateManager'
@@ -27,6 +30,8 @@ export class Application {
   constructor(config: Config) {
     const database = new Database(config.databasePath)
     const accountRepository = new AccountRepository(database)
+    // NOTE(radomski): We store transactions only for statistics
+    const transactionRepository = new TransactionRepository(database)
     const fetcherRepository = new FetcherRepository(database)
     const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
 
@@ -61,6 +66,7 @@ export class Application {
     const l1Manager = new L1StateManager(
       config.probePeriodSec,
       accountRepository,
+      transactionRepository,
       l1Fetcher,
       logger,
     )
@@ -74,9 +80,10 @@ export class Application {
       logger,
     )
 
-    const routers = {
+    const routers: AppRouters = {
       accounts: createAccountRouter(accountRepository),
       transactions: createTransactionRouter(mempool),
+      statistics: createStatisticsRouter(transactionRepository),
     }
 
     const apiServer = new ApiServer(config.rpcServePort, logger, routers)

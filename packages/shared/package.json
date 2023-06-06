@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "sideEffects": false,
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prebuild": "yarn clean",
@@ -23,7 +24,7 @@
     "esbuild-register": "^3.4.2"
   },
   "dependencies": {
-    "chalk": "^5.2.0",
+    "chalk": "^4.1.2",
     "viem": "^0.3.22",
     "zod": "^3.21.4"
   }

@@ -1,11 +1,11 @@
 import {
   EthereumAddress,
   GenesisStateMap,
-  getGenesisState,
   Logger,
   Unsigned64,
 } from '@byor/shared'
 
+import { getGenesisState } from './config/getGenesisState'
 import { AccountRecord, AccountRepository } from './db/AccountRepository'
 
 export class GenesisStateLoader {

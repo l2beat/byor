@@ -3,13 +3,16 @@ import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 export const transactionsSchema = sqliteTable(
   'transactions',
   {
-    id: integer('id').notNull(),
+    id: integer('id'),
     from: text('from').notNull(),
     to: text('to').notNull(),
     value: integer('value').notNull(),
     nonce: integer('nonce').notNull(),
     fee: integer('fee').notNull(),
     feeReceipent: text('feeReceipent').notNull(),
+    l1SubmittedDate: integer('l1SubmittedDate', {
+      mode: 'timestamp',
+    }).notNull(),
   },
   (transactions) => ({
     // NOTE(radomski): The best thing to have would be a "UNIQUE" constraint

@@ -8,6 +8,10 @@ import {
 import { zip } from 'lodash'
 
 import { AccountRepository } from './db/AccountRepository'
+import {
+  TransactionRecord,
+  TransactionRepository,
+} from './db/TransactionRepository'
 import { executeBatch, StateMap } from './executeBatch'
 import { L1EventStateType } from './L1EventStateType'
 import { L1StateFetcher } from './L1StateFetcher'
@@ -18,6 +22,7 @@ export class L1StateManager {
   constructor(
     probePeriodSec: number,
     private readonly accountRepository: AccountRepository,
+    private readonly transactionRepository: TransactionRepository,
     private readonly l1Fetcher: L1StateFetcher,
     private readonly logger: Logger,
   ) {
@@ -77,8 +82,23 @@ export class L1StateManager {
     for (const [batch, state] of zip(batches, l1States)) {
       // NOTE(radomski): We know that it won't be undefined
       // because of the assert at the beginning of this function
-      // eslint-disable-next-line
+      /* eslint-disable */
       accountState = executeBatch(accountState, batch!, state!.poster)
+
+      this.transactionRepository.addMany(
+        batch!.map((tx) => {
+          return {
+            from: tx.from,
+            to: tx.to,
+            value: tx.value,
+            nonce: tx.nonce,
+            fee: tx.fee,
+            feeReceipent: state!.poster,
+            l1SubmittedDate: state!.timestamp,
+          } as TransactionRecord
+        }),
+      )
+      /* eslint-enable */
     }
 
     this.accountRepository.addOrUpdateMany(

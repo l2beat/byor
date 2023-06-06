@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "5528fe0a-6caf-4837-bdf4-f60d268ad1b5",
+  "id": "5c548fe5-4d4f-4456-bee2-cd1be5d6fedd",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accounts": {
@@ -34,6 +34,29 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {}
     },
+    "fetcherStates": {
+      "name": "fetcherStates",
+      "columns": {
+        "chainId": {
+          "name": "chainId",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lastFetchedBlock": {
+          "name": "lastFetchedBlock",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
+    },
     "transactions": {
       "name": "transactions",
       "columns": {
@@ -41,7 +64,7 @@
           "name": "id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "from": {
@@ -82,6 +105,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "l1SubmittedDate": {
+          "name": "l1SubmittedDate",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {},

@@ -6,23 +6,42 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "mocha",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format:fix": "prettier --write .",
     "format": "prettier --check ."
   },
   "dependencies": {
+    "@byor/node": "*",
+    "@byor/shared": "*",
+    "@radix-ui/react-separator": "^1.0.3",
+    "@tanstack/react-query": "^4.29.12",
+    "@trpc/client": "^10.28.1",
+    "@trpc/next": "^10.28.1",
+    "@trpc/react-query": "^10.28.1",
+    "@trpc/server": "^10.28.1",
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "10.4.14",
+    "class-variance-authority": "^0.6.0",
+    "clsx": "^1.2.1",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
+    "lucide-react": "^0.229.0",
     "next": "13.4.4",
     "postcss": "8.4.24",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "tailwind-merge": "^1.12.0",
     "tailwindcss": "3.3.2",
-    "typescript": "5.0.4"
+    "tailwindcss-animate": "^1.0.5",
+    "typescript": "5.0.4",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "earl": "^1.1.0",
+    "lodash": "^4.17.21"
   }
 }

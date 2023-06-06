@@ -42,11 +42,12 @@ export class L1StateFetcher {
       this.lastFetchedBlock + 1n,
     )
     const calldata = await this.eventsToCallData(l1State)
+    const timestamps = await this.eventsToTimestamps(l1State)
     const posters = eventsToPosters(l1State)
 
     assert(
-      l1State.length === posters.length,
-      'The amount of calldata is not equal to the amount of poster address',
+      l1State.length === posters.length && l1State.length === timestamps.length,
+      'The amount of calldata is not equal to the amount of poster address or amount of timestamps',
     )
 
     for (const event of l1State) {
@@ -60,9 +61,14 @@ export class L1StateFetcher {
 
     this.updateFetcherDatabase()
 
-    return zipWith(posters, calldata, (poster, calldata) => {
-      return { poster, calldata }
-    })
+    return zipWith(
+      posters,
+      timestamps,
+      calldata,
+      (poster, timestamp, calldata) => {
+        return { poster, timestamp, calldata }
+      },
+    )
   }
 
   async eventsToCallData(events: BatchAppendedLogsType): Promise<Hex[]> {
@@ -87,6 +93,25 @@ export class L1StateFetcher {
     })
 
     return decoded
+  }
+
+  async eventsToTimestamps(events: BatchAppendedLogsType): Promise<Date[]> {
+    const blocks = await Promise.all(
+      events.map((event) => {
+        assert(
+          event.blockHash !== null,
+          'Expected the block hash in the event to be non-null',
+        )
+
+        return this.client.getBlockHeader(Hex(event.blockHash))
+      }),
+    )
+
+    const timestamps = blocks.map((block) => {
+      return new Date(parseInt(block.timestamp.toString(), 10) * 1000)
+    })
+
+    return timestamps
   }
 
   updateFetcherDatabase(): void {

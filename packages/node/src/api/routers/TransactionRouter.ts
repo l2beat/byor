@@ -1,13 +1,14 @@
 import { branded, deserializeBatch, Hex } from '@byor/shared'
-import { AnyRouter, TRPCError } from '@trpc/server'
+import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
 import { Mempool } from '../../peripherals/mempool/Mempool'
 import { publicProcedure, router } from '../trpc'
 
-export function createTransactionRouter(
-  transactionMempool: Mempool,
-): AnyRouter {
+// NOTE(radomski): We need to propagte the return type
+// from this function, we can not infer it
+// eslint-disable-next-line
+export function createTransactionRouter(transactionMempool: Mempool) {
   return router({
     submit: publicProcedure
       .input(branded(z.string(), Hex))
