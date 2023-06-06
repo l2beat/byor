@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "mocha",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format:fix": "prettier --write .",

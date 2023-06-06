@@ -24,11 +24,13 @@ export function formatUnixTimestampMs(timestampMs: number): string {
   return `${year} ${month} ${day} ${hours}:${minutes}:${seconds} (UTC)`
 }
 
-export function formatUnixTimestampMsOrDefault(timestampMs: number | null, defaultString: string): string {
+export function formatUnixTimestampMsOrDefault(
+  timestampMs: number | null,
+  defaultString: string,
+): string {
   if (timestampMs) {
     return formatUnixTimestampMs(timestampMs)
   }
 
   return defaultString
 }
-
