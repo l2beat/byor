@@ -10,6 +10,8 @@ export interface TransactionRecord extends Transaction {
   l1SubmittedDate: Date
 }
 
+const ONE_DAY_MS = 24 * 60 * 60 * 1000
+
 export class TransactionRepository extends BaseRepository {
   getAll(): TransactionRecord[] {
     const drizzle = this.drizzle()
@@ -44,7 +46,7 @@ export class TransactionRepository extends BaseRepository {
       .where(
         gte(
           transactionsSchema.l1SubmittedDate,
-          new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+          new Date(new Date().getTime() - ONE_DAY_MS),
         ),
       )
       .get().count
@@ -65,7 +67,7 @@ export class TransactionRepository extends BaseRepository {
       .where(
         gte(
           transactionsSchema.l1SubmittedDate,
-          new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+          new Date(new Date().getTime() - ONE_DAY_MS),
         ),
       )
       .get().volume
