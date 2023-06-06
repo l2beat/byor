@@ -30,6 +30,7 @@ export class Application {
   constructor(config: Config) {
     const database = new Database(config.databasePath)
     const accountRepository = new AccountRepository(database)
+    // NOTE(radomski): We store transactions only for statistics
     const transactionRepository = new TransactionRepository(database)
     const fetcherRepository = new FetcherRepository(database)
     const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
