@@ -1,19 +1,11 @@
 import { Separator } from '@/components/ui/separator'
 import { trpc } from '@/lib/trpc'
+
 import { formatUnixTimestampMsOrDefault } from '../utils/formatUnixTimestamp'
 
 interface StatisticProps {
   description: string
   value: string
-}
-
-function Statistic({ description, value }: StatisticProps): JSX.Element {
-  return (
-    <div className="font-sens-serif uppercase py-1">
-      <div>{`${description}`}</div>
-      <h1 className="text-2xl">{`${value}`}</h1>
-    </div>
-  )
 }
 
 export function Overview(): JSX.Element {
@@ -37,7 +29,7 @@ export function Overview(): JSX.Element {
           description={'L1 Last Batch Upload'}
           value={`${formatUnixTimestampMsOrDefault(
             data.l1LastBatchUploadTimestamp,
-            'No transactions found'
+            'No transactions found',
           )}`}
         />
       </div>
@@ -53,6 +45,15 @@ export function Overview(): JSX.Element {
           value={`${data.l2DailyTokenVolume}`}
         />
       </div>
+    </div>
+  )
+}
+
+function Statistic({ description, value }: StatisticProps): JSX.Element {
+  return (
+    <div className="font-sens-serif uppercase py-1">
+      <div>{`${description}`}</div>
+      <h1 className="text-2xl">{`${value}`}</h1>
     </div>
   )
 }
