@@ -1,5 +1,6 @@
 import { Separator } from '@/components/ui/separator'
 import { trpc } from '@/lib/trpc'
+import { formatUnixTimestampMsOrDefault } from '../utils/formatUnixTimestamp'
 
 interface StatisticProps {
   description: string
@@ -13,40 +14,6 @@ function Statistic({ description, value }: StatisticProps): JSX.Element {
       <h1 className="text-2xl">{`${value}`}</h1>
     </div>
   )
-}
-
-function formatUnixTimestampMs(timestampMs: number): string {
-  const date = new Date(timestampMs)
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
-  const year = date.getUTCFullYear()
-  const month = months[date.getUTCMonth()]
-  const day = `0${date.getUTCDate()}`.slice(-2)
-  const hours = `0${date.getUTCHours()}`.slice(-2)
-  const minutes = `0${date.getUTCMinutes()}`.slice(-2)
-  const seconds = `0${date.getUTCSeconds()}`.slice(-2)
-
-  return `${year} ${month} ${day} ${hours}:${minutes}:${seconds} (UTC)`
-}
-
-function formatUnixTimestampMsOrDefault(timestampMs: number | null): string {
-  if (timestampMs) {
-    return formatUnixTimestampMs(timestampMs)
-  }
-
-  return 'No transactions found'
 }
 
 export function Overview(): JSX.Element {
@@ -70,6 +37,7 @@ export function Overview(): JSX.Element {
           description={'L1 Last Batch Upload'}
           value={`${formatUnixTimestampMsOrDefault(
             data.l1LastBatchUploadTimestamp,
+            'No transactions found'
           )}`}
         />
       </div>

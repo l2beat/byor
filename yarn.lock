@@ -2822,7 +2822,7 @@ drizzle-orm@^0.25.4:
 
 earl@^1.1.0:
   version "1.1.0"
-  resolved "https://registry.npmjs.org/earl/-/earl-1.1.0.tgz"
+  resolved "https://registry.yarnpkg.com/earl/-/earl-1.1.0.tgz#6bd601c3fe3d2e9a2a05a5244f260463052de926"
   integrity sha512-gOYd1+WYoWEkyGvUi9aKJ3Y8zSfIH0YShpvhjj59cwA8NiaWcgZe6wDOHu18j8JqGjHQtGnGIF0F+HlYRh9q9A==
   dependencies:
     error-stack-parser "^2.1.4"
