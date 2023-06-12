@@ -2,7 +2,6 @@
 
 import { EthereumAddress } from '@byor/shared'
 import { Web3Button } from '@web3modal/react'
-import { useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
 
 import { trpc } from '@/lib/trpc'
@@ -12,12 +11,7 @@ interface WalletAccountProps {
 }
 
 export function Wallet() {
-  const { address, isConnected } = useAccount()
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    setReady(isConnected)
-  }, [isConnected])
+  const { address, status } = useAccount()
 
   return (
     <div className="container flex border rounded mt-10 column flex-wrap">
@@ -26,7 +20,7 @@ export function Wallet() {
           <Web3Button />
         </div>
       </div>
-      {ready && address ? (
+      {status === 'connected' ? (
         <div className="basis-full my-2">
           <WalletBalance address={address} />
         </div>
