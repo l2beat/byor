@@ -8,7 +8,7 @@ import { useAccount } from 'wagmi'
 import { trpc } from '@/lib/trpc'
 
 interface WalletAccountProps {
-  address: string | undefined
+  address: string
 }
 
 export function Wallet() {
@@ -26,7 +26,7 @@ export function Wallet() {
           <Web3Button />
         </div>
       </div>
-      {ready ? (
+      {ready && address ? (
         <div className="basis-full my-2">
           <WalletBalance address={address} />
         </div>
@@ -38,12 +38,9 @@ export function Wallet() {
 }
 
 function WalletBalance({ address }: WalletAccountProps) {
-  let acc = undefined
-  if (address) {
-    acc = trpc.accounts.getState.useQuery(EthereumAddress(address), {
-      trpc: { ssr: false },
-    })
-  }
+  let acc = trpc.accounts.getState.useQuery(EthereumAddress(address), {
+    trpc: { ssr: false },
+  })
 
   return (
     <>
