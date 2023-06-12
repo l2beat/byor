@@ -45,29 +45,25 @@ function WalletBalance({ address }: WalletAccountProps) {
   return (
     <>
       {acc.isFetched ? (
-        <div>
+        <div className="text-xl">
           <div>
-            <span className="text-1xl text-accent-foreground/50">
-              Address:{' '}
-            </span>
-            <span className="text-1xl">{acc.data?.address}</span>
+            <span className="text-accent-foreground/50">Address: </span>
+            <span>{acc.data?.address}</span>
           </div>
 
           <div>
-            <span className="text-1xl text-accent-foreground/50">
-              Balance:{' '}
-            </span>
-            <span className="text-1xl">{acc.data?.balance}</span>
+            <span className="text-accent-foreground/50">Balance: </span>
+            <span>{acc.data?.balance}</span>
           </div>
 
           <div>
-            <span className="text-1xl text-accent-foreground/50">Nonce: </span>
-            <span className="text-1xl">{acc.data?.nonce}</span>
+            <span className="text-accent-foreground/50">Nonce: </span>
+            <span>{acc.data?.nonce}</span>
           </div>
         </div>
       ) : (
         <div>
-          <p>{'Loading...'}</p>
+          <p>Loading...</p>
         </div>
       )}
     </>
