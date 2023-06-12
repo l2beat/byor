@@ -1,5 +1,6 @@
 {
   "extends": "next/core-web-vitals",
+  "ignorePatterns": ["components/ui/*.tsx"],
   "rules": {
     "import/no-default-export": "off",
     "@typescript-eslint/explicit-function-return-type": "off"
