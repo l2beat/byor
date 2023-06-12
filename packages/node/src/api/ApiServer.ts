@@ -1,5 +1,6 @@
 import { Logger } from '@byor/shared'
 import { createHTTPServer } from '@trpc/server/adapters/standalone'
+import cors from 'cors'
 import http from 'http'
 
 import { AppRouters, makeRouter, RootRouter } from './types/AppRouter'
@@ -18,6 +19,7 @@ export class ApiServer {
     this.router = makeRouter(routers)
 
     const server = createHTTPServer({
+      middleware: cors(),
       router: this.router,
     })
 
