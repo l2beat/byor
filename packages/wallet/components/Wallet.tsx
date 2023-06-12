@@ -38,13 +38,13 @@ export function Wallet() {
 }
 
 function WalletBalance({ address }: WalletAccountProps) {
-  let acc = trpc.accounts.getState.useQuery(EthereumAddress(address), {
+  const acc = trpc.accounts.getState.useQuery(EthereumAddress(address), {
     trpc: { ssr: false },
   })
 
   return (
     <>
-      {acc?.isFetched ? (
+      {acc.isFetched ? (
         <div>
           <div>
             <span className="text-1xl text-accent-foreground/50">
