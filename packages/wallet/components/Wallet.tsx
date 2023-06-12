@@ -13,11 +13,6 @@ interface WalletAccountProps {
 
 export function Wallet() {
   const { address, isConnected } = useAccount()
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    setReady(isConnected)
-  }, [isConnected])
 
   return (
     <div className="container flex border rounded mt-10 column flex-wrap">
@@ -26,7 +21,7 @@ export function Wallet() {
           <Web3Button />
         </div>
       </div>
-      {ready ? (
+      {isConnected ? (
         <div className="basis-full my-2">
           <WalletBalance address={address} />
         </div>
