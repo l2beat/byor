@@ -5,6 +5,7 @@ import {
   recoverAddress,
 } from 'viem'
 
+import { typedDataDomain, typedDataTypes, typedDataPrimaryType } from './config'
 import { EthereumAddress } from './types/EthereumAddress'
 import { Hex } from './types/Hex'
 import {
@@ -15,34 +16,15 @@ import {
 } from './types/Transactions'
 import { Unsigned8, Unsigned64 } from './types/UnsignedSized'
 
-// TODO(radomski): Move this to some configuration file
-const domain = {
-  name: 'BYOR Sovereign Rollup',
-  version: '1',
-  chainId: 1,
-  verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-} as const
-
-const types = {
-  UnsignedTransaction: [
-    { name: 'to', type: 'address' },
-    { name: 'value', type: 'uint64' },
-    { name: 'nonce', type: 'uint64' },
-    { name: 'fee', type: 'uint64' },
-  ],
-}
-
-const primaryType = 'UnsignedTransaction'
-
 export async function serializeAndSign(
   unsignedTx: Transaction,
   account: PrivateKeyAccount,
 ): Promise<Hex> {
   const signature = Hex(
     await account.signTypedData({
-      domain: domain,
-      types: types,
-      primaryType: primaryType,
+      domain: typedDataDomain,
+      types: typedDataTypes,
+      primaryType: typedDataPrimaryType,
       message: {
         to: EthereumAddress.toHex(unsignedTx.to),
         value: Unsigned64.toBigInt(unsignedTx.value),
@@ -96,9 +78,9 @@ export async function deserialize(
 
   const signature = Hex(hex.substring(88))
   const hash = hashTypedData({
-    domain,
-    types,
-    primaryType,
+    domain: typedDataDomain,
+    types: typedDataTypes,
+    primaryType: typedDataPrimaryType,
     message: {
       to: EthereumAddress.toHex(unsignedTx.to),
       value: Unsigned64.toBigInt(unsignedTx.value),

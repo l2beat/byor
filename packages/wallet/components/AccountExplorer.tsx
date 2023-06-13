@@ -10,7 +10,8 @@ import { Button } from '@/components/ui/button'
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-import WalletBalance from './WalletBalance'
+import { Account } from './Account'
+import AccountBalance from './WalletBalance'
 
 export function AccountExplorer() {
   const formSchema = z.object({
@@ -65,7 +66,9 @@ export function AccountExplorer() {
       </div>
       {address ? (
         <div className="basis-full my-2">
-          <WalletBalance address={address} />
+          <Account address={address}>
+            <AccountBalance />
+          </Account>
         </div>
       ) : (
         <></>

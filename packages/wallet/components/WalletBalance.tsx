@@ -1,41 +1,28 @@
 'use client'
-import { EthereumAddress } from '@byor/shared'
 
-import { trpc } from '@/lib/trpc'
+import { useContext } from 'react'
 
-interface WalletAccountProps {
-  address: string
-}
+import { AccountContext } from './AccountContext'
 
-export default function WalletBalance({ address }: WalletAccountProps) {
-  const acc = trpc.accounts.getState.useQuery(EthereumAddress(address), {
-    trpc: { ssr: false },
-  })
+export default function AccountBalance() {
+  const acc = useContext(AccountContext)
 
   return (
-    <>
-      {acc.isFetched ? (
-        <div className="text-xl">
-          <div>
-            <span className="text-accent-foreground/50">Address: </span>
-            <span>{acc.data?.address}</span>
-          </div>
+    <div className="text-xl">
+      <div>
+        <span className="text-accent-foreground/50">Address: </span>
+        <span>{acc.address}</span>
+      </div>
 
-          <div>
-            <span className="text-accent-foreground/50">Balance: </span>
-            <span>{acc.data?.balance}</span>
-          </div>
+      <div>
+        <span className="text-accent-foreground/50">Balance: </span>
+        <span>{acc.balance}</span>
+      </div>
 
-          <div>
-            <span className="text-accent-foreground/50">Nonce: </span>
-            <span>{acc.data?.nonce}</span>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <p>Loading...</p>
-        </div>
-      )}
-    </>
+      <div>
+        <span className="text-accent-foreground/50">Nonce: </span>
+        <span>{acc.nonce}</span>
+      </div>
+    </div>
   )
 }
