@@ -1,6 +1,7 @@
 {
   "name": "@byor/shared",
   "version": "0.1.0",
+  "private": true,
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "sideEffects": false,
@@ -18,10 +19,7 @@
   "devDependencies": {
     "@sinonjs/fake-timers": "^10.2.0",
     "@types/sinonjs__fake-timers": "^8.1.2",
-    "@types/ws": "^8.5.4",
-    "earl": "^1.1.0",
-    "esbuild": "^0.17.18",
-    "esbuild-register": "^3.4.2"
+    "@types/ws": "^8.5.4"
   },
   "dependencies": {
     "chalk": "^4.1.2",
