@@ -3,6 +3,7 @@
 import { Web3Button } from '@web3modal/react'
 import { useAccount } from 'wagmi'
 
+import { TransactionModal } from './TransactionModal'
 import WalletBalance from './WalletBalance'
 
 export function Wallet() {
@@ -18,6 +19,7 @@ export function Wallet() {
       {status === 'connected' ? (
         <div className="basis-full my-2">
           <WalletBalance address={address} />
+          <TransactionModal balance={address} />
         </div>
       ) : (
         <></>
