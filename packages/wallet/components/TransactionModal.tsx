@@ -106,7 +106,7 @@ export function TransactionModal() {
 
       setDialogOpen(false)
     }
-  }, [isSuccess])
+  }, [isSuccess, data, form, acc.address, acc.nonce, mutation])
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
