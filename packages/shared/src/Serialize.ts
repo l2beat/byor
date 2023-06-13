@@ -5,7 +5,7 @@ import {
   recoverAddress,
 } from 'viem'
 
-import { typedDataDomain, typedDataTypes, typedDataPrimaryType } from './config'
+import { typedDataDomain, typedDataPrimaryType, typedDataTypes } from './config'
 import { EthereumAddress } from './types/EthereumAddress'
 import { Hex } from './types/Hex'
 import {
