@@ -13,7 +13,7 @@ import {
 } from '@byor/shared'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSignTypedData } from 'wagmi'
 import * as z from 'zod'
@@ -73,26 +73,10 @@ export function TransactionModal() {
   })
 
   const [dialogOpen, setDialogOpen] = useState(false)
-  const { data, isSuccess, isLoading, signTypedData } = useSignTypedData()
   const mutation = trpc.transactions.submit.useMutation()
 
-  const handleSend = () => {
-    const values = form.getValues()
-    signTypedData({
-      domain: typedDataDomain,
-      types: typedDataTypes,
-      primaryType: typedDataPrimaryType,
-      message: {
-        to: values.receiver,
-        value: values.value,
-        nonce: parseInt(acc.nonce, 10) + 1,
-        fee: values.fee,
-      },
-    })
-  }
-
-  useEffect(() => {
-    if (isSuccess && data) {
+  const { isLoading, signTypedData } = useSignTypedData({
+    onSuccess: (data) => {
       const signature = data
       const values = form.getValues()
       const tx: SignedTransaction = {
@@ -108,8 +92,23 @@ export function TransactionModal() {
       mutation.mutate(serialize(tx))
 
       setDialogOpen(false)
-    }
-  }, [isSuccess, data, form, acc.address, acc.nonce, mutation])
+    },
+  })
+
+  const handleSend = () => {
+    const values = form.getValues()
+    signTypedData({
+      domain: typedDataDomain,
+      types: typedDataTypes,
+      primaryType: typedDataPrimaryType,
+      message: {
+        to: values.receiver,
+        value: values.value,
+        nonce: parseInt(acc.nonce, 10) + 1,
+        fee: values.fee,
+      },
+    })
+  }
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

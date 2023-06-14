@@ -20,9 +20,7 @@ export function Wallet() {
               <AccountBalance />
             </div>
           </Account>
-        ) : (
-          <></>
-        )}
+        ) : null}
         <div className="ml-auto">
           <Web3Button />
         </div>
