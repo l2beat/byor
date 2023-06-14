@@ -16,9 +16,7 @@ import {
 } from './types/Transactions'
 import { Unsigned8, Unsigned64 } from './types/UnsignedSized'
 
-export function hashTransaction(
-  unsignedTx: Transaction,
-): Hex {
+export function hashTransaction(unsignedTx: Transaction): Hex {
   const hash = Hex(
     hashTypedData({
       domain: typedDataDomain,

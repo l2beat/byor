@@ -1,9 +1,9 @@
 import {
+  assert,
+  hashTransaction,
   Hex,
   Logger,
   SignedTransaction,
-  assert,
-  hashTransaction,
 } from '@byor/shared'
 
 export class Mempool {

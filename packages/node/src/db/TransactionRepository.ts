@@ -6,7 +6,7 @@ import {
   Transaction,
   Unsigned64,
 } from '@byor/shared'
-import { desc, gte, InferModel, sql, eq } from 'drizzle-orm'
+import { desc, eq, gte, InferModel, sql } from 'drizzle-orm'
 
 import { BaseRepository } from './BaseRepository'
 import { transactionsSchema } from './schema'
@@ -115,6 +115,9 @@ export class TransactionRepository extends BaseRepository {
       .where(eq(transactionsSchema.hash, hash.toString()))
       .get()
 
+    // NOTE(radomski): Even though the inffered type says
+    // that it can not be undefined it can
+    // eslint-disable-next-line
     if (tx) {
       return true
     } else {

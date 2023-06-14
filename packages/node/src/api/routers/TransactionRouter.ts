@@ -2,9 +2,9 @@ import { branded, deserializeBatch, Hex } from '@byor/shared'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
+import { TransactionRepository } from '../../db/TransactionRepository'
 import { Mempool } from '../../peripherals/mempool/Mempool'
 import { publicProcedure, router } from '../trpc'
-import { TransactionRepository } from '../../db/TransactionRepository'
 
 type TransactionStatus = 'Not found' | 'Commited' | 'Soft commited'
 

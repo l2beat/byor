@@ -124,10 +124,7 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "transactions_from_nonce_pk": {
-          "columns": [
-            "from",
-            "nonce"
-          ]
+          "columns": ["from", "nonce"]
         }
       }
     }

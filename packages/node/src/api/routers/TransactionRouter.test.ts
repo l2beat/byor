@@ -1,6 +1,7 @@
 import { Hex } from '@byor/shared'
 import { expect, mockFn, mockObject } from 'earl'
 
+import { TransactionRepository } from '../../db/TransactionRepository'
 import { Mempool } from '../../peripherals/mempool/Mempool'
 import { createTestApiServer } from './test/createTestApiServer'
 import { createTransactionRouter } from './TransactionRouter'
@@ -13,7 +14,8 @@ describe(createTransactionRouter.name, () => {
     const mempool = mockObject<Mempool>({
       add: mockFn().returnsOnce(null),
     })
-    const router = createTransactionRouter(mempool)
+    const transactionRepository = mockObject<TransactionRepository>({})
+    const router = createTransactionRouter(mempool, transactionRepository)
     const server = createTestApiServer({ router })
 
     await server
@@ -38,7 +40,8 @@ describe(createTransactionRouter.name, () => {
       const mempool = mockObject<Mempool>({
         add: mockFn().returnsOnce(null),
       })
-      const router = createTransactionRouter(mempool)
+      const transactionRepository = mockObject<TransactionRepository>({})
+      const router = createTransactionRouter(mempool, transactionRepository)
       const server = createTestApiServer({ router })
 
       await server
