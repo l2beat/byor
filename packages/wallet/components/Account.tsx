@@ -16,13 +16,15 @@ export function Account({ address, children }: Props) {
     trpc: { ssr: false },
   })
 
-  return acc.status === 'success' ? (
+  if (acc.status !== 'success') {
+    return <>Account is loading...</>
+  }
+
+  return (
     <div>
       <AccountContext.Provider value={acc.data}>
         {children}
       </AccountContext.Provider>
     </div>
-  ) : (
-    <>Account is loading...</>
   )
 }
