@@ -13,14 +13,14 @@ export function Wallet() {
   return (
     <div className="container flex border rounded mt-10 column flex-wrap">
       <div className="flex basis-full my-2">
-        {status === 'connected' ? (
+        {status === 'connected' && (
           <Account address={address}>
             <TransactionModal />
             <div className="basis-full my-2">
               <AccountBalance />
             </div>
           </Account>
-        ) : null}
+        )}
         <div className="ml-auto">
           <Web3Button />
         </div>
