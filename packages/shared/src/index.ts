@@ -1,4 +1,5 @@
 export * from './BatchSerialize'
+export * from './config'
 export * from './Serialize'
 export * from './tools'
 export * from './types'

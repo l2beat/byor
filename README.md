@@ -1,5 +1,9 @@
 # Running
 
+To build the application, follow these steps:
+
+1. From the root of the project run `yarn build:dependencies`
+
 To run the application, follow these steps:
 
 1. Open three terminals.

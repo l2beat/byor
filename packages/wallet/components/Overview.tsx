@@ -9,13 +9,11 @@ interface StatisticProps {
 }
 
 export function Overview(): JSX.Element {
-  const res = trpc.statistics.getOverview.useQuery()
+  const { data } = trpc.statistics.getOverview.useQuery()
 
-  if (!res.data) {
+  if (!data) {
     return <h1>Loading...</h1>
   }
-
-  const { data } = res
 
   return (
     <div className="container flex border rounded mt-10 justify-around">
