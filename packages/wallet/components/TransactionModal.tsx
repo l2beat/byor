@@ -66,6 +66,9 @@ export function TransactionModal() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      receiver: '',
+    },
     mode: 'onChange',
   })
 
