@@ -1,4 +1,3 @@
-// TODO(radomski): Move this to some configuration file
 export const typedDataDomain = {
   name: 'BYOR Sovereign Rollup',
   version: '1',
