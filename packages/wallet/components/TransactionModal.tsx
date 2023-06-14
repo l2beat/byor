@@ -198,16 +198,12 @@ export function TransactionModal() {
                     Cancel
                   </Button>
                 </DialogTrigger>
-                {isLoading ? (
-                  <Button disabled className="mx-1">
+                <Button disabled={isLoading} className="mx-1" type="submit">
+                  {isLoading && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Send
-                  </Button>
-                ) : (
-                  <Button className="mx-1" type="submit">
-                    Send
-                  </Button>
-                )}
+                  )}
+                  Send
+                </Button>
               </div>
             </DialogFooter>
           </form>
