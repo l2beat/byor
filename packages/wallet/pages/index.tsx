@@ -1,3 +1,4 @@
+import { AccountExplorer } from '@/components/AccountExplorer'
 import { Overview } from '@/components/Overview'
 import { Wallet } from '@/components/Wallet'
 
@@ -9,6 +10,7 @@ export default function Home() {
       <Navbar />
       <Overview />
       <Wallet />
+      <AccountExplorer />
     </main>
   )
 }
