@@ -64,14 +64,12 @@ export function AccountExplorer() {
           </form>
         </Form>
       </div>
-      {address ? (
+      {address && (
         <div className="basis-full my-2">
           <Account address={address}>
             <AccountBalance />
           </Account>
         </div>
-      ) : (
-        <></>
       )}
     </div>
   )
