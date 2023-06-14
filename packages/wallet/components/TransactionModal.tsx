@@ -192,7 +192,7 @@ export function TransactionModal() {
             </div>
             <DialogFooter>
               <div className="flex justify-center basis-full">
-                <DialogTrigger>
+                <DialogTrigger asChild>
                   <Button className="mx-1" variant="outline">
                     Cancel
                   </Button>
