@@ -1,4 +1,10 @@
-import { Logger, SignedTransaction } from '@byor/shared'
+import {
+  Hex,
+  Logger,
+  SignedTransaction,
+  assert,
+  hashTransaction,
+} from '@byor/shared'
 
 export class Mempool {
   private pool: SignedTransaction[]
@@ -8,13 +14,24 @@ export class Mempool {
     this.pool = []
   }
 
-  add(transactionsBytes: SignedTransaction[]): void {
+  add(transactions: SignedTransaction[]): void {
     this.logger.info('Adding transactions to the mempool')
-    this.pool.push(...transactionsBytes)
+    transactions.forEach((tx) => {
+      tx.hash = hashTransaction(tx)
+    })
+
+    this.pool.push(...transactions)
   }
 
   getTransactionsInPool(): SignedTransaction[] {
     return this.pool
+  }
+
+  contains(hash: Hex): boolean {
+    return this.pool.some((tx) => {
+      assert(tx.hash)
+      return tx.hash === hash
+    })
   }
 
   empty(): void {

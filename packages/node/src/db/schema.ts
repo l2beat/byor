@@ -13,6 +13,7 @@ export const transactionsSchema = sqliteTable(
     l1SubmittedDate: integer('l1SubmittedDate', {
       mode: 'timestamp',
     }).notNull(),
+    hash: text('hash').notNull(),
   },
   (transactions) => ({
     // NOTE(radomski): The best thing to have would be a "UNIQUE" constraint

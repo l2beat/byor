@@ -2,6 +2,7 @@
 
 import {
   EthereumAddress,
+  hashTransaction,
   Hex,
   serialize,
   SignedTransaction,
@@ -89,7 +90,10 @@ export function TransactionModal() {
         s: Hex(signature.substring(66, 130)),
         v: Unsigned8(parseInt(signature.substring(130, 132), 16)),
       }
+      const hash = hashTransaction(tx)
       mutation.mutate(serialize(tx))
+      // TODO(radomsk): Pop-up or somethin'
+      console.log(hash)
 
       setDialogOpen(false)
     },

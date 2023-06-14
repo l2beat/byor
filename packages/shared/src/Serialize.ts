@@ -16,6 +16,26 @@ import {
 } from './types/Transactions'
 import { Unsigned8, Unsigned64 } from './types/UnsignedSized'
 
+export function hashTransaction(
+  unsignedTx: Transaction,
+): Hex {
+  const hash = Hex(
+    hashTypedData({
+      domain: typedDataDomain,
+      types: typedDataTypes,
+      primaryType: typedDataPrimaryType,
+      message: {
+        to: EthereumAddress.toHex(unsignedTx.to),
+        value: Unsigned64.toBigInt(unsignedTx.value),
+        nonce: Unsigned64.toBigInt(unsignedTx.nonce),
+        fee: Unsigned64.toBigInt(unsignedTx.fee),
+      },
+    }),
+  )
+
+  return hash
+}
+
 export async function serializeAndSign(
   unsignedTx: Transaction,
   account: PrivateKeyAccount,
