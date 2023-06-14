@@ -24,7 +24,7 @@ export function AccountExplorer() {
           return false
         }
       },
-      { message: 'Input is not an Ethereum Address' },
+      { message: 'Input is neither an Ethereum Address nor a Transaction Hash' },
     ),
   })
 
@@ -54,7 +54,7 @@ export function AccountExplorer() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex w-full max-w-sm items-center space-x-2 ">
-                    <Input placeholder="ETH Address" {...field} />
+                    <Input placeholder="ETH Address or Transaction Hash" {...field} />
                     <Button type="submit">Check</Button>
                   </div>
                   <FormMessage />
