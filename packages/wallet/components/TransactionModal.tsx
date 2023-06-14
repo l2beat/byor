@@ -95,8 +95,7 @@ export function TransactionModal() {
     },
   })
 
-  const handleSend = () => {
-    const values = form.getValues()
+  const handleSend = (values: z.infer<typeof formSchema>) => {
     signTypedData({
       domain: typedDataDomain,
       types: typedDataTypes,
