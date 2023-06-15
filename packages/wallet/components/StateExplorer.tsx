@@ -14,7 +14,7 @@ import { Account } from './Account'
 import Transaction from './Transaction'
 import AccountBalance from './WalletBalance'
 
-export function AccountExplorer() {
+export function StateExplorer() {
   const formSchema = z.object({
     addressOrHash: z.string().refine(
       (a: string) => {
