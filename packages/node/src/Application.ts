@@ -30,7 +30,7 @@ export class Application {
   constructor(config: Config) {
     const database = new Database(config.databasePath)
     const accountRepository = new AccountRepository(database)
-    // NOTE(radomski): We store transactions only for statistics
+    // NOTE(radomski): We store transactions only for statistics and transaction status query
     const transactionRepository = new TransactionRepository(database)
     const fetcherRepository = new FetcherRepository(database)
     const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
@@ -82,7 +82,7 @@ export class Application {
 
     const routers: AppRouters = {
       accounts: createAccountRouter(accountRepository),
-      transactions: createTransactionRouter(mempool),
+      transactions: createTransactionRouter(mempool, transactionRepository),
       statistics: createStatisticsRouter(transactionRepository),
     }
 

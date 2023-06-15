@@ -1,5 +1,12 @@
-import { assert, EthereumAddress, Transaction, Unsigned64 } from '@byor/shared'
-import { desc, gte, InferModel, sql } from 'drizzle-orm'
+import {
+  assert,
+  EthereumAddress,
+  hashTransaction,
+  Hex,
+  Transaction,
+  Unsigned64,
+} from '@byor/shared'
+import { desc, eq, gte, InferModel, sql } from 'drizzle-orm'
 
 import { BaseRepository } from './BaseRepository'
 import { transactionsSchema } from './schema'
@@ -23,6 +30,12 @@ export class TransactionRepository extends BaseRepository {
   }
 
   addMany(txs: TransactionRecord[]): void {
+    txs.forEach((tx) => {
+      if (!tx.hash) {
+        tx.hash = hashTransaction(tx)
+      }
+    })
+
     const drizzle = this.drizzle()
     drizzle
       .insert(transactionsSchema)
@@ -93,6 +106,24 @@ export class TransactionRepository extends BaseRepository {
 
     return null
   }
+
+  contains(hash: Hex): boolean {
+    const drizzle = this.drizzle()
+    const tx = drizzle
+      .select()
+      .from(transactionsSchema)
+      .where(eq(transactionsSchema.hash, hash.toString()))
+      .get()
+
+    // NOTE(radomski): Even though the inffered type says
+    // that it can not be undefined it can
+    // eslint-disable-next-line
+    if (tx) {
+      return true
+    } else {
+      return false
+    }
+  }
 }
 
 function toInternalTransaction(
@@ -119,6 +150,7 @@ function toInternalTransaction(
     Unsigned64.toBigInt(tx.fee) <= BigInt(Number.MAX_SAFE_INTEGER),
     'The Unsigned64 value is bigger than the biggest safely representable value',
   )
+  assert(tx.hash, "expected the transaction to have it's hash calculated")
 
   return {
     id: null,
@@ -129,6 +161,7 @@ function toInternalTransaction(
     fee: parseInt(tx.fee.toString(), 10),
     feeReceipent: tx.feeReceipent.toString(),
     l1SubmittedDate: tx.l1SubmittedDate,
+    hash: tx.hash.toString(),
   }
 }
 
@@ -143,5 +176,6 @@ function fromInternalTransaction(
     fee: Unsigned64(tx.fee),
     feeReceipent: EthereumAddress(tx.feeReceipent),
     l1SubmittedDate: tx.l1SubmittedDate,
+    hash: Hex(tx.hash),
   }
 }

@@ -1,4 +1,4 @@
-import { EthereumAddress, Unsigned64 } from '@byor/shared'
+import { EthereumAddress, Hex, Unsigned64 } from '@byor/shared'
 import { expect } from 'earl'
 
 import { setupDatabaseTestSuite } from './test/setup'
@@ -140,4 +140,40 @@ describe(TransactionRepository.name, () => {
       })
     },
   )
+
+  describe(TransactionRepository.prototype.contains.name, () => {
+    it('returns true on a transaction that is in the database', async () => {
+      repository.addMany(modelTransactions)
+
+      expect(
+        repository.contains(
+          Hex(
+            '0x3544955b7b84b6efb872aac54b285d79d8668897c751b47663d6e02b4f77d493',
+          ),
+        ),
+      ).toEqual(true)
+    })
+
+    it('returns false on non-existing with transactions in database', async () => {
+      repository.addMany(modelTransactions)
+
+      expect(
+        repository.contains(
+          Hex(
+            '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
+          ),
+        ),
+      ).toEqual(false)
+    })
+
+    it('returns false on empty', async () => {
+      expect(
+        repository.contains(
+          Hex(
+            '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
+          ),
+        ),
+      ).toEqual(false)
+    })
+  })
 })

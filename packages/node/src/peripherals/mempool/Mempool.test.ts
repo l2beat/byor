@@ -101,4 +101,46 @@ describe(Mempool.name, () => {
       expect(mempool.getTransactionsInPool()).toEqual([])
     })
   })
+
+  describe(Mempool.prototype.contains.name, () => {
+    it('returns true on a transaction that is in the mempool', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1])
+
+      expect(
+        mempool.contains(
+          Hex(
+            '0x343d48c0e2c7852c9483a53a4017b7ab586140f0a0e31bc1b9e2e20a9900ea48',
+          ),
+        ),
+      ).toEqual(true)
+    })
+
+    it('returns false on non-existing with transactions in pool', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1])
+
+      expect(
+        mempool.contains(
+          Hex(
+            '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
+          ),
+        ),
+      ).toEqual(false)
+    })
+
+    it('returns false on nothing', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      expect(
+        mempool.contains(
+          Hex(
+            '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
+          ),
+        ),
+      ).toEqual(false)
+    })
+  })
 })

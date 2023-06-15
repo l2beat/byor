@@ -2,13 +2,19 @@ import { branded, deserializeBatch, Hex } from '@byor/shared'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
+import { TransactionRepository } from '../../db/TransactionRepository'
 import { Mempool } from '../../peripherals/mempool/Mempool'
 import { publicProcedure, router } from '../trpc'
+
+type TransactionStatus = 'Not found' | 'Commited' | 'Soft commited'
 
 // NOTE(radomski): We need to propagte the return type
 // from this function, we can not infer it
 // eslint-disable-next-line
-export function createTransactionRouter(transactionMempool: Mempool) {
+export function createTransactionRouter(
+  transactionMempool: Mempool,
+  transactionRepository: TransactionRepository,
+) {
   return router({
     submit: publicProcedure
       .input(branded(z.string(), Hex))
@@ -24,6 +30,21 @@ export function createTransactionRouter(transactionMempool: Mempool) {
             cause: e,
           })
         }
+      }),
+    getStatus: publicProcedure
+      .input(
+        branded(z.string(), Hex).refine((a: Hex) => {
+          return Hex.removePrefix(a).length === 64
+        }),
+      )
+      .query(({ input }): TransactionStatus => {
+        if (transactionMempool.contains(input)) {
+          return 'Soft commited'
+        } else if (transactionRepository.contains(input)) {
+          return 'Commited'
+        }
+
+        return 'Not found'
       }),
   })
 }

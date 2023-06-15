@@ -1,7 +1,9 @@
 'use client'
 
 import {
+  deserialize,
   EthereumAddress,
+  hashTransaction,
   Hex,
   serialize,
   SignedTransaction,
@@ -12,7 +14,7 @@ import {
   Unsigned64,
 } from '@byor/shared'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2 } from 'lucide-react'
+import { Copy, Loader2 } from 'lucide-react'
 import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSignTypedData } from 'wagmi'
@@ -37,9 +39,12 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useToast } from '@/components/ui/use-toast'
 import { trpc } from '@/lib/trpc'
+import { copyToClipboard } from '@/utils/copyToClipboard'
 
 import { AccountContext } from './AccountContext'
+import { ToastAction } from './ui/toast'
 
 const formSchema = z.object({
   receiver: z.string().refine(
@@ -72,8 +77,26 @@ export function TransactionModal() {
     mode: 'onChange',
   })
 
+  const { toast } = useToast()
   const [dialogOpen, setDialogOpen] = useState(false)
-  const mutation = trpc.transactions.submit.useMutation()
+  const mutation = trpc.transactions.submit.useMutation({
+    onSuccess: async (_, variables) => {
+      const tx = await deserialize(variables)
+      const hash = hashTransaction(tx)
+
+      toast({
+        title: 'Your transaction has been submitted to the mempool',
+        description: `Transaction Hash: ${hash.slice(0, 18)}...`,
+        action: (
+          <ToastAction altText="copy" asChild>
+            <Button variant="secondary">
+              <Copy onClick={() => copyToClipboard(hash.toString())} />
+            </Button>
+          </ToastAction>
+        ),
+      })
+    },
+  })
 
   const { isLoading, signTypedData } = useSignTypedData({
     onSuccess: (data) => {
