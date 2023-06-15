@@ -86,7 +86,7 @@ export function TransactionModal() {
 
       toast({
         title: 'Your transaction has been submitted to the mempool',
-        description: `Transaction Hash: `,
+        description: `Transaction Hash: ${hash.slice(0, 18)}...`,
         action: (
           <ToastAction altText="copy" asChild>
             <Button variant="secondary">
