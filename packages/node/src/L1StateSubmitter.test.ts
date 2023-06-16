@@ -60,6 +60,7 @@ describe(L1StateSubmitter.name, () => {
   })
 
   const FLUSH_PERIOD_SEC = 1
+  const TRANSACTION_LIMIT = 100
 
   describe(L1StateSubmitter.prototype.start.name, () => {
     it('submits transactions where every one applies every flush period seconds', async () => {
@@ -90,13 +91,14 @@ describe(L1StateSubmitter.name, () => {
         writeToCTCContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
-        getTransactionsInPool: mockFn()
+        popNHighestFee: mockFn()
           .returnsOnce([modelSignedTx1])
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
         FLUSH_PERIOD_SEC,
+        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
@@ -105,8 +107,8 @@ describe(L1StateSubmitter.name, () => {
       l1Submitter.start()
       await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
 
-      expect(mempool.empty).toHaveBeenCalledTimes(2)
-      expect(mempool.getTransactionsInPool).toHaveBeenCalledTimes(2)
+      expect(mempool.empty).toHaveBeenCalledTimes(0)
+      expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
       expect(client.writeToCTCContract).toHaveBeenCalledTimes(2)
       expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
         1,
@@ -146,13 +148,14 @@ describe(L1StateSubmitter.name, () => {
         writeToCTCContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
-        getTransactionsInPool: mockFn()
+        popNHighestFee: mockFn()
           .returnsOnce([modelSignedTx1])
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
         FLUSH_PERIOD_SEC,
+        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
@@ -161,8 +164,8 @@ describe(L1StateSubmitter.name, () => {
       l1Submitter.start()
       await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
 
-      expect(mempool.empty).toHaveBeenCalledTimes(2)
-      expect(mempool.getTransactionsInPool).toHaveBeenCalledTimes(2)
+      expect(mempool.empty).toHaveBeenCalledTimes(0)
+      expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
       expect(client.writeToCTCContract).toHaveBeenCalledTimes(1)
       expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
         1,
@@ -198,13 +201,14 @@ describe(L1StateSubmitter.name, () => {
         writeToCTCContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
-        getTransactionsInPool: mockFn()
+        popNHighestFee: mockFn()
           .returnsOnce([modelSignedTx1])
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
         FLUSH_PERIOD_SEC,
+        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
@@ -213,8 +217,8 @@ describe(L1StateSubmitter.name, () => {
       l1Submitter.start()
       await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
 
-      expect(mempool.empty).toHaveBeenCalledTimes(2)
-      expect(mempool.getTransactionsInPool).toHaveBeenCalledTimes(2)
+      expect(mempool.empty).toHaveBeenCalledTimes(0)
+      expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
       expect(client.writeToCTCContract).toHaveBeenCalledTimes(0)
     })
 
@@ -246,7 +250,7 @@ describe(L1StateSubmitter.name, () => {
         writeToCTCContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
-        getTransactionsInPool: mockFn()
+        popNHighestFee: mockFn()
           .returnsOnce([modelSignedTx1])
           .returnsOnce([])
           .returnsOnce([modelSignedTx2]),
@@ -254,6 +258,7 @@ describe(L1StateSubmitter.name, () => {
       })
       const l1Submitter = new L1StateSubmitter(
         FLUSH_PERIOD_SEC,
+        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
@@ -262,8 +267,8 @@ describe(L1StateSubmitter.name, () => {
       l1Submitter.start()
       await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
 
-      expect(mempool.empty).toHaveBeenCalledTimes(3)
-      expect(mempool.getTransactionsInPool).toHaveBeenCalledTimes(3)
+      expect(mempool.empty).toHaveBeenCalledTimes(0)
+      expect(mempool.popNHighestFee).toHaveBeenCalledTimes(3)
       expect(client.writeToCTCContract).toHaveBeenCalledTimes(2)
       expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
         1,
@@ -303,13 +308,14 @@ describe(L1StateSubmitter.name, () => {
         writeToCTCContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
-        getTransactionsInPool: mockFn()
+        popNHighestFee: mockFn()
           .returnsOnce([modelSignedTx1])
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
         FLUSH_PERIOD_SEC,
+        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
@@ -318,8 +324,8 @@ describe(L1StateSubmitter.name, () => {
       l1Submitter.start()
       await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
 
-      expect(mempool.empty).toHaveBeenCalledTimes(2)
-      expect(mempool.getTransactionsInPool).toHaveBeenCalledTimes(2)
+      expect(mempool.empty).toHaveBeenCalledTimes(0)
+      expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
       expect(client.writeToCTCContract).toHaveBeenCalledTimes(0)
     })
 
@@ -351,13 +357,14 @@ describe(L1StateSubmitter.name, () => {
         writeToCTCContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
-        getTransactionsInPool: mockFn()
+        popNHighestFee: mockFn()
           .returnsOnce([modelSignedTx1])
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
         FLUSH_PERIOD_SEC,
+        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
@@ -366,8 +373,8 @@ describe(L1StateSubmitter.name, () => {
       l1Submitter.start()
       await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
 
-      expect(mempool.empty).toHaveBeenCalledTimes(2)
-      expect(mempool.getTransactionsInPool).toHaveBeenCalledTimes(2)
+      expect(mempool.empty).toHaveBeenCalledTimes(0)
+      expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
       expect(client.writeToCTCContract).toHaveBeenCalledTimes(0)
     })
 
@@ -401,13 +408,14 @@ describe(L1StateSubmitter.name, () => {
           .returns(null),
       })
       const mempool = mockObject<Mempool>({
-        getTransactionsInPool: mockFn()
+        popNHighestFee: mockFn()
           .returnsOnce([modelSignedTx1])
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
         FLUSH_PERIOD_SEC,
+        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
@@ -416,8 +424,8 @@ describe(L1StateSubmitter.name, () => {
       l1Submitter.start()
       await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
 
-      expect(mempool.empty).toHaveBeenCalledTimes(2)
-      expect(mempool.getTransactionsInPool).toHaveBeenCalledTimes(2)
+      expect(mempool.empty).toHaveBeenCalledTimes(0)
+      expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
       expect(client.writeToCTCContract).toHaveBeenCalledTimes(2)
       expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
         1,

@@ -39,7 +39,7 @@ describe(Mempool.name, () => {
     to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
     value: Unsigned64(10),
     nonce: Unsigned64(1),
-    fee: Unsigned64(2),
+    fee: Unsigned64(3),
     hash: Hex(
       '0x343d48c0e2c7852c9483a53a4017b7ab586140f0a0e31bc1b9e2e20a9900ea48',
     ),
@@ -71,6 +71,75 @@ describe(Mempool.name, () => {
         modelSignedTx1,
         modelSignedTx2,
       ])
+    })
+  })
+
+  describe(Mempool.prototype.popNHighestFee.name, () => {
+    it('intermixes transactions with different fees (n = 3)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx2, modelSignedTx2])
+
+      expect(mempool.popNHighestFee(3)).toEqual([
+        modelSignedTx2,
+        modelSignedTx2,
+        modelSignedTx1,
+      ])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('intermixes transactions with different fees (n = 1) three times', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx2, modelSignedTx2])
+
+      expect(mempool.popNHighestFee(1)).toEqual([modelSignedTx2])
+      expect(mempool.popNHighestFee(1)).toEqual([modelSignedTx2])
+      expect(mempool.popNHighestFee(1)).toEqual([modelSignedTx1])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('intermixes transactions with different fees (n = 2)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx2, modelSignedTx2])
+
+      expect(mempool.popNHighestFee(2)).toEqual([
+        modelSignedTx2,
+        modelSignedTx2,
+      ])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('intermixes transactions with different fees (n = 1)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx2])
+
+      expect(mempool.popNHighestFee(1)).toEqual([modelSignedTx2])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('returns empty at the start', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      expect(mempool.popNHighestFee(0)).toEqual([])
     })
   })
 

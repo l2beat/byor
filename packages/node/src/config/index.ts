@@ -17,6 +17,7 @@ interface ConfigJSON {
   CTC_CONTRACT_ADDRESS: string
   GENESIS_FILE_PATH: string
   RPC_SERVE_PORT: number
+  GAS_LIMIT: number
 }
 
 export function getConfig(configPath: string): Config {
@@ -33,6 +34,7 @@ export function getConfig(configPath: string): Config {
     ctcContractAddress: EthereumAddress(configJson.CTC_CONTRACT_ADDRESS),
     genesisFilePath: configJson.GENESIS_FILE_PATH,
     rpcServePort: configJson.RPC_SERVE_PORT,
+    gasLimit: configJson.GAS_LIMIT,
   }
 
   return config

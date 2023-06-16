@@ -14,6 +14,7 @@ import { Mempool } from './peripherals/mempool/Mempool'
 export class L1StateSubmitter {
   constructor(
     private readonly flushPeriodSec: number,
+    private readonly transactionLimit: number,
     private readonly l1StateManager: L1StateManager,
     private readonly client: EthereumPrivateClient,
     private readonly mempool: Mempool,
@@ -32,11 +33,10 @@ export class L1StateSubmitter {
   }
 
   private async mempoolSubmit(): Promise<void> {
-    const transactions = this.mempool.getTransactionsInPool()
+    const transactions = this.mempool.popNHighestFee(this.transactionLimit)
     this.logger.info('Submitting', {
       transactionsLength: transactions.length,
     })
-    this.mempool.empty()
 
     if (transactions.length > 0) {
       const batchBytes = serializeBatch(transactions)

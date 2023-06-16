@@ -23,6 +23,21 @@ export class Mempool {
     this.pool.push(...transactions)
   }
 
+  popNHighestFee(n: number): SignedTransaction[] {
+    const sorted = this.pool.sort((a, b) => {
+      if (a.fee < b.fee) {
+        return 1
+      }
+      if (a.fee > b.fee) {
+        return -1
+      }
+      return 0
+    })
+
+    this.pool = sorted.slice(n)
+    return sorted.slice(0, n)
+  }
+
   getTransactionsInPool(): SignedTransaction[] {
     return this.pool
   }
