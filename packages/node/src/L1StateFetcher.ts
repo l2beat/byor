@@ -27,14 +27,11 @@ export class L1StateFetcher {
   }
 
   async getNewState(): Promise<L1EventStateType[]> {
-    this.logger.debug(
-      'Fetching new events',
-      {
-        contractAddress: this.contractAddress.toString(),
-        eventAbi: eventAbi.name,
-        lastFetchedBlock: this.lastFetchedBlock.toString(),
-      },
-    )
+    this.logger.debug('Fetching new events', {
+      contractAddress: this.contractAddress.toString(),
+      eventAbi: eventAbi.name,
+      lastFetchedBlock: this.lastFetchedBlock.toString(),
+    })
 
     const l1State = await this.client.getLogsInRange(
       eventAbi,
