@@ -15,7 +15,7 @@ export class Mempool {
   }
 
   add(transactions: SignedTransaction[]): void {
-    this.logger.info('Adding transactions to the mempool')
+    this.logger.info('Adding', { transactionCount: transactions.length })
     transactions.forEach((tx) => {
       tx.hash = hashTransaction(tx)
     })

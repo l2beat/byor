@@ -28,7 +28,7 @@ export class L1StateFetcher {
 
   async getNewState(): Promise<L1EventStateType[]> {
     this.logger.debug(
-      'Fetching all batch append events since the last gotten block',
+      'Fetching new events',
       {
         contractAddress: this.contractAddress.toString(),
         eventAbi: eventAbi.name,
