@@ -13,6 +13,7 @@ import { createStatisticsRouter } from './api/routers/StatisticRouter'
 import { createTransactionRouter } from './api/routers/TransactionRouter'
 import { AppRouters } from './api/types/AppRouter'
 import { Config, createChain } from './config'
+import { calculateTransactionLimit } from './config/calculateTransactionLimit'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
 import { FetcherRepository } from './db/FetcherRepository'
@@ -72,8 +73,10 @@ export class Application {
     )
 
     const mempool = new Mempool(logger)
+    const transactionLimit = calculateTransactionLimit(config.gasLimit)
     const l1Submitter = new L1StateSubmitter(
       config.flushPeriodSec,
+      transactionLimit,
       l1Manager,
       ethereumClient,
       mempool,

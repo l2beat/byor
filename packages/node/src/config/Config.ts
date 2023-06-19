@@ -10,4 +10,5 @@ export interface Config {
   readonly ctcContractAddress: EthereumAddress
   readonly genesisFilePath: string
   readonly rpcServePort: number
+  readonly gasLimit: number
 }
