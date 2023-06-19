@@ -1,7 +1,8 @@
 import {
-  assert,
   EthereumAddress,
   Hex,
+  SignedTransactionBatch,
+  Transaction,
   TransactionBatch,
   Unsigned64,
 } from '@byor/shared'
@@ -28,15 +29,84 @@ const getOrInsert = (
   }
 }
 
-const defaultState: StateMapValue = {
+const getOrDefault = (
+  state: StateMap,
+  key: string,
+  defaultValue: StateMapValue,
+): StateMapValue => {
+  const result = state[key]
+  if (result !== undefined) {
+    return result
+  } else {
+    return defaultValue
+  }
+}
+
+const DEFAULT_STATE: StateMapValue = {
   balance: Unsigned64(0),
   nonce: Unsigned64(0),
 }
 
-// NOTE(radomski): If a single transaction in the entire batch fails the entire
-// batch is dropped. This is by design to reduce complexity. In the real world
-// you would try to order transaction in such a way to maximie the fee you're
-// going to receive as well as the amount of transactions that will go through.
+function canExecuteTransaction(state: StateMap, tx: Transaction): boolean {
+  try {
+    // Step 0. Check transaction type
+    if (!(tx.from !== Hex(0) && tx.to !== Hex(0))) {
+      return false
+    }
+
+    const from = getOrDefault(state, tx.from.toString(), DEFAULT_STATE)
+
+    // Step 1. Nonce is valid
+    if (!(from.nonce === Unsigned64(Unsigned64.toBigInt(tx.nonce) - 1n))) {
+      return false
+    }
+
+    // Step 2. Balance is high enough to allow spending
+    if (
+      !(
+        Unsigned64.toBigInt(from.balance) >=
+        Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(tx.fee)
+      )
+    ) {
+      return false
+    }
+  } catch (_) {
+    return false
+  }
+
+  return true
+}
+
+// NOTE(radomski): This assumes that the transaction can be applied
+function executeTransactionUnchecked(
+  state: StateMap,
+  tx: Transaction,
+  feeRecipientAccount: StateMapValue,
+): void {
+  const fromAccount = getOrInsert(state, tx.from.toString(), DEFAULT_STATE)
+  const toAccount = getOrInsert(state, tx.to.toString(), DEFAULT_STATE)
+
+  // Step 1. Update nonce
+  fromAccount.nonce = tx.nonce
+
+  // Step 2. Subtract spending
+  fromAccount.balance = Unsigned64(
+    Unsigned64.toBigInt(fromAccount.balance) -
+      (Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(tx.fee)),
+  )
+
+  // Step 3. Transfer value
+  toAccount.balance = Unsigned64(
+    Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(toAccount.balance),
+  )
+
+  // Step 4. Pay fee
+  feeRecipientAccount.balance = Unsigned64(
+    Unsigned64.toBigInt(tx.fee) +
+      Unsigned64.toBigInt(feeRecipientAccount.balance),
+  )
+}
+
 export function executeBatch(
   state: StateMap,
   batch: TransactionBatch,
@@ -45,53 +115,44 @@ export function executeBatch(
   const feeRecipientAccount = getOrInsert(
     state,
     batchPoster.toString(),
-    defaultState,
+    DEFAULT_STATE,
   )
 
   for (const tx of batch) {
-    // Step 0. Check transaction type
-    assert(
-      tx.from !== Hex(0) && tx.to !== Hex(0),
-      'Invalid recipient or sender',
-    )
+    // Step 0. Check if transaction can be executed
+    if (!canExecuteTransaction(state, tx)) {
+      continue
+    }
 
-    const fromAccount = getOrInsert(state, tx.from.toString(), defaultState)
-    const toAccount = getOrInsert(state, tx.to.toString(), defaultState)
-
-    // Step 1. Update nonce
-    assert(
-      fromAccount.nonce === Unsigned64(Unsigned64.toBigInt(tx.nonce) - 1n),
-      `Invalid nonce, expected/got = ${
-        Unsigned64.toBigInt(fromAccount.nonce) + 1n
-      }/${Unsigned64.toBigInt(tx.nonce)}`,
-    )
-    fromAccount.nonce = tx.nonce
-
-    // Step 2. Subtract spending
-    assert(
-      Unsigned64.toBigInt(fromAccount.balance) >=
-        Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(tx.fee),
-      `Balance too low, needed/got = ${
-        Unsigned64.toBigInt(tx.fee) + Unsigned64.toBigInt(tx.value)
-      }/${Unsigned64.toBigInt(fromAccount.balance)}`,
-    )
-
-    fromAccount.balance = Unsigned64(
-      Unsigned64.toBigInt(fromAccount.balance) -
-        (Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(tx.fee)),
-    )
-
-    // Step 3. Transfer value
-    toAccount.balance = Unsigned64(
-      Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(toAccount.balance),
-    )
-
-    // Step 4. Pay fee
-    feeRecipientAccount.balance = Unsigned64(
-      Unsigned64.toBigInt(tx.fee) +
-        Unsigned64.toBigInt(feeRecipientAccount.balance),
-    )
+    executeTransactionUnchecked(state, tx, feeRecipientAccount)
   }
 
+  state = Object.fromEntries(
+    Object.entries(state).filter(
+      (e) => !(e[1].nonce === Unsigned64(0) && e[1].balance === Unsigned64(0)),
+    ),
+  )
   return state
+}
+
+export function filterTransactionsByExecution(
+  state: StateMap,
+  batch: SignedTransactionBatch,
+): SignedTransactionBatch {
+  const result = []
+
+  const feeRecipientAccount = getOrInsert(
+    state,
+    EthereumAddress.ZERO.toString(),
+    DEFAULT_STATE,
+  )
+
+  for (const tx of batch) {
+    if (canExecuteTransaction(state, tx)) {
+      result.push(tx)
+      executeTransactionUnchecked(state, tx, feeRecipientAccount)
+    }
+  }
+
+  return result
 }

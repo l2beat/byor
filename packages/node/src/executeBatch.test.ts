@@ -26,14 +26,6 @@ describe(executeBatch.name, () => {
         balance: Unsigned64(0),
         nonce: Unsigned64(1),
       },
-      '0x51ddc592af782F17605005bC9D77733112BfdB83': {
-        balance: Unsigned64(0),
-        nonce: Unsigned64(0),
-      },
-      '0x06770a683570610eA237B6321dF9B80b965C8A22': {
-        balance: Unsigned64(0),
-        nonce: Unsigned64(0),
-      },
     })
   })
 
@@ -63,10 +55,6 @@ describe(executeBatch.name, () => {
       '0x3ff8Fc7Ee9e644e93E1E099d3C0c0d1ff0843876': {
         balance: Unsigned64(10),
         nonce: Unsigned64(1),
-      },
-      '0x51ddc592af782F17605005bC9D77733112BfdB83': {
-        balance: Unsigned64(0),
-        nonce: Unsigned64(0),
       },
       '0x06770a683570610eA237B6321dF9B80b965C8A22': {
         balance: Unsigned64(10),
@@ -148,10 +136,6 @@ describe(executeBatch.name, () => {
         balance: Unsigned64(110),
         nonce: Unsigned64(0),
       },
-      '0x51ddc592af782F17605005bC9D77733112BfdB83': {
-        balance: Unsigned64(0),
-        nonce: Unsigned64(0),
-      },
     })
   })
 
@@ -196,10 +180,6 @@ describe(executeBatch.name, () => {
       '0x06770a683570610eA237B6321dF9B80b965C8A22': {
         balance: Unsigned64(105),
         nonce: Unsigned64(1),
-      },
-      '0x51ddc592af782F17605005bC9D77733112BfdB83': {
-        balance: Unsigned64(0),
-        nonce: Unsigned64(0),
       },
     })
   })
@@ -302,7 +282,7 @@ describe(executeBatch.name, () => {
     })
   })
 
-  it('throws on zero nonce', async () => {
+  it('skips transaction with zero nonce', async () => {
     const batch = [
       {
         from: EthereumAddress('0x3ff8Fc7Ee9e644e93E1E099d3C0c0d1ff0843876'),
@@ -317,10 +297,10 @@ describe(executeBatch.name, () => {
     )
     const state = {}
 
-    expect(() => executeBatch(state, batch, batchPoster)).toThrow()
+    expect(executeBatch(state, batch, batchPoster)).toEqual({})
   })
 
-  it('throws on nonce repeat', async () => {
+  it('skips transaction with nonce repeat', async () => {
     const batch = [
       {
         from: EthereumAddress('0x3ff8Fc7Ee9e644e93E1E099d3C0c0d1ff0843876'),
@@ -342,10 +322,15 @@ describe(executeBatch.name, () => {
     )
     const state = {}
 
-    expect(() => executeBatch(state, batch, batchPoster)).toThrow()
+    expect(executeBatch(state, batch, batchPoster)).toEqual({
+      '0x3ff8Fc7Ee9e644e93E1E099d3C0c0d1ff0843876': {
+        balance: Unsigned64(0),
+        nonce: Unsigned64(1),
+      },
+    })
   })
 
-  it('throws trying to spend from an empty account', async () => {
+  it('skips transaction that is trying to spend from an empty account', async () => {
     const batch = [
       {
         from: EthereumAddress('0x3ff8Fc7Ee9e644e93E1E099d3C0c0d1ff0843876'),
@@ -360,10 +345,10 @@ describe(executeBatch.name, () => {
     )
     const state = {}
 
-    expect(() => executeBatch(state, batch, batchPoster)).toThrow()
+    expect(executeBatch(state, batch, batchPoster)).toEqual({})
   })
 
-  it('throws trying to include an empty transaction with a fee from an empty account', async () => {
+  it('skips transaction that is trying to include an empty transaction with a fee from an empty account', async () => {
     const batch = [
       {
         from: EthereumAddress('0x3ff8Fc7Ee9e644e93E1E099d3C0c0d1ff0843876'),
@@ -378,10 +363,10 @@ describe(executeBatch.name, () => {
     )
     const state = {}
 
-    expect(() => executeBatch(state, batch, batchPoster)).toThrow()
+    expect(executeBatch(state, batch, batchPoster)).toEqual({})
   })
 
-  it('throws trying to spend more than the account has with no fee', async () => {
+  it('skips transaction that is trying to spend more than the account has with no fee', async () => {
     const batch = [
       {
         from: EthereumAddress('0x3ff8Fc7Ee9e644e93E1E099d3C0c0d1ff0843876'),
@@ -401,10 +386,15 @@ describe(executeBatch.name, () => {
       },
     }
 
-    expect(() => executeBatch(state, batch, batchPoster)).toThrow()
+    expect(executeBatch(state, batch, batchPoster)).toEqual({
+      '0x3ff8Fc7Ee9e644e93E1E099d3C0c0d1ff0843876': {
+        balance: Unsigned64(20),
+        nonce: Unsigned64(0),
+      },
+    })
   })
 
-  it('throws trying to spend more than the account has with fee', async () => {
+  it('skips transaction that is trying to spend more than the account has with fee', async () => {
     const batch = [
       {
         from: EthereumAddress('0x3ff8Fc7Ee9e644e93E1E099d3C0c0d1ff0843876'),
@@ -424,10 +414,15 @@ describe(executeBatch.name, () => {
       },
     }
 
-    expect(() => executeBatch(state, batch, batchPoster)).toThrow()
+    expect(executeBatch(state, batch, batchPoster)).toEqual({
+      '0x3ff8Fc7Ee9e644e93E1E099d3C0c0d1ff0843876': {
+        balance: Unsigned64(20),
+        nonce: Unsigned64(0),
+      },
+    })
   })
 
-  it('throws on invalid transaction sender', async () => {
+  it('skips transaction that has invalid transaction sender', async () => {
     const batch = [
       {
         from: EthereumAddress('0x0000000000000000000000000000000000000000'),
@@ -442,10 +437,10 @@ describe(executeBatch.name, () => {
     )
     const state = {}
 
-    expect(() => executeBatch(state, batch, batchPoster)).toThrow()
+    expect(executeBatch(state, batch, batchPoster)).toEqual({})
   })
 
-  it('throws on invalid transaction receiver', async () => {
+  it('skips transaction that has invalid transaction receiver', async () => {
     const batch = [
       {
         from: EthereumAddress('0x06770a683570610eA237B6321dF9B80b965C8A22'),
@@ -460,10 +455,10 @@ describe(executeBatch.name, () => {
     )
     const state = {}
 
-    expect(() => executeBatch(state, batch, batchPoster)).toThrow()
+    expect(executeBatch(state, batch, batchPoster)).toEqual({})
   })
 
-  it('throws on invalid transaction receiver and sender', async () => {
+  it('skips transaction that has invalid transaction receiver and sender', async () => {
     const batch = [
       {
         from: EthereumAddress('0x0000000000000000000000000000000000000000'),
@@ -478,10 +473,10 @@ describe(executeBatch.name, () => {
     )
     const state = {}
 
-    expect(() => executeBatch(state, batch, batchPoster)).toThrow()
+    expect(executeBatch(state, batch, batchPoster)).toEqual({})
   })
 
-  it('throws on invalid batch poster', async () => {
+  it('accepts zero batch poster', async () => {
     const batch = [
       {
         from: EthereumAddress('0x0000000000000000000000000000000000000000'),
@@ -496,6 +491,6 @@ describe(executeBatch.name, () => {
     )
     const state = {}
 
-    expect(() => executeBatch(state, batch, batchPoster)).toThrow()
+    expect(executeBatch(state, batch, batchPoster)).toEqual({})
   })
 })
