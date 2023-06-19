@@ -5,7 +5,7 @@ import {
   unreachableCodePath,
 } from '@byor/shared'
 
-import { filterTransactionsByExecution } from './executeBatch'
+import { filterValidTxs } from './executeBatch'
 import { L1StateManager } from './L1StateManager'
 import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from './peripherals/mempool/Mempool'
@@ -40,7 +40,7 @@ export class L1StateSubmitter {
     if (transactions.length > 0) {
       const state = this.l1StateManager.getState()
 
-      const validTxs = filterTransactionsByExecution(state, transactions)
+      const validTxs = filterValidTxs(state, transactions)
       if (validTxs.length > 0) {
         const batchBytes = serializeBatch(validTxs)
         await this.client.writeToCTCContract(batchBytes)

@@ -107,6 +107,14 @@ function executeTransactionUnchecked(
   )
 }
 
+function removeEmptyStateMapValues(state: StateMap): StateMap {
+  return Object.fromEntries(
+    Object.entries(state).filter(
+      (e) => !(e[1].nonce === Unsigned64(0) && e[1].balance === Unsigned64(0)),
+    ),
+  )
+}
+
 export function executeBatch(
   state: StateMap,
   batch: TransactionBatch,
@@ -127,15 +135,11 @@ export function executeBatch(
     executeTransactionUnchecked(state, tx, feeRecipientAccount)
   }
 
-  state = Object.fromEntries(
-    Object.entries(state).filter(
-      (e) => !(e[1].nonce === Unsigned64(0) && e[1].balance === Unsigned64(0)),
-    ),
-  )
+  state = removeEmptyStateMapValues(state)
   return state
 }
 
-export function filterTransactionsByExecution(
+export function filterValidTxs(
   state: StateMap,
   batch: SignedTransactionBatch,
 ): SignedTransactionBatch {
