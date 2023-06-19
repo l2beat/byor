@@ -17,7 +17,7 @@ export function FaucetPrivateKey() {
         <TooltipTrigger className="">
           <div className="text-xl text-left">
             <span className="text-accent-foreground/60">
-              To send yourself some tokens, use this private key:{' '}
+              {'To send yourself some tokens, use this private key: '}
             </span>
             <br />
             <span>{PUBLIC_FAUCET_PRIVATE_KEY}</span>
