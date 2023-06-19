@@ -22,7 +22,7 @@ export class EthereumClient {
     fromBlock: bigint,
     toBlock?: bigint,
   ): Promise<GetLogsReturnType<TAbiEvent>> {
-    this.logger.debug('Getting event logs in range', {
+    this.logger.debug('Getting range', {
       abi: abi.name,
       contractAddress: contractAddress.toString(),
       fromBlock: fromBlock.toString(),

@@ -33,7 +33,7 @@ export class L1StateSubmitter {
 
   private async mempoolSubmit(): Promise<void> {
     const transactions = this.mempool.getTransactionsInPool()
-    this.logger.info('Submitting mempool state to L1', {
+    this.logger.info('Submitting', {
       transactionsLength: transactions.length,
     })
     this.mempool.empty()
