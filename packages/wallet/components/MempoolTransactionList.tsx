@@ -3,9 +3,12 @@
 import { useState } from 'react'
 
 import { trpc } from '@/lib/trpc'
-import { GenericTransactionList, ListState } from './GenericTransactionList'
 
-const PAGINATION_SIZE = 25
+import {
+  GenericTransactionList,
+  ListState,
+  PAGINATION_SIZE,
+} from './GenericTransactionList'
 
 export function MempoolTransactionList() {
   const [state, setState] = useState<ListState>({
@@ -23,11 +26,7 @@ export function MempoolTransactionList() {
     {
       trpc: { ssr: false },
       onSuccess: (data) => {
-        console.log("data success")
-        setState({
-          ...state,
-          txs: data,
-        })
+        setState({ ...state, txs: data })
       },
     },
   )

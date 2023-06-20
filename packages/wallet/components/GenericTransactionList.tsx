@@ -1,11 +1,12 @@
 'use client'
+
+import { Dispatch, SetStateAction } from 'react'
+
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { copyToClipboard } from '@/utils/copyToClipboard'
 
 import { formatTimeDifferenceFromNow } from '../utils/formatTimeDifferenceFromNow'
-import { Dispatch, SetStateAction } from 'react'
-const PAGINATION_SIZE = 25
 
 interface ListTransaction {
   hash: string
@@ -19,6 +20,8 @@ export interface ListState {
   isLoading: boolean
   txs: ListTransaction[]
 }
+
+export const PAGINATION_SIZE = 25
 
 interface Props {
   state: ListState
@@ -55,9 +58,12 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
           {state.pageNum !== 0 && (
             <Button
               variant={'secondary'}
-              onClick={() => {
-              console.log("clicked the button")
-              setState({ ...state, isLoading: true, pageNum: state.pageNum - 1 })}
+              onClick={() =>
+                setState({
+                  ...state,
+                  isLoading: true,
+                  pageNum: state.pageNum - 1,
+                })
               }
             >
               {state.pageNum}
@@ -67,10 +73,12 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
           {state.txs.length / PAGINATION_SIZE > 1 && (
             <Button
               variant={'secondary'}
-              onClick={() => {
-              console.log("clicked the button 2")
-              setState({ ...state, isLoading: true, pageNum: state.pageNum + 1 })
-              }
+              onClick={() =>
+                setState({
+                  ...state,
+                  isLoading: true,
+                  pageNum: state.pageNum + 1,
+                })
               }
             >
               {state.pageNum + 2}
@@ -85,18 +93,23 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
         <span>Date</span>
       </div>
       <Separator />
+      {state.txs.length === 0 && (
+        <span className="basis-full text-center text-xl my-4 font-semibold">
+          Empty...
+        </span>
+      )}
       {state.txs.slice(0, PAGINATION_SIZE).map((tx, iter) => {
         return (
           <div key={iter} className="basis-full grid grid-cols-4 gap-4">
-            {makeElementCopyable(
-              <span className="truncate max-w-[12rem]">{tx.hash}</span>,
-              tx.hash,
-            )}
-            {makeElementCopyable(
-              <span>{minimizeAddress(tx.from)}</span>,
-              tx.from,
-            )}
-            {makeElementCopyable(<span>{minimizeAddress(tx.to)}</span>, tx.to)}
+            <Copyable toCopy={tx.hash}>
+              <span className="truncate max-w-[12rem]">{tx.hash}</span>
+            </Copyable>
+            <Copyable toCopy={tx.from}>
+              <span>{minimizeAddress(tx.from)}</span>
+            </Copyable>
+            <Copyable toCopy={tx.to}>
+              <span>{minimizeAddress(tx.to)}</span>
+            </Copyable>
             <span>{formatTimeDifferenceFromNow(tx.date)}</span>
           </div>
         )
@@ -105,17 +118,20 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
   )
 }
 
-function makeElementCopyable(
-  element: JSX.Element,
-  toCopy: string,
-): JSX.Element {
+function Copyable({
+  children,
+  toCopy,
+}: {
+  children: JSX.Element
+  toCopy: string
+}): JSX.Element {
   return (
     <Button
       variant="link"
       className="mr-auto justify-left items-start p-0 h-0"
       onClick={() => copyToClipboard(toCopy)}
     >
-      {element}
+      {children}
     </Button>
   )
 }
