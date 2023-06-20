@@ -60,10 +60,12 @@ const formSchema = z.object({
   ),
   value: z
     .number({ invalid_type_error: 'Value should be a number' })
-    .gte(0, { message: "Value can't be negative" }),
+    .gte(0, { message: "Value can't be negative" })
+    .max(10, "Value can't be bigger than 10"),
   fee: z
     .number({ invalid_type_error: 'Fee should be a number' })
-    .gte(0, { message: "Fee can't be negative" }),
+    .gte(0, { message: "Fee can't be negative" })
+    .max(10, "Fee can't be bigger than 10"),
 })
 
 export function TransactionModal() {
