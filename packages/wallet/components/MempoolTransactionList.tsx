@@ -4,18 +4,17 @@ import { useState } from 'react'
 
 import { trpc } from '@/lib/trpc'
 import { GenericTransactionList, ListState } from './GenericTransactionList'
-import { getQueryKey } from '@trpc/react-query'
 
 const PAGINATION_SIZE = 25
 
-export function CommitedTransactionList() {
+export function MempoolTransactionList() {
   const [state, setState] = useState<ListState>({
     pageNum: 0,
-    isLoading: true,
+    isLoading: false,
     txs: [],
   })
 
-  trpc.transactions.getRange.useQuery(
+  trpc.transactions.getMempoolRange.useQuery(
     // NOTE(radomski): Fetch plus one to know if there exists a next page
     {
       start: state.pageNum * PAGINATION_SIZE,
@@ -23,11 +22,21 @@ export function CommitedTransactionList() {
     },
     {
       trpc: { ssr: false },
-      onSuccess: (data) => { setState({...state, isLoading: false, txs: data})}
+      onSuccess: (data) => {
+        console.log("data success")
+        setState({
+          ...state,
+          txs: data,
+        })
+      },
     },
   )
 
   return (
-    <GenericTransactionList title={"L1 Commited transactions"} state={state} setState={setState} />
+    <GenericTransactionList
+      title={'Mempool transactions'}
+      state={state}
+      setState={setState}
+    />
   )
 }

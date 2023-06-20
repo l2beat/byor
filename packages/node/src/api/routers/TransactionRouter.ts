@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { TransactionRepository } from '../../db/TransactionRepository'
 import { Mempool } from '../../peripherals/mempool/Mempool'
 import { publicProcedure, router } from '../trpc'
+import { zip } from 'lodash'
 
 type TransactionStatus = 'Not found' | 'Commited' | 'Soft commited'
 
@@ -42,6 +43,20 @@ export function createTransactionRouter(
               from: tx.from.toString(),
               to: tx.to.toString(),
               date: tx.l1SubmittedDate.getTime(),
+            }
+          })
+      }),
+    getMempoolRange: publicProcedure
+      .input(z.object({ start: z.number(), end: z.number() }))
+      .query(({ input }) => {
+        return zip(transactionMempool.getTransactionsInPool(), transactionMempool.getTransactionsTimestamps())
+          .slice(input.start, input.end)
+          .map(([tx, timestamp]) => {
+            return {
+              hash: tx!.hash!.toString(),
+              from: tx!.from.toString(),
+              to: tx!.to.toString(),
+              date: timestamp!,
             }
           })
       }),
