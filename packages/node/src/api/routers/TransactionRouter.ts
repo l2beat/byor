@@ -1,4 +1,4 @@
-import { branded, deserializeBatch, Hex } from '@byor/shared'
+import { branded, deserializeBatch, Hex, serialize } from '@byor/shared'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
@@ -30,6 +30,20 @@ export function createTransactionRouter(
             cause: e,
           })
         }
+      }),
+    getRange: publicProcedure
+      .input(z.object({ start: z.number(), end: z.number() }))
+      .query(({ input }) => {
+        return transactionRepository
+          .getRange(input.start, input.end)
+          .map((tx) => {
+            return {
+              hash: tx.hash!.toString(),
+              from: tx.from.toString(),
+              to: tx.to.toString(),
+              date: tx.l1SubmittedDate.getTime(),
+            }
+          })
       }),
     getStatus: publicProcedure
       .input(

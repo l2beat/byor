@@ -57,6 +57,12 @@ describe(TransactionRepository.name, () => {
     })
   })
 
+  describe(TransactionRepository.prototype.getRange.name, () => {
+    it('adds single transaction', async () => {
+      expect(repository.getAll()).toEqual(modelTransactions.slice(0, 1))
+    })
+  })
+
   describe(TransactionRepository.prototype.getCount.name, () => {
     it('gets count of no transactions', async () => {
       expect(repository.getCount()).toEqual(0)
