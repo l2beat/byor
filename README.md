@@ -3,7 +3,6 @@
 - Install node v20
 - Install [yarn](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
 - Install [foundry](https://book.getfoundry.sh/getting-started/installation)
-- Install make, gcc, g++, python3
 
 # Running
 
