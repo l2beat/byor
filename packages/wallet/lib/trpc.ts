@@ -2,6 +2,7 @@ import { RootRouter } from '@byor/node'
 import { httpBatchLink } from '@trpc/client'
 import { createTRPCNext } from '@trpc/next'
 import { inferRouterOutputs } from '@trpc/server'
+import { getApiUrl } from './getApiUrl'
 
 type RouterOutput = inferRouterOutputs<RootRouter>
 export type TransactionGetStatusOutput =
@@ -12,7 +13,7 @@ export const trpc = createTRPCNext<RootRouter>({
     return {
       links: [
         httpBatchLink({
-          url: 'http://localhost:3000',
+          url: getApiUrl(),
         }),
       ],
     }
