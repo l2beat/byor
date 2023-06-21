@@ -1,4 +1,4 @@
-import { branded, deserializeBatch, Hex } from '@byor/shared'
+import { assert, branded, deserializeBatch, Hex } from '@byor/shared'
 import { TRPCError } from '@trpc/server'
 import { zip } from 'lodash'
 import { z } from 'zod'
@@ -33,12 +33,21 @@ export function createTransactionRouter(
         }
       }),
     getRange: publicProcedure
-      .input(z.object({ start: z.number(), end: z.number() }))
+      .input(
+        z
+          .object({ start: z.number().gte(0), end: z.number().gte(0) })
+          .refine((i) => {
+            return i.end >= i.start
+          }),
+      )
       .query(({ input }) => {
         return transactionRepository
           .getRange(input.start, input.end)
           .map((tx) => {
             return {
+              // NOTE(radomski): We know that it won't be undefined
+              // because hashes are always stored in the database
+              /* eslint-disable-next-line */
               hash: tx.hash!.toString(),
               from: tx.from.toString(),
               to: tx.to.toString(),
@@ -47,9 +56,25 @@ export function createTransactionRouter(
           })
       }),
     getMempoolRange: publicProcedure
-      .input(z.object({ start: z.number(), end: z.number() }))
+      .input(
+        z
+          .object({ start: z.number().gte(0), end: z.number().gte(0) })
+          .refine((i) => {
+            return i.end >= i.start
+          }),
+      )
       .query(({ input }) => {
-        return zip(transactionMempool.getTransactionsInPool(), transactionMempool.getTransactionsTimestamps())
+        const txs = transactionMempool.getTransactionsInPool()
+        const timestamps = transactionMempool.getTransactionsTimestamps()
+        assert(
+          txs.length === timestamps.length,
+          'Invalid mempool state, dropping everything',
+        )
+
+        // NOTE(radomski): We know that it won't be undefined
+        // because of the assert at the beginning of this function
+        /* eslint-disable */
+        return zip(txs, timestamps)
           .slice(input.start, input.end)
           .map(([tx, timestamp]) => {
             return {
@@ -59,6 +84,7 @@ export function createTransactionRouter(
               date: timestamp!,
             }
           })
+        /* eslint-enable */
       }),
     getStatus: publicProcedure
       .input(

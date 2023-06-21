@@ -6,6 +6,7 @@ import {
   Unsigned8,
   Unsigned64,
 } from '@byor/shared'
+import { install, InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'earl'
 import { privateKeyToAccount } from 'viem/accounts'
 
@@ -52,16 +53,29 @@ describe(Mempool.name, () => {
     v: Unsigned8(27),
   }
 
+  let time: InstalledClock
+
+  beforeEach(async () => {
+    time = install()
+  })
+
+  afterEach(() => {
+    time.uninstall()
+  })
+
   describe(Mempool.prototype.add.name, () => {
-    it('adds a single byte array', () => {
+    it('adds a single byte array and records their timestamp', () => {
+      time.setSystemTime(31415926)
       const mempool = new Mempool(Logger.SILENT)
 
       mempool.add([modelSignedTx1])
 
       expect(mempool.getTransactionsInPool()).toEqual([modelSignedTx1])
+      expect(mempool.getTransactionsTimestamps()).toEqual([31415926])
     })
 
-    it('adds multiple byte arrays', () => {
+    it('adds multiple byte arrays and records thier timestamp', () => {
+      time.setSystemTime(271831415926)
       const mempool = new Mempool(Logger.SILENT)
 
       mempool.add([modelSignedTx1])
@@ -70,6 +84,9 @@ describe(Mempool.name, () => {
       expect(mempool.getTransactionsInPool()).toEqual([
         modelSignedTx1,
         modelSignedTx2,
+      ])
+      expect(mempool.getTransactionsTimestamps()).toEqual([
+        271831415926, 271831415926,
       ])
     })
   })

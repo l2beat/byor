@@ -58,8 +58,35 @@ describe(TransactionRepository.name, () => {
   })
 
   describe(TransactionRepository.prototype.getRange.name, () => {
-    it('adds single transaction', async () => {
-      expect(repository.getAll()).toEqual(modelTransactions.slice(0, 1))
+    it('sorts by time and returns a valid range when given too big one', async () => {
+      repository.addMany(modelTransactions)
+
+      expect(repository.getRange(1, 3)).toEqual(modelTransactions.slice(0, 1))
+    })
+
+    it('sorts by time and returns the whole range', async () => {
+      repository.addMany(modelTransactions)
+
+      expect(repository.getRange(0, 2)).toEqual([
+        modelTransactions[1]!,
+        modelTransactions[0]!,
+      ])
+    })
+
+    it('returns nothing if range is of zero length even if database contains rows', async () => {
+      repository.addMany(modelTransactions)
+
+      expect(repository.getRange(0, 0)).toEqual([])
+    })
+
+    it('returns nothing if end is smaller than start', async () => {
+      repository.addMany(modelTransactions)
+
+      expect(repository.getRange(2, 0)).toEqual([])
+    })
+
+    it('returns nothing on empty even if range is of non-zero length', async () => {
+      expect(repository.getRange(0, 10)).toEqual([])
     })
   })
 

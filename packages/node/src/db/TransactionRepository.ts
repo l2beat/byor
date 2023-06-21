@@ -30,12 +30,17 @@ export class TransactionRepository extends BaseRepository {
   }
 
   getRange(start: number, end: number): TransactionRecord[] {
+    if (end - start === 0 || end < start) {
+      return []
+    }
+
     const drizzle = this.drizzle()
     return drizzle
       .select()
       .from(transactionsSchema)
       .orderBy(desc(transactionsSchema.l1SubmittedDate))
-      .limit(end - start).offset(start)
+      .limit(end - start)
+      .offset(start)
       .all()
       .map((tx) => fromInternalTransaction(tx))
   }
