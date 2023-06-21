@@ -67,6 +67,7 @@ describe(createTransactionRouter.name, () => {
             hash: '0x1234',
             from: '0xabcd',
             to: '0xef98',
+            value: '1234',
             l1SubmittedDate: new Date(314159),
           },
         ]),
@@ -81,7 +82,7 @@ describe(createTransactionRouter.name, () => {
         .expect('Content-Type', /json/)
         .expect(
           200,
-          '{"result":{"data":[{"hash":"0x1234","from":"0xabcd","to":"0xef98","date":314159}]}}',
+          '{"result":{"data":[{"hash":"0x1234","from":"0xabcd","to":"0xef98","value":"1234","date":314159}]}}',
         )
     })
 
@@ -142,6 +143,7 @@ describe(createTransactionRouter.name, () => {
             hash: '0x1234',
             from: '0xabcd',
             to: '0xef98',
+            value: 1234,
           },
         ]),
         getTransactionsTimestamps: mockFn().returnsOnce([314159]),
@@ -157,7 +159,7 @@ describe(createTransactionRouter.name, () => {
         .expect('Content-Type', /json/)
         .expect(
           200,
-          '{"result":{"data":[{"hash":"0x1234","from":"0xabcd","to":"0xef98","date":314159}]}}',
+          '{"result":{"data":[{"hash":"0x1234","from":"0xabcd","to":"0xef98","value":"1234","date":314159}]}}',
         )
     })
 

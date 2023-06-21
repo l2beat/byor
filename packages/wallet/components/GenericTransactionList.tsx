@@ -12,6 +12,7 @@ interface ListTransaction {
   hash: string
   from: string
   to: string
+  value: string
   date: number
 }
 
@@ -86,10 +87,11 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
           )}
         </div>
       </div>
-      <div className="basis-full grid grid-cols-4 gap-4 text-xl">
+      <div className="basis-full grid grid-cols-5 gap-4 text-xl">
         <span>Hash</span>
         <span>From</span>
         <span>To</span>
+        <span>Value</span>
         <span>Date</span>
       </div>
       <Separator />
@@ -100,7 +102,7 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
       )}
       {state.txs.slice(0, PAGINATION_SIZE).map((tx, iter) => {
         return (
-          <div key={iter} className="basis-full grid grid-cols-4 gap-4">
+          <div key={iter} className="basis-full grid grid-cols-5 gap-4">
             <Copyable toCopy={tx.hash}>
               <span className="truncate max-w-[12rem]">{tx.hash}</span>
             </Copyable>
@@ -110,6 +112,7 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
             <Copyable toCopy={tx.to}>
               <span>{minimizeAddress(tx.to)}</span>
             </Copyable>
+            <span>{tx.value}</span>
             <span>{formatTimeDifferenceFromNow(tx.date)}</span>
           </div>
         )

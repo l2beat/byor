@@ -51,6 +51,7 @@ export function createTransactionRouter(
               hash: tx.hash!.toString(),
               from: tx.from.toString(),
               to: tx.to.toString(),
+              value: tx.value.toString(),
               date: tx.l1SubmittedDate.getTime(),
             }
           })
@@ -81,6 +82,7 @@ export function createTransactionRouter(
               hash: tx!.hash!.toString(),
               from: tx!.from.toString(),
               to: tx!.to.toString(),
+              value: tx!.value.toString(),
               date: timestamp!,
             }
           })
