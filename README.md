@@ -1,8 +1,11 @@
 # Prerequisites
 
-- Install node v20
-- Install [yarn](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
-- Install [foundry](https://book.getfoundry.sh/getting-started/installation)
+Install the following:
+
+- node v20
+- [yarn](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
+- [foundry](https://book.getfoundry.sh/getting-started/installation)
+- sqlite3 (the command line interface, not the library)
 
 # Running
 
