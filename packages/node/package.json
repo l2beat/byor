@@ -33,7 +33,7 @@
     "@types/better-sqlite3": "^7.6.4",
     "@types/lodash": "^4.14.194",
     "abitype": "^0.8.4",
-    "better-sqlite3": "^8.3.0",
+    "better-sqlite3": "^8.4.0",
     "cmd-ts": "^0.12.1",
     "cors": "^2.8.5",
     "drizzle-orm": "^0.25.4",
