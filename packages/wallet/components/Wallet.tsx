@@ -9,9 +9,10 @@ import { FaucetPrivateKey } from './FaucetPrivateKey'
 import { TransactionModal } from './TransactionModal'
 import AccountBalance from './WalletBalance'
 
-const isSSR = typeof window === 'undefined'
-
 export function Wallet() {
+  // WalletConnect has some issues with SSR and tries to render things on the server
+  // causing hydration errors on the client, for more information see:
+  // https://github.com/WalletConnect/web3modal/issues/196
   const [isSSR, setIsSSR] = useState(true)
 
   useEffect(() => {
