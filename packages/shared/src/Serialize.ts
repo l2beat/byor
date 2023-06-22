@@ -5,7 +5,11 @@ import {
   recoverAddress,
 } from 'viem'
 
-import { typedDataDomain, typedDataPrimaryType, typedDataTypes } from './config'
+import {
+  getTypedDataDomain,
+  typedDataPrimaryType,
+  typedDataTypes,
+} from './config'
 import { EthereumAddress } from './types/EthereumAddress'
 import { Hex } from './types/Hex'
 import {
@@ -19,7 +23,7 @@ import { Unsigned8, Unsigned64 } from './types/UnsignedSized'
 export function hashTransaction(unsignedTx: Transaction): Hex {
   const hash = Hex(
     hashTypedData({
-      domain: typedDataDomain,
+      domain: getTypedDataDomain(),
       types: typedDataTypes,
       primaryType: typedDataPrimaryType,
       message: {
@@ -40,7 +44,7 @@ export async function serializeAndSign(
 ): Promise<Hex> {
   const signature = Hex(
     await account.signTypedData({
-      domain: typedDataDomain,
+      domain: getTypedDataDomain(),
       types: typedDataTypes,
       primaryType: typedDataPrimaryType,
       message: {
@@ -96,7 +100,7 @@ export async function deserialize(
 
   const signature = Hex(hex.substring(88))
   const hash = hashTypedData({
-    domain: typedDataDomain,
+    domain: getTypedDataDomain(),
     types: typedDataTypes,
     primaryType: typedDataPrimaryType,
     message: {

@@ -8,11 +8,10 @@ import {
 } from '@byor/shared'
 import { command, positional, run, string, Type } from 'cmd-ts'
 import {
+  createPublicClient,
   createWalletClient,
   Hex as ViemHex,
   http,
-  PrivateKeyAccount,
-  createPublicClient,
 } from 'viem'
 import {
   english,
@@ -79,7 +78,7 @@ async function submitToL1(
     functionName: 'appendBatch',
     args: [serializedBatchBytes.toString() as ViemHex],
   })
-  client.writeContract(request)
+  await client.writeContract(request)
 }
 
 const HexValue: Type<string, Hex> = {
