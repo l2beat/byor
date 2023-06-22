@@ -7,14 +7,15 @@ export class Database {
   private readonly drizzle: BetterSQLite3Database
   protected readonly logger: Logger
 
-  constructor(path: string, logger: Logger) {
-    const sqlite = new DatabaseDriver(path)
+  constructor(dbPath: string, migrationsPath: string, logger: Logger) {
+    const sqlite = new DatabaseDriver(dbPath)
     this.drizzle = drizzle(sqlite)
     this.logger = logger.for(this)
+        this.createTables(migrationsPath)
   }
 
-  createTables(path: string): void {
-    migrate(this.drizzle, { migrationsFolder: path })
+  createTables(migrationsPath: string): void {
+    migrate(this.drizzle, { migrationsFolder: migrationsPath })
   }
 
   getDrizzle(): BetterSQLite3Database {

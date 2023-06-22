@@ -14,6 +14,7 @@ interface ConfigJSON {
   CHAIN_ID: number
   CONTRACT_CREATED_AT_BLOCK: number
   DB_PATH: string
+  DB_MIGRATIONS_PATH: string
   PRIVATE_KEY: string
   CTC_CONTRACT_ADDRESS: string
   GENESIS_FILE_PATH: string
@@ -32,6 +33,7 @@ export function getConfig(configPath: string): Config {
     chainId: configJson.CHAIN_ID,
     contractCreatedAtBlock: configJson.CONTRACT_CREATED_AT_BLOCK,
     databasePath: configJson.DB_PATH,
+    migrationsPath: configJson.DB_MIGRATIONS_PATH,
     privateKey: Hex(configJson.PRIVATE_KEY),
     ctcContractAddress: EthereumAddress(configJson.CTC_CONTRACT_ADDRESS),
     genesisFilePath: configJson.GENESIS_FILE_PATH,

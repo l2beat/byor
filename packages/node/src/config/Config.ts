@@ -7,6 +7,7 @@ export interface Config {
   readonly chainId: number
   readonly contractCreatedAtBlock: number
   readonly databasePath: string
+  readonly migrationsPath: string
   readonly privateKey: Hex
   readonly ctcContractAddress: EthereumAddress
   readonly genesisFilePath: string
