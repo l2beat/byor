@@ -12,6 +12,7 @@ interface ConfigJSON {
   FLUSH_PERIOD_SEC: number
   RPC_URL: string
   CHAIN_ID: number
+  CONTRACT_CREATED_AT_BLOCK: number
   DB_PATH: string
   PRIVATE_KEY: string
   CTC_CONTRACT_ADDRESS: string
@@ -29,6 +30,7 @@ export function getConfig(configPath: string): Config {
     flushPeriodSec: configJson.FLUSH_PERIOD_SEC,
     rpcUrl: configJson.RPC_URL,
     chainId: configJson.CHAIN_ID,
+    contractCreatedAtBlock: configJson.CONTRACT_CREATED_AT_BLOCK,
     databasePath: configJson.DB_PATH,
     privateKey: Hex(configJson.PRIVATE_KEY),
     ctcContractAddress: EthereumAddress(configJson.CTC_CONTRACT_ADDRESS),

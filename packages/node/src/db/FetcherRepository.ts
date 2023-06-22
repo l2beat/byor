@@ -1,7 +1,9 @@
 import { assert } from '@byor/shared'
 import { eq, InferModel } from 'drizzle-orm'
 
+import { ChainContractCreationTime } from '../config/getContractCreationTime'
 import { BaseRepository } from './BaseRepository'
+import { Database } from './Database'
 import { fetcherSchema } from './schema'
 
 type InternalFetcherRecord = InferModel<typeof fetcherSchema>
@@ -12,6 +14,13 @@ export interface FetcherRecord {
 }
 
 export class FetcherRepository extends BaseRepository {
+  constructor(
+    database: Database,
+    private readonly creationPair: ChainContractCreationTime,
+  ) {
+    super(database)
+  }
+
   addOrUpdate(fetcher: FetcherRecord): void {
     const drizzle = this.drizzle()
     const internalFetcher = toInternalFetcher(fetcher)
@@ -48,12 +57,25 @@ export class FetcherRepository extends BaseRepository {
     // that it can not be undefined it can
     // eslint-disable-next-line
     if (!res) {
-      const res = {
-        chainId,
-        lastFetchedBlock: -1n,
+      if (chainId !== this.creationPair.chainId) {
+        this.database
+          .getLogger()
+          .for(this)
+          .warn(
+            'chainId received as parameter does not match with the one received in the constructor',
+            { paramChainId: chainId, ctorChainId: this.creationPair.chainId },
+          )
+
+        return {
+          chainId,
+          lastFetchedBlock: -1n,
+        }
       }
 
-      return res
+      return {
+        chainId: this.creationPair.chainId,
+        lastFetchedBlock: BigInt(this.creationPair.contractCreatedAtBlock - 1),
+      }
     }
     return fromInternalFetcher(res)
   }

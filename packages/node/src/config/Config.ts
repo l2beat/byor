@@ -5,6 +5,7 @@ export interface Config {
   readonly flushPeriodSec: number
   readonly rpcUrl: string
   readonly chainId: number
+  readonly contractCreatedAtBlock: number
   readonly databasePath: string
   readonly privateKey: Hex
   readonly ctcContractAddress: EthereumAddress
