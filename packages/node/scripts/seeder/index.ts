@@ -12,6 +12,7 @@ import {
   Hex as ViemHex,
   http,
   PrivateKeyAccount,
+  createPublicClient,
 } from 'viem'
 import {
   english,
@@ -27,8 +28,8 @@ import { getGenesisState } from '../../src/config/getGenesisState'
 
 async function main(config: Config, privateKey: Hex): Promise<void> {
   const genesisState = getGenesisState(config.genesisFilePath)
-  const account = privateKeyToAccount(privateKey.toString() as ViemHex)
-  const accountBalance = genesisState[account.address]
+  const l2Account = privateKeyToAccount(privateKey.toString() as ViemHex)
+  const accountBalance = genesisState[l2Account.address]
   assert(
     accountBalance !== undefined,
     'Provided private key account does not exist in the genesis state',
@@ -42,7 +43,7 @@ async function main(config: Config, privateKey: Hex): Promise<void> {
   for (let i = 0; i < PAYMENTS_COUNT; i++) {
     const receiver = mnemonicToAccount(generateMnemonic(english))
     batch.push({
-      from: EthereumAddress(account.address),
+      from: EthereumAddress(l2Account.address),
       to: EthereumAddress(receiver.address),
       value: Unsigned64(PAYMENT_AMOUNT),
       nonce: Unsigned64(i + 1),
@@ -50,29 +51,35 @@ async function main(config: Config, privateKey: Hex): Promise<void> {
     })
   }
 
-  const bytes = await serializeAndSignBatch(batch, account)
-  await submitToL1(account, config, bytes)
+  const bytes = await serializeAndSignBatch(batch, l2Account)
+  await submitToL1(config, bytes)
 }
 
 async function submitToL1(
-  account: PrivateKeyAccount,
   config: Config,
   serializedBatchBytes: Hex,
 ): Promise<void> {
   const chain = createChain(config.chainId, config.rpcUrl)
 
+  const l1Account = privateKeyToAccount(config.privateKey.toString() as ViemHex)
   const client = createWalletClient({
-    account,
+    account: l1Account,
     chain,
     transport: http(),
   })
 
-  await client.writeContract({
+  const publicClient = createPublicClient({
+    chain,
+    transport: http(),
+  })
+
+  const { request } = await publicClient.simulateContract({
     address: config.ctcContractAddress.toString() as ViemHex,
     abi: abi,
     functionName: 'appendBatch',
     args: [serializedBatchBytes.toString() as ViemHex],
   })
+  client.writeContract(request)
 }
 
 const HexValue: Type<string, Hex> = {
