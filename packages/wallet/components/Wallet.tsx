@@ -32,6 +32,7 @@ export function Wallet() {
     const connected = status === 'connected'
     const wrongChain = chain && chains.length === 1 && chain.id !== chains[0].id
     if (connected && wrongChain) {
+      setWalletReady(false)
       toast({
         variant: 'destructive',
         title: 'Wallet on the wrong chain',
@@ -42,7 +43,6 @@ export function Wallet() {
             altText="Switch chain"
             onClick={() => {
               if (switchNetwork && chains.length === 1) {
-                setWalletReady(false)
                 switchNetwork(chains[0].id)
               }
             }}
