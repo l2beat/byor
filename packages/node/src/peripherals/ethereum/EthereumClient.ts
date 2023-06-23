@@ -29,14 +29,44 @@ export class EthereumClient {
       toBlock: toBlock ? toBlock.toString() : 'NONE',
     })
 
-    const result = await this.publicProvider.getLogs({
-      address: contractAddress.toString() as ViemHex,
-      event: abi,
-      fromBlock: fromBlock,
-      toBlock: toBlock,
-    })
-
-    return result
+    try {
+      return await this.publicProvider.getLogs({
+        address: contractAddress.toString() as ViemHex,
+        event: abi,
+        fromBlock: fromBlock,
+        toBlock: toBlock,
+      })
+    } catch (e) {
+      if (
+        e instanceof Error &&
+        (e.message.includes('Log response size exceeded') ||
+          e.message.includes('block range is too wide'))
+      ) {
+        let end = toBlock
+          ? toBlock
+          : await this.publicProvider.getBlockNumber()
+        end = end < fromBlock ? fromBlock : end;
+        const midPoint =
+          Number(fromBlock) + Math.floor(Number((end - fromBlock) / 2n))
+        const [a, b] = await Promise.all([
+          this.getLogsInRange(
+            abi,
+            contractAddress,
+            fromBlock,
+            BigInt(midPoint),
+          ),
+          this.getLogsInRange(
+            abi,
+            contractAddress,
+            BigInt(midPoint + 1),
+            toBlock,
+          ),
+        ])
+        return a.concat(b)
+      } else {
+        throw e
+      }
+    }
   }
 
   async getTransaction(hash: Hex): Promise<Transaction> {
