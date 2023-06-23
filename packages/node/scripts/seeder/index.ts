@@ -1,6 +1,7 @@
 import {
   assert,
   EthereumAddress,
+  getChain,
   Hex,
   serializeAndSignBatch,
   TransactionBatch,
@@ -22,7 +23,6 @@ import {
 
 import { Config, getConfig } from '../../src/config'
 import { abi } from '../../src/config/abi'
-import { createChain } from '../../src/config/createChain'
 import { getGenesisState } from '../../src/config/getGenesisState'
 
 async function main(config: Config, privateKey: Hex): Promise<void> {
@@ -58,7 +58,7 @@ async function submitToL1(
   config: Config,
   serializedBatchBytes: Hex,
 ): Promise<void> {
-  const chain = createChain(config.chainId, config.rpcUrl)
+  const chain = getChain()
 
   const l1Account = privateKeyToAccount(config.privateKey.toString() as ViemHex)
   const client = createWalletClient({

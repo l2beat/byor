@@ -3,6 +3,8 @@ import { TypedDataDomain } from 'abitype'
 import { localTypedDataDomain } from './localTypedData'
 import { productionTypedDataDomain } from './productionTypedData'
 
+export * from './getChain'
+
 export function getTypedDataDomain(): TypedDataDomain {
   if (process.env.NODE_ENV === 'production') {
     return productionTypedDataDomain

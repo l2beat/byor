@@ -1,4 +1,4 @@
-import { Logger, LogLevel } from '@byor/shared'
+import { getChain, Logger, LogLevel } from '@byor/shared'
 import {
   createPublicClient,
   createWalletClient,
@@ -12,7 +12,7 @@ import { createAccountRouter } from './api/routers/AccountRouter'
 import { createStatisticsRouter } from './api/routers/StatisticRouter'
 import { createTransactionRouter } from './api/routers/TransactionRouter'
 import { AppRouters } from './api/types/AppRouter'
-import { Config, createChain } from './config'
+import { Config } from './config'
 import { calculateTransactionLimit } from './config/calculateTransactionLimit'
 import { getContractCreationTime } from './config/getContractCreationTime'
 import { AccountRepository } from './db/AccountRepository'
@@ -45,7 +45,7 @@ export class Application {
       getContractCreationTime(config),
     )
 
-    const chain = createChain(config.chainId, config.rpcUrl)
+    const chain = getChain()
     const publicProvider = createPublicClient({
       chain,
       transport: http(),
