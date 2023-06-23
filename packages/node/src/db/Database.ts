@@ -11,7 +11,7 @@ export class Database {
     const sqlite = new DatabaseDriver(dbPath)
     this.drizzle = drizzle(sqlite)
     this.logger = logger.for(this)
-        this.createTables(migrationsPath)
+    this.createTables(migrationsPath)
   }
 
   createTables(migrationsPath: string): void {
