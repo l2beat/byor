@@ -132,9 +132,9 @@ describe('deserializeBatch', () => {
   it('deserializes two different valid transactions', async () => {
     const secondTx = { ...modelSignedTx1 }
     secondTx.to = EthereumAddress('0xcafe7970C51812dc3A010C7d01b50e0d17dc79C8')
-    secondTx.from = Hex('0x491E388D88a808b9cA6547a7507daf29D4954BF7')
+    secondTx.from = Hex('0xdd7e904328072ca5BcB41aE72754766b4BFEA0E4')
     secondTx.hash = Hex(
-      '0x6acf80d210e85589d2fe24764e04ef379596d994cac505dab44ac0b2451fe88a',
+      '0x73aed7675fdaf8f56467fe08bf74ab48a4fd8dd587f8bafa97c06bbb400f70f8',
     )
     const firstTxBytes = Hex.removePrefix(modelTxSerializedHex1)
     const secondTxBytes = `cafe${Hex.removePrefix(modelTxSerializedHex1).slice(
