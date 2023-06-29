@@ -6,6 +6,44 @@ import { EthereumClient } from './EthereumClient'
 
 describe(EthereumClient.name, () => {
   describe(EthereumClient.prototype.getLogsInRange.name, () => {
+    it('divides on throw into two equal calls', async () => {
+      const provider = mockObject<PublicClient>({
+        getLogs: mockFn()
+          .throwsOnce(new Error('block range is too wide'))
+          .returnsOnce([])
+          .returnsOnce([]),
+      })
+      const ethereumClient = new EthereumClient(provider, Logger.SILENT)
+      const eventAbi = parseAbiItem('event BatchAppended(address sender)')
+
+      await ethereumClient.getLogsInRange(
+        eventAbi,
+        EthereumAddress.ZERO,
+        1000n,
+        2000n,
+      )
+
+      expect(provider.getLogs).toHaveBeenCalledTimes(3)
+      expect(provider.getLogs).toHaveBeenCalledWith({
+        address: EthereumAddress.ZERO.toString() as ViemHex,
+        event: eventAbi,
+        fromBlock: 1000n,
+        toBlock: 2000n,
+      })
+      expect(provider.getLogs).toHaveBeenCalledWith({
+        address: EthereumAddress.ZERO.toString() as ViemHex,
+        event: eventAbi,
+        fromBlock: 1000n,
+        toBlock: 1500n,
+      })
+      expect(provider.getLogs).toHaveBeenCalledWith({
+        address: EthereumAddress.ZERO.toString() as ViemHex,
+        event: eventAbi,
+        fromBlock: 1501n,
+        toBlock: 2000n,
+      })
+    })
+
     it('gets the log starting from the genesis block', async () => {
       const provider = mockObject<PublicClient>({
         getLogs: mockFn().returnsOnce([]),
@@ -21,6 +59,18 @@ describe(EthereumClient.name, () => {
         fromBlock: 42n,
         toBlock: undefined,
       })
+    })
+
+    it('throws if the error does not originate from too wide of a range', async () => {
+      const provider = mockObject<PublicClient>({
+        getLogs: mockFn().throwsOnce(new Error('wrong api key')),
+      })
+      const ethereumClient = new EthereumClient(provider, Logger.SILENT)
+      const eventAbi = parseAbiItem('event BatchAppended(address sender)')
+
+      await expect(
+        ethereumClient.getLogsInRange(eventAbi, EthereumAddress.ZERO, 1n, 2n),
+      ).toBeRejectedWith('wrong api key')
     })
   })
 
