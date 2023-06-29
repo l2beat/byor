@@ -42,10 +42,8 @@ export class EthereumClient {
         (e.message.includes('Log response size exceeded') ||
           e.message.includes('block range is too wide'))
       ) {
-        let end = toBlock
-          ? toBlock
-          : await this.publicProvider.getBlockNumber()
-        end = end < fromBlock ? fromBlock : end;
+        let end = toBlock ? toBlock : await this.publicProvider.getBlockNumber()
+        end = end < fromBlock ? fromBlock : end
         const midPoint =
           Number(fromBlock) + Math.floor(Number((end - fromBlock) / 2n))
         const [a, b] = await Promise.all([
