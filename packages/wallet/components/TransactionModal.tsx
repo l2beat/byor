@@ -7,7 +7,6 @@ import {
   Hex,
   serialize,
   SignedTransaction,
-  typedDataDomain,
   typedDataPrimaryType,
   typedDataTypes,
   Unsigned8,
@@ -20,6 +19,7 @@ import { useForm } from 'react-hook-form'
 import { useSignTypedData } from 'wagmi'
 import * as z from 'zod'
 
+import { getTypedDataDomain } from '@/../shared/build'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -122,7 +122,7 @@ export function TransactionModal() {
 
   const handleSend = (values: z.infer<typeof formSchema>) => {
     signTypedData({
-      domain: typedDataDomain,
+      domain: getTypedDataDomain(),
       types: typedDataTypes,
       primaryType: typedDataPrimaryType,
       message: {

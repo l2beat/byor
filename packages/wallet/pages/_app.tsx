@@ -1,13 +1,14 @@
 import '@/styles/globals.css'
 
+import { getChain } from '@byor/shared'
 import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
 import type { AppProps } from 'next/app'
-import { configureChains, createConfig, mainnet, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 
 import { trpc } from '@/lib/trpc'
 
-const chains = [mainnet]
+const chains = [getChain()]
 const projectId = '171b81f6da969b561d747dba97534b30'
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
 

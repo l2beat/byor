@@ -181,7 +181,7 @@ describe(TransactionRepository.name, () => {
       expect(
         repository.contains(
           Hex(
-            '0x3544955b7b84b6efb872aac54b285d79d8668897c751b47663d6e02b4f77d493',
+            '0x227d62c499fec877231acd731b3cb3e2556c1c14328b3a9c2d1c347ec58377e6',
           ),
         ),
       ).toEqual(true)

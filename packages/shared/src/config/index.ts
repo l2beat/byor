@@ -1,9 +1,17 @@
-export const typedDataDomain = {
-  name: 'BYOR Sovereign Rollup',
-  version: '1',
-  chainId: 1,
-  verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-} as const
+import { TypedDataDomain } from 'abitype'
+
+import { localTypedDataDomain } from './localTypedData'
+import { productionTypedDataDomain } from './productionTypedData'
+
+export * from './getChain'
+
+export function getTypedDataDomain(): TypedDataDomain {
+  if (process.env.NODE_ENV === 'production') {
+    return productionTypedDataDomain
+  }
+
+  return localTypedDataDomain
+}
 
 export const typedDataTypes = {
   UnsignedTransaction: [

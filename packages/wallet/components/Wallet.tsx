@@ -2,11 +2,13 @@
 
 import { Web3Button } from '@web3modal/react'
 import { useEffect, useState } from 'react'
-import { useAccount } from 'wagmi'
+import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi'
 
 import { Account } from './Account'
 import { FaucetPrivateKey } from './FaucetPrivateKey'
 import { TransactionModal } from './TransactionModal'
+import { ToastAction } from './ui/toast'
+import { useToast } from './ui/use-toast'
 import AccountBalance from './WalletBalance'
 
 export function Wallet() {
@@ -15,10 +17,43 @@ export function Wallet() {
   // https://github.com/WalletConnect/web3modal/issues/196
   const [isSSR, setIsSSR] = useState(true)
 
+  const { chain, chains } = useNetwork()
+  const [walletReady, setWalletReady] = useState<boolean>(false)
+  const { switchNetwork } = useSwitchNetwork({
+    onSuccess: () => setWalletReady(true),
+  })
+  const { toast } = useToast()
+  const { address, status } = useAccount({
+    onConnect: () => setWalletReady(true),
+  })
+
   useEffect(() => {
     setIsSSR(false)
-  }, [])
-  const { address, status } = useAccount()
+    const connected = status === 'connected'
+    const wrongChain = chain && chains.length === 1 && chain.id !== chains[0].id
+    if (connected && wrongChain) {
+      setWalletReady(false)
+      toast({
+        variant: 'destructive',
+        title: 'Wallet on the wrong chain',
+        description: `In your wallet you are connected to chain "${chain.name}" but you should be connected to "${chains[0].name}"`,
+        action: (
+          <ToastAction
+            disabled={!switchNetwork}
+            altText="Switch chain"
+            onClick={() => {
+              if (switchNetwork && chains.length === 1) {
+                switchNetwork(chains[0].id)
+              }
+            }}
+          >
+            Switch chain
+          </ToastAction>
+        ),
+      })
+    }
+    // eslint-disable-next-line
+  }, [chain, chains, status])
 
   return (
     <div className="container flex border rounded mt-10 column flex-wrap">
@@ -26,7 +61,7 @@ export function Wallet() {
         <div className="flex basis-full my-2">
           {status === 'connected' ? (
             <Account address={address}>
-              <TransactionModal />
+              <>{walletReady && <TransactionModal />}</>
               <div className="basis-full my-2">
                 <AccountBalance />
               </div>

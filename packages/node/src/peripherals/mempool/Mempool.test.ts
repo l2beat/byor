@@ -197,7 +197,7 @@ describe(Mempool.name, () => {
       expect(
         mempool.contains(
           Hex(
-            '0x343d48c0e2c7852c9483a53a4017b7ab586140f0a0e31bc1b9e2e20a9900ea48',
+            '0x413f5fcfd6c28cfa6d533a9f5e583e28b21dd13f3ae664e2743b65ed5b055f44',
           ),
         ),
       ).toEqual(true)

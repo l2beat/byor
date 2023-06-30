@@ -1,4 +1,4 @@
-import { Logger, LogLevel } from '@byor/shared'
+import { getChain, Logger, LogLevel } from '@byor/shared'
 import {
   createPublicClient,
   createWalletClient,
@@ -12,8 +12,9 @@ import { createAccountRouter } from './api/routers/AccountRouter'
 import { createStatisticsRouter } from './api/routers/StatisticRouter'
 import { createTransactionRouter } from './api/routers/TransactionRouter'
 import { AppRouters } from './api/types/AppRouter'
-import { Config, createChain } from './config'
+import { Config } from './config'
 import { calculateTransactionLimit } from './config/calculateTransactionLimit'
+import { getContractCreationTime } from './config/getContractCreationTime'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
 import { FetcherRepository } from './db/FetcherRepository'
@@ -29,14 +30,22 @@ export class Application {
   start: () => Promise<void>
 
   constructor(config: Config) {
-    const database = new Database(config.databasePath)
+    const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
+
+    const database = new Database(
+      config.databasePath,
+      config.migrationsPath,
+      logger,
+    )
     const accountRepository = new AccountRepository(database)
     // NOTE(radomski): We store transactions only for statistics and transaction status query
     const transactionRepository = new TransactionRepository(database)
-    const fetcherRepository = new FetcherRepository(database)
-    const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
+    const fetcherRepository = new FetcherRepository(
+      database,
+      getContractCreationTime(config),
+    )
 
-    const chain = createChain(config.chainId, config.rpcUrl)
+    const chain = getChain()
     const publicProvider = createPublicClient({
       chain,
       transport: http(),

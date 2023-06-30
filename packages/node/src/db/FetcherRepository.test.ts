@@ -4,13 +4,18 @@ import { FetcherRecord, FetcherRepository } from './FetcherRepository'
 import { setupDatabaseTestSuite } from './test/setup'
 
 describe(FetcherRepository.name, () => {
-  const database = setupDatabaseTestSuite()
-  const repository = new FetcherRepository(database)
+  const modelCreationPair = {
+    chainId: 1337,
+    contractCreatedAtBlock: 42069,
+  }
 
   const modelFetcher: FetcherRecord = {
     chainId: 1337,
     lastFetchedBlock: 69420n,
   }
+
+  const database = setupDatabaseTestSuite()
+  const repository = new FetcherRepository(database, modelCreationPair)
 
   beforeEach(async () => {
     repository.deleteAll()
@@ -37,7 +42,7 @@ describe(FetcherRepository.name, () => {
   describe(FetcherRepository.prototype.getByChainIdOrDefault.name, () => {
     const modelEmptyFetcher = {
       ...modelFetcher,
-      lastFetchedBlock: -1n,
+      lastFetchedBlock: BigInt(modelCreationPair.contractCreatedAtBlock - 1),
     }
     it('returns empty fetcher on one that was not inserted', async () => {
       expect(repository.getByChainIdOrDefault(modelFetcher.chainId)).toEqual(

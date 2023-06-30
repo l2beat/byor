@@ -1,0 +1,21 @@
+# fly.toml app configuration file generated for wispy-sunset-1244 on 2023-06-21T15:04:15+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "byor-l2beat"
+primary_region = "ams"
+
+[env]
+  PORT = "3000"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[mounts]
+  source="main"
+  destination="/mnt/db"
