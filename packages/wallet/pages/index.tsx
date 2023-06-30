@@ -9,7 +9,7 @@ import { Toaster } from '../components/ui/toaster'
 
 export default function Home() {
   return (
-    <main>
+    <main className="pb-6">
       <Navbar />
       <Overview />
       <Wallet />
