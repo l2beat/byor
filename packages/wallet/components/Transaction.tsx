@@ -58,10 +58,10 @@ export default function Transaction(props: Props) {
 
 function getTooltipContent(status: TransactionGetStatusOutput): string {
   switch (status) {
-    case 'Commited': {
+    case 'Committed': {
       return 'Transaction data now part of the L1 chain'
     }
-    case 'Soft commited': {
+    case 'Soft committed': {
       return 'Transaction is in the mempool waiting to be submitted to the L1'
     }
     case 'Not found': {

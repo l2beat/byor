@@ -1,4 +1,4 @@
-import { CommitedTransactionList } from '@/components/CommitedTransactionList'
+import { CommittedTransactionList } from '@/components/CommittedTransactionList'
 import { MempoolTransactionList } from '@/components/MempoolTransactionList'
 import { Overview } from '@/components/Overview'
 import { StateExplorer } from '@/components/StateExplorer'
@@ -15,7 +15,7 @@ export default function Home() {
       <Wallet />
       <StateExplorer />
       <MempoolTransactionList />
-      <CommitedTransactionList />
+      <CommittedTransactionList />
       <Toaster />
     </main>
   )

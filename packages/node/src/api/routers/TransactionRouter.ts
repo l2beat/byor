@@ -7,7 +7,7 @@ import { TransactionRepository } from '../../db/TransactionRepository'
 import { Mempool } from '../../peripherals/mempool/Mempool'
 import { publicProcedure, router } from '../trpc'
 
-type TransactionStatus = 'Not found' | 'Commited' | 'Soft commited'
+type TransactionStatus = 'Not found' | 'Committed' | 'Soft committed'
 
 // NOTE(radomski): We need to propagte the return type
 // from this function, we can not infer it
@@ -96,9 +96,9 @@ export function createTransactionRouter(
       )
       .query(({ input }): TransactionStatus => {
         if (transactionMempool.contains(input)) {
-          return 'Soft commited'
+          return 'Soft committed'
         } else if (transactionRepository.contains(input)) {
-          return 'Commited'
+          return 'Committed'
         }
 
         return 'Not found'

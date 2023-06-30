@@ -10,7 +10,7 @@ import {
   PAGINATION_SIZE,
 } from './GenericTransactionList'
 
-export function CommitedTransactionList() {
+export function CommittedTransactionList() {
   const [state, setState] = useState<ListState>({
     pageNum: 0,
     isLoading: true,
@@ -33,7 +33,7 @@ export function CommitedTransactionList() {
 
   return (
     <GenericTransactionList
-      title={'L1 Commited transactions'}
+      title={'L1 Committed transactions'}
       state={state}
       setState={setState}
     />

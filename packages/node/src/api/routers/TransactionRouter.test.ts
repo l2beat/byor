@@ -275,7 +275,7 @@ describe(createTransactionRouter.name, () => {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .expect('Content-Type', /json/)
-        .expect(200, '{"result":{"data":"Soft commited"}}')
+        .expect(200, '{"result":{"data":"Soft committed"}}')
 
       expect(mempool.contains).toHaveBeenCalledTimes(1)
       expect(transactionRepository.contains).toHaveBeenCalledTimes(0)
@@ -300,7 +300,7 @@ describe(createTransactionRouter.name, () => {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .expect('Content-Type', /json/)
-        .expect(200, '{"result":{"data":"Commited"}}')
+        .expect(200, '{"result":{"data":"Committed"}}')
 
       expect(mempool.contains).toHaveBeenCalledTimes(1)
       expect(transactionRepository.contains).toHaveBeenCalledTimes(1)
