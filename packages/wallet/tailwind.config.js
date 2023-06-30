@@ -16,6 +16,15 @@ module.exports = {
     },
     extend: {
       colors: {
+        zinc: {
+          800: '#272A2F',
+        },
+        gradient: {
+          1: '#7e41cc',
+          2: '#d83da4',
+          3: '#ee2c01',
+        },
+
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

@@ -56,7 +56,7 @@ export function Wallet() {
   }, [chain, chains, status])
 
   return (
-    <div className="container flex border rounded mt-10 column flex-wrap">
+    <div className="container flex bg-zinc-800 rounded-xl mt-10 column flex-wrap">
       {!isSSR && (
         <div className="flex basis-full my-2">
           {status === 'connected' ? (

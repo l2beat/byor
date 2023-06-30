@@ -32,7 +32,7 @@ interface Props {
 
 export function GenericTransactionList({ title, state, setState }: Props) {
   return (
-    <div className="container items-center flex border rounded mt-10 column flex-wrap">
+    <div className="container items-center flex bg-zinc-800 rounded-xl mt-10 column flex-wrap">
       <GenericTransactionListInner
         title={title}
         state={state}

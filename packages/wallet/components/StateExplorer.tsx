@@ -52,7 +52,7 @@ export function StateExplorer() {
   }
 
   return (
-    <div className="container flex border rounded mt-10 column flex-wrap">
+    <div className="container flex bg-zinc-800 rounded-xl mt-10 column flex-wrap">
       <div className="basis-full my-2">
         <Form {...form}>
           <form

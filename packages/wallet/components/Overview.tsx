@@ -16,7 +16,7 @@ export function Overview(): JSX.Element {
   }
 
   return (
-    <div className="container flex border rounded mt-10 justify-around">
+    <div className="container flex bg-zinc-800 rounded-xl mt-10 justify-around">
       <div>
         <Statistic
           description={'L2 Transactions'}
