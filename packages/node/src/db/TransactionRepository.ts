@@ -29,6 +29,22 @@ export class TransactionRepository extends BaseRepository {
       .map((tx) => fromInternalTransaction(tx))
   }
 
+  getRange(start: number, end: number): TransactionRecord[] {
+    if (end - start === 0 || end < start) {
+      return []
+    }
+
+    const drizzle = this.drizzle()
+    return drizzle
+      .select()
+      .from(transactionsSchema)
+      .orderBy(desc(transactionsSchema.l1SubmittedDate))
+      .limit(end - start)
+      .offset(start)
+      .all()
+      .map((tx) => fromInternalTransaction(tx))
+  }
+
   addMany(txs: TransactionRecord[]): void {
     txs.forEach((tx) => {
       if (!tx.hash) {

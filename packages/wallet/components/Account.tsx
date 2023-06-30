@@ -17,7 +17,7 @@ export function Account({ address, children }: Props) {
   })
 
   if (acc.status !== 'success') {
-    return <>Account is loading...</>
+    return <div>Account is loading...</div>
   }
 
   return (
