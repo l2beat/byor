@@ -30,20 +30,20 @@ export default function Transaction(props: Props) {
       {status ? (
         <div className="text-xl">
           <div>
-            <span className="text-accent-foreground/50">
+            <span>
               Transaction Hash:{' '}
             </span>
-            <span>{props.hash}</span>
+            <span className="text-gray-400">{props.hash}</span>
           </div>
 
           <div>
-            <span className="text-accent-foreground/50">Status: </span>
+            <span>Status: </span>
 
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>{status}</TooltipTrigger>
+                <TooltipTrigger className="text-gray-400">{status}</TooltipTrigger>
                 <TooltipContent>
-                  <p>{getTooltipContent(status)}</p>
+                  <p className="text-gray-400">{getTooltipContent(status)}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

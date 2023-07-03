@@ -50,7 +50,7 @@ export function Overview(): JSX.Element {
 function Statistic({ description, value }: StatisticProps): JSX.Element {
   return (
     <div className="font-sens-serif uppercase py-1">
-      <div>{`${description}`}</div>
+      <div className='text-gray-600'>{`${description}`}</div>
       <h1 className="text-2xl">{`${value}`}</h1>
     </div>
   )

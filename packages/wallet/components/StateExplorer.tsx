@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 
 import { Account } from './Account'
 import Transaction from './Transaction'
-import AccountBalance from './WalletBalance'
+import AccountBalance from './AccountBalance'
 
 export function StateExplorer() {
   const formSchema = z.object({
