@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../CanonicalTransactionChain.sol";
+import './CanonicalTransactionChain.sol';
 
-contract CanonicalTransactionChainRevert {
+// Only used for testing
+contract Caller {
     CanonicalTransactionChain ctc;
+
     constructor(address ctcContract) {
         ctc = CanonicalTransactionChain(ctcContract);
     }
