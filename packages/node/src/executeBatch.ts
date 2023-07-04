@@ -1,6 +1,5 @@
 import {
   EthereumAddress,
-  Hex,
   SignedTransaction,
   Transaction,
   Unsigned64,
@@ -49,24 +48,19 @@ const DEFAULT_STATE: StateMapValue = {
 function canExecuteTransaction(state: StateMap, tx: Transaction): boolean {
   try {
     // Step 0. Check transaction type
-    if (!(tx.from !== Hex(0) && tx.to !== Hex(0))) {
+    if (!(tx.from !== EthereumAddress.ZERO && tx.to !== EthereumAddress.ZERO)) {
       return false
     }
 
     const from = getOrDefault(state, tx.from.toString(), DEFAULT_STATE)
 
     // Step 1. Nonce is valid
-    if (!(from.nonce === Unsigned64(Unsigned64.toBigInt(tx.nonce) - 1n))) {
+    if (!(from.nonce === Unsigned64(tx.nonce.valueOf() - 1n))) {
       return false
     }
 
     // Step 2. Balance is high enough to allow spending
-    if (
-      !(
-        Unsigned64.toBigInt(from.balance) >=
-        Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(tx.fee)
-      )
-    ) {
+    if (!(from.balance.valueOf() >= tx.value.valueOf() + tx.fee.valueOf())) {
       return false
     }
   } catch (_) {
@@ -90,19 +84,17 @@ function executeTransactionUnchecked(
 
   // Step 2. Subtract spending
   fromAccount.balance = Unsigned64(
-    Unsigned64.toBigInt(fromAccount.balance) -
-      (Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(tx.fee)),
+    fromAccount.balance.valueOf() - (tx.value.valueOf() + tx.fee.valueOf()),
   )
 
   // Step 3. Transfer value
   toAccount.balance = Unsigned64(
-    Unsigned64.toBigInt(tx.value) + Unsigned64.toBigInt(toAccount.balance),
+    tx.value.valueOf() + toAccount.balance.valueOf(),
   )
 
   // Step 4. Pay fee
   feeRecipientAccount.balance = Unsigned64(
-    Unsigned64.toBigInt(tx.fee) +
-      Unsigned64.toBigInt(feeRecipientAccount.balance),
+    tx.fee.valueOf() + feeRecipientAccount.balance.valueOf(),
   )
 }
 

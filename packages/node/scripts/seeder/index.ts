@@ -8,12 +8,7 @@ import {
   Unsigned64,
 } from '@byor/shared'
 import { command, positional, run, string, Type } from 'cmd-ts'
-import {
-  createPublicClient,
-  createWalletClient,
-  Hex as ViemHex,
-  http,
-} from 'viem'
+import { createPublicClient, createWalletClient, http } from 'viem'
 import {
   english,
   generateMnemonic,
@@ -27,7 +22,7 @@ import { getGenesisState } from '../../src/config/getGenesisState'
 
 async function main(config: Config, privateKey: Hex): Promise<void> {
   const genesisState = getGenesisState(config.genesisFilePath)
-  const l2Account = privateKeyToAccount(privateKey.toString() as ViemHex)
+  const l2Account = privateKeyToAccount(privateKey.toString())
   const accountBalance = genesisState[l2Account.address]
   assert(
     accountBalance !== undefined,
@@ -60,7 +55,7 @@ async function submitToL1(
 ): Promise<void> {
   const chain = getChain()
 
-  const l1Account = privateKeyToAccount(config.privateKey.toString() as ViemHex)
+  const l1Account = privateKeyToAccount(config.privateKey.toString())
   const client = createWalletClient({
     account: l1Account,
     chain,
@@ -73,10 +68,10 @@ async function submitToL1(
   })
 
   const { request } = await publicClient.simulateContract({
-    address: config.ctcContractAddress.toString() as ViemHex,
+    address: config.ctcContractAddress.toString(),
     abi: abi,
     functionName: 'appendBatch',
-    args: [serializedBatchBytes.toString() as ViemHex],
+    args: [serializedBatchBytes.toString()],
   })
   await client.writeContract(request)
 }

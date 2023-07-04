@@ -1,9 +1,4 @@
-import {
-  hashTypedData,
-  Hex as ViemHex,
-  PrivateKeyAccount,
-  recoverAddress,
-} from 'viem'
+import { hashTypedData, PrivateKeyAccount, recoverAddress } from 'viem'
 
 import {
   getTypedDataDomain,
@@ -18,7 +13,8 @@ import {
   Transaction,
   UnsignedTransaction,
 } from './types/Transactions'
-import { Unsigned8, Unsigned64 } from './types/UnsignedSized'
+import { Unsigned8 } from './types/Unsigned8'
+import { Unsigned64 } from './types/Unsigned64'
 
 export function hashTransaction(unsignedTx: Transaction): Hex {
   const hash = Hex(
@@ -28,9 +24,9 @@ export function hashTransaction(unsignedTx: Transaction): Hex {
       primaryType: typedDataPrimaryType,
       message: {
         to: EthereumAddress.toHex(unsignedTx.to),
-        value: Unsigned64.toBigInt(unsignedTx.value),
-        nonce: Unsigned64.toBigInt(unsignedTx.nonce),
-        fee: Unsigned64.toBigInt(unsignedTx.fee),
+        value: unsignedTx.value.valueOf(),
+        nonce: unsignedTx.nonce.valueOf(),
+        fee: unsignedTx.fee.valueOf(),
       },
     }),
   )
@@ -49,9 +45,9 @@ export async function serializeAndSign(
       primaryType: typedDataPrimaryType,
       message: {
         to: EthereumAddress.toHex(unsignedTx.to),
-        value: Unsigned64.toBigInt(unsignedTx.value),
-        nonce: Unsigned64.toBigInt(unsignedTx.nonce),
-        fee: Unsigned64.toBigInt(unsignedTx.fee),
+        value: unsignedTx.value.valueOf(),
+        nonce: unsignedTx.nonce.valueOf(),
+        fee: unsignedTx.fee.valueOf(),
       },
     }),
   )
@@ -105,15 +101,15 @@ export async function deserialize(
     primaryType: typedDataPrimaryType,
     message: {
       to: EthereumAddress.toHex(unsignedTx.to),
-      value: Unsigned64.toBigInt(unsignedTx.value),
-      nonce: Unsigned64.toBigInt(unsignedTx.nonce),
-      fee: Unsigned64.toBigInt(unsignedTx.fee),
+      value: unsignedTx.value.valueOf(),
+      nonce: unsignedTx.nonce.valueOf(),
+      fee: unsignedTx.fee.valueOf(),
     },
   })
 
   const signer = await recoverAddress({
     hash,
-    signature: Hex.toString(signature) as ViemHex,
+    signature: signature.toString(),
   })
 
   const tx = unsignedTx as Transaction

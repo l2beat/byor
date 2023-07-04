@@ -1,6 +1,7 @@
 import { EthereumAddress } from './EthereumAddress'
 import { Hex } from './Hex'
-import { Unsigned8, Unsigned64 } from './UnsignedSized'
+import { Unsigned8 } from './Unsigned8'
+import { Unsigned64 } from './Unsigned64'
 
 export interface UnsignedTransaction {
   to: EthereumAddress

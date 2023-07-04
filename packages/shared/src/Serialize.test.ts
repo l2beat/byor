@@ -34,9 +34,7 @@ describe('deserialize', () => {
   })
 
   it('deserializes but result is not equal to the model transaction after message corruption', async () => {
-    const signedTxBytes = Hex(
-      `0xdead${Hex.toString(modelTxSerializedHex1).slice(6)}`,
-    )
+    const signedTxBytes = Hex(`0xdead${modelTxSerializedHex1.slice(6)}`)
 
     const tx = (await deserialize(signedTxBytes)) as Transaction
 
@@ -44,9 +42,7 @@ describe('deserialize', () => {
   })
 
   it('deserializes but fails verifiction after message corruption', async () => {
-    const signedTxBytes = Hex(
-      `0xdead${Hex.toString(modelTxSerializedHex1).slice(6)}`,
-    )
+    const signedTxBytes = Hex(`0xdead${modelTxSerializedHex1.slice(6)}`)
 
     await expect(() =>
       deserializeAndVerify(

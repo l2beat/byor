@@ -1,5 +1,5 @@
 import { EthereumAddress, Hex, Logger } from '@byor/shared'
-import { Hex as ViemHex, PublicClient, WalletClient } from 'viem'
+import { PublicClient, WalletClient } from 'viem'
 
 import { abi } from '../../config/abi'
 import { EthereumClient } from './EthereumClient'
@@ -17,10 +17,10 @@ export class EthereumPrivateClient extends EthereumClient {
 
   async writeToCTCContract(batchBytes: Hex): Promise<void> {
     await this.privateProvider.writeContract({
-      address: this.ctcContractAddress.toString() as ViemHex,
+      address: this.ctcContractAddress.toString(),
       abi: abi,
       functionName: 'appendBatch',
-      args: [batchBytes.toString() as ViemHex],
+      args: [batchBytes.toString()],
       // NOTE(radomski): ESLint is not that smart unfortunately :(
       // eslint-disable-next-line
       account: this.privateProvider.account!,

@@ -3,7 +3,8 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { EthereumAddress } from '../types/EthereumAddress'
 import { Hex } from '../types/Hex'
 import { SignedTransaction, Transaction } from '../types/Transactions'
-import { Unsigned8, Unsigned64 } from '../types/UnsignedSized'
+import { Unsigned8 } from '../types/Unsigned8'
+import { Unsigned64 } from '../types/Unsigned64'
 
 export const modelAccount = privateKeyToAccount(
   '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',

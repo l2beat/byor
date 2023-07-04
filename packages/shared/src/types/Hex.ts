@@ -1,5 +1,6 @@
 export interface Hex extends String {
-  _Value: string
+  _Brand: 'Hex'
+  toString(): `0x${string}`
 }
 
 export function Hex(value: bigint | number | string): Hex {
@@ -9,6 +10,7 @@ export function Hex(value: bigint | number | string): Hex {
     return `0x${value.toString(16)}` as unknown as Hex
   }
 
+  value = value.toString()
   if (value.startsWith('0x')) {
     value = value.slice(2)
   }
@@ -30,10 +32,6 @@ Hex.concat = function concat(a: Hex, b: Hex): Hex {
   return Hex(Hex.removePrefix(a) + Hex.removePrefix(b))
 }
 
-Hex.toString = function toString(a: Hex): string {
-  return a as unknown as string
-}
-
-Hex.removePrefix = function toString(a: Hex): string {
+Hex.removePrefix = function removePrefix(a: Hex): string {
   return (a as unknown as string).slice(2)
 }
