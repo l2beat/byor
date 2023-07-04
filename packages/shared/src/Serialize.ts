@@ -4,7 +4,7 @@ import { getTypedDataDomain } from './getTypedDataDomain'
 import { EthereumAddress } from './types/EthereumAddress'
 import { Hex } from './types/Hex'
 import {
-  SIGNED_TX_HEX_SIZE,
+  SIGNED_TX_SIZE,
   SignedTransaction,
   Transaction,
   UnsignedTransaction,
@@ -12,7 +12,7 @@ import {
 import { Unsigned8 } from './types/Unsigned8'
 import { Unsigned64 } from './types/Unsigned64'
 
-export const typedDataTypes = {
+export const TYPED_DATA_TYPES = {
   UnsignedTransaction: [
     { name: 'to', type: 'address' },
     { name: 'value', type: 'uint64' },
@@ -21,114 +21,87 @@ export const typedDataTypes = {
   ],
 }
 
-export const typedDataPrimaryType = 'UnsignedTransaction'
+export const TYPED_DATA_PRIMARY_TYPE = 'UnsignedTransaction'
+
+// We actually want the type of this function to be inferred
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function getTypedData(unsignedTx: UnsignedTransaction) {
+  return {
+    domain: getTypedDataDomain(),
+    types: TYPED_DATA_TYPES,
+    primaryType: TYPED_DATA_PRIMARY_TYPE,
+    message: {
+      to: unsignedTx.to,
+      value: unsignedTx.value,
+      nonce: unsignedTx.nonce,
+      fee: unsignedTx.fee,
+    },
+  } as const
+}
 
 export function hashTransaction(unsignedTx: Transaction): Hex {
-  const hash = Hex(
-    hashTypedData({
-      domain: getTypedDataDomain(),
-      types: typedDataTypes,
-      primaryType: typedDataPrimaryType,
-      message: {
-        to: EthereumAddress.toHex(unsignedTx.to),
-        value: unsignedTx.value.valueOf(),
-        nonce: unsignedTx.nonce.valueOf(),
-        fee: unsignedTx.fee.valueOf(),
-      },
-    }),
-  )
-
-  return hash
+  const result = hashTypedData(getTypedData(unsignedTx))
+  return Hex(result)
 }
 
 export async function serializeAndSign(
   unsignedTx: Transaction,
   account: PrivateKeyAccount,
 ): Promise<Hex> {
-  const signature = Hex(
-    await account.signTypedData({
-      domain: getTypedDataDomain(),
-      types: typedDataTypes,
-      primaryType: typedDataPrimaryType,
-      message: {
-        to: EthereumAddress.toHex(unsignedTx.to),
-        value: unsignedTx.value.valueOf(),
-        nonce: unsignedTx.nonce.valueOf(),
-        fee: unsignedTx.fee.valueOf(),
-      },
-    }),
-  )
-
-  const signedTx: SignedTransaction = {
+  const signature = Hex(await account.signTypedData(getTypedData(unsignedTx)))
+  return serialize({
     ...unsignedTx,
-    r: Hex(signature.substring(2, 66)),
-    s: Hex(signature.substring(66, 130)),
-    v: Unsigned8(parseInt(signature.substring(130, 132), 16)),
-  }
-
-  return serialize(signedTx)
+    r: Hex.slice(signature, 0, 32),
+    s: Hex.slice(signature, 32, 64),
+    v: Unsigned8(parseInt(Hex.slice(signature, 64, 65).toString(), 16)),
+  })
 }
 
 export function serialize(signedTx: SignedTransaction): Hex {
-  const toHex = signedTx.to.toString().slice(2)
-  const valueHex = Unsigned64.toHex(signedTx.value).slice(2)
-  const nonceHex = Unsigned64.toHex(signedTx.nonce).slice(2)
-  const feeHex = Unsigned64.toHex(signedTx.fee).slice(2)
-  const rHex = signedTx.r.toString().slice(2)
-  const sHex = signedTx.s.toString().slice(2)
-  const vHex = Unsigned8.toHex(signedTx.v).slice(2)
-  const signature = `0x${rHex}${sHex}${vHex}`
-  const msg = `0x${toHex}${valueHex}${nonceHex}${feeHex}`
-
-  const result = Hex(`${msg.slice(2)}${signature.slice(2)}`)
-  return result
+  return Hex.concat(
+    EthereumAddress.toHex(signedTx.to),
+    Unsigned64.toHex(signedTx.value),
+    Unsigned64.toHex(signedTx.nonce),
+    Unsigned64.toHex(signedTx.fee),
+    signedTx.r,
+    signedTx.s,
+    Unsigned8.toHex(signedTx.v),
+  )
 }
 
 export async function deserialize(
   signedTxBytes: Hex,
 ): Promise<SignedTransaction> {
-  if (signedTxBytes.length !== SIGNED_TX_HEX_SIZE) {
+  const length = Hex.getLength(signedTxBytes)
+  if (length !== SIGNED_TX_SIZE) {
     throw new Error(
-      `Invalid input size, got/expected = ${signedTxBytes.length}/${SIGNED_TX_HEX_SIZE}`,
+      `Invalid input size, got ${length}, expected ${SIGNED_TX_SIZE}`,
     )
   }
 
-  const hex = signedTxBytes.substring(2)
   const unsignedTx: UnsignedTransaction = {
-    to: EthereumAddress(`0x${hex.substring(0, 40)}`),
-    value: Unsigned64.fromHex(Hex(`0x${hex.substring(40, 56)}`)),
-    nonce: Unsigned64.fromHex(Hex(`0x${hex.substring(56, 72)}`)),
-    fee: Unsigned64.fromHex(Hex(`0x${hex.substring(72, 88)}`)),
+    to: EthereumAddress(Hex.slice(signedTxBytes, 0, 20)),
+    value: Unsigned64.fromHex(Hex.slice(signedTxBytes, 20, 28)),
+    nonce: Unsigned64.fromHex(Hex.slice(signedTxBytes, 28, 36)),
+    fee: Unsigned64.fromHex(Hex.slice(signedTxBytes, 36, 44)),
   }
 
-  const signature = Hex(hex.substring(88))
-  const hash = hashTypedData({
-    domain: getTypedDataDomain(),
-    types: typedDataTypes,
-    primaryType: typedDataPrimaryType,
-    message: {
-      to: EthereumAddress.toHex(unsignedTx.to),
-      value: unsignedTx.value.valueOf(),
-      nonce: unsignedTx.nonce.valueOf(),
-      fee: unsignedTx.fee.valueOf(),
-    },
-  })
+  const hash = hashTypedData(getTypedData(unsignedTx))
 
+  const signature = Hex.slice(signedTxBytes, 44)
   const signer = await recoverAddress({
     hash,
     signature: signature.toString(),
   })
 
-  const tx = unsignedTx as Transaction
-  tx.from = EthereumAddress(signer)
-  tx.hash = Hex(hash)
-
-  const signedTx = unsignedTx as SignedTransaction
-  signedTx.r = Hex(signature.substring(2, 66))
-  signedTx.s = Hex(signature.substring(66, 130))
-  signedTx.v = Unsigned8(parseInt(signature.substring(130, 132), 16))
-
-  return signedTx
+  return {
+    ...unsignedTx,
+    from: EthereumAddress(signer),
+    hash: Hex(hash),
+    r: Hex.slice(signature, 0, 32),
+    s: Hex.slice(signature, 32, 64),
+    v: Unsigned8(parseInt(Hex.slice(signature, 64, 65).toString(), 16)),
+  }
 }
 
 export async function deserializeAndVerify(
@@ -136,10 +109,8 @@ export async function deserializeAndVerify(
   signerAddress: EthereumAddress,
 ): Promise<SignedTransaction> {
   const tx = await deserialize(signedTxBytes)
-
-  if (tx.from === signerAddress) {
-    return tx
-  } else {
+  if (tx.from !== signerAddress) {
     throw new Error('Recovered address does not match the one provided')
   }
+  return tx
 }

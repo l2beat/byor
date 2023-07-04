@@ -7,8 +7,9 @@ export interface EthereumAddress extends String {
   toString(): `0x${string}`
 }
 
-export function EthereumAddress(value: string): EthereumAddress {
-  return getAddress(value) as unknown as EthereumAddress
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function EthereumAddress(value: string | String): EthereumAddress {
+  return getAddress(value.toString()) as unknown as EthereumAddress
 }
 
 EthereumAddress.toHex = function toHex(a: EthereumAddress): Hex {
