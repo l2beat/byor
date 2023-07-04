@@ -1,6 +1,6 @@
+export * from './assert'
 export * from './BatchSerialize'
 export * from './getChain'
 export * from './getTypedDataDomain'
 export * from './Serialize'
-export * from './tools'
 export * from './types'

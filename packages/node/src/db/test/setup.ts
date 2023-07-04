@@ -1,5 +1,4 @@
-import { Logger } from '@byor/shared'
-
+import { Logger } from '../../tools/Logger'
 import { Database } from '../Database'
 
 export function setupDatabaseTestSuite(): Database {

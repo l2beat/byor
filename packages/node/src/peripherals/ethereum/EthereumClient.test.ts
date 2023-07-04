@@ -1,7 +1,8 @@
-import { EthereumAddress, Hex, Logger } from '@byor/shared'
+import { EthereumAddress, Hex } from '@byor/shared'
 import { expect, mockFn, mockObject } from 'earl'
 import { parseAbiItem, PublicClient } from 'viem'
 
+import { Logger } from '../../tools/Logger'
 import { EthereumClient } from './EthereumClient'
 
 describe(EthereumClient.name, () => {

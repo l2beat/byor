@@ -1,7 +1,6 @@
 import {
   EthereumAddress,
   Hex,
-  Logger,
   serializeAndSign,
   Transaction,
   Unsigned64,
@@ -14,6 +13,7 @@ import { AccountRepository } from './db/AccountRepository'
 import { TransactionRepository } from './db/TransactionRepository'
 import { L1StateFetcher } from './L1StateFetcher'
 import { L1StateManager } from './L1StateManager'
+import { Logger } from './tools/Logger'
 
 describe(L1StateManager.name, () => {
   describe(L1StateManager.prototype.start.name, () => {

@@ -1,4 +1,4 @@
-import { getChain, Logger, LogLevel } from '@byor/shared'
+import { getChain } from '@byor/shared'
 import { createPublicClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
@@ -20,6 +20,8 @@ import { L1StateManager } from './L1StateManager'
 import { L1StateSubmitter } from './L1StateSubmitter'
 import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from './peripherals/mempool/Mempool'
+import { LogLevel } from './tools/ILogger'
+import { Logger } from './tools/Logger'
 
 export class Application {
   start: () => Promise<void>

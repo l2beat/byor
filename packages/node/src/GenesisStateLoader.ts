@@ -1,7 +1,8 @@
-import { EthereumAddress, Logger, Unsigned64 } from '@byor/shared'
+import { EthereumAddress, Unsigned64 } from '@byor/shared'
 
 import { getGenesisState } from './config/getGenesisState'
 import { AccountRecord, AccountRepository } from './db/AccountRepository'
+import { Logger } from './tools/Logger'
 
 export class GenesisStateLoader {
   private readonly genesisState: Record<string, number>

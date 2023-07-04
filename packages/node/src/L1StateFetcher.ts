@@ -1,4 +1,4 @@
-import { assert, EthereumAddress, Hex, Logger } from '@byor/shared'
+import { assert, EthereumAddress, Hex } from '@byor/shared'
 import { zipWith } from 'lodash'
 import { decodeFunctionData, GetLogsReturnType, parseAbiItem } from 'viem'
 
@@ -6,6 +6,7 @@ import { abi } from './config/abi'
 import { FetcherRecord, FetcherRepository } from './db/FetcherRepository'
 import { L1EventStateType } from './L1EventStateType'
 import { EthereumClient } from './peripherals/ethereum/EthereumClient'
+import { Logger } from './tools/Logger'
 
 const eventAbi = parseAbiItem('event BatchAppended(address sender)')
 type EventAbiType = typeof eventAbi
