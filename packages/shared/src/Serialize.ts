@@ -1,10 +1,6 @@
 import { hashTypedData, PrivateKeyAccount, recoverAddress } from 'viem'
 
-import {
-  getTypedDataDomain,
-  typedDataPrimaryType,
-  typedDataTypes,
-} from './config'
+import { getTypedDataDomain } from './getTypedDataDomain'
 import { EthereumAddress } from './types/EthereumAddress'
 import { Hex } from './types/Hex'
 import {
@@ -15,6 +11,17 @@ import {
 } from './types/Transactions'
 import { Unsigned8 } from './types/Unsigned8'
 import { Unsigned64 } from './types/Unsigned64'
+
+export const typedDataTypes = {
+  UnsignedTransaction: [
+    { name: 'to', type: 'address' },
+    { name: 'value', type: 'uint64' },
+    { name: 'nonce', type: 'uint64' },
+    { name: 'fee', type: 'uint64' },
+  ],
+}
+
+export const typedDataPrimaryType = 'UnsignedTransaction'
 
 export function hashTransaction(unsignedTx: Transaction): Hex {
   const hash = Hex(

@@ -1,5 +1,6 @@
 export * from './BatchSerialize'
-export * from './config'
+export * from './getChain'
+export * from './getTypedDataDomain'
 export * from './Serialize'
 export * from './tools'
 export * from './types'
