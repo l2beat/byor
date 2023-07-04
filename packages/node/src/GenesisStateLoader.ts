@@ -1,15 +1,10 @@
-import {
-  EthereumAddress,
-  GenesisStateMap,
-  Logger,
-  Unsigned64,
-} from '@byor/shared'
+import { EthereumAddress, Logger, Unsigned64 } from '@byor/shared'
 
 import { getGenesisState } from './config/getGenesisState'
 import { AccountRecord, AccountRepository } from './db/AccountRepository'
 
 export class GenesisStateLoader {
-  private readonly genesisState: GenesisStateMap
+  private readonly genesisState: Record<string, number>
 
   constructor(
     genesisFilePath: string,

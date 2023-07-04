@@ -1,5 +1,4 @@
 export * from './EthereumAddress'
-export * from './GenesisStateMap'
 export * from './Hex'
 export * from './json'
 export * from './Transactions'
