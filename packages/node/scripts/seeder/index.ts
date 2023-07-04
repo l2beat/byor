@@ -4,7 +4,7 @@ import {
   getChain,
   Hex,
   serializeAndSignBatch,
-  TransactionBatch,
+  Transaction,
   Unsigned64,
 } from '@byor/shared'
 import { command, positional, run, string, Type } from 'cmd-ts'
@@ -34,7 +34,7 @@ async function main(config: Config, privateKey: Hex): Promise<void> {
     'Provided private key account does not exist in the genesis state',
   )
 
-  const batch: TransactionBatch = []
+  const batch: Transaction[] = []
   const PAYMENTS_COUNT = 100
   const PAYMENT_AMOUNT = Math.floor(
     (accountBalance - PAYMENTS_COUNT) / PAYMENTS_COUNT,

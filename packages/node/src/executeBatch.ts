@@ -1,9 +1,8 @@
 import {
   EthereumAddress,
   Hex,
-  SignedTransactionBatch,
+  SignedTransaction,
   Transaction,
-  TransactionBatch,
   Unsigned64,
 } from '@byor/shared'
 
@@ -117,7 +116,7 @@ function removeEmptyStateMapValues(state: StateMap): StateMap {
 
 export function executeBatch(
   state: StateMap,
-  batch: TransactionBatch,
+  batch: Transaction[],
   batchPoster: EthereumAddress,
 ): StateMap {
   const feeRecipientAccount = getOrInsert(
@@ -141,8 +140,8 @@ export function executeBatch(
 
 export function filterValidTxs(
   state: StateMap,
-  batch: SignedTransactionBatch,
-): SignedTransactionBatch {
+  batch: SignedTransaction[],
+): SignedTransaction[] {
   const result = []
 
   const feeRecipientAccount = getOrInsert(
