@@ -1,11 +1,11 @@
 'use client'
 
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Dispatch, SetStateAction } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { copyToClipboard } from '@/utils/copyToClipboard'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { formatTimeDifferenceFromNow } from '../utils/formatTimeDifferenceFromNow'
 
