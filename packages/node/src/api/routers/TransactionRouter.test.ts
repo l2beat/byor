@@ -259,12 +259,17 @@ describe(createTransactionRouter.name, () => {
       expect(transactionRepository.getByHash).toHaveBeenCalledTimes(1)
     })
 
-    it('accepts a valid hash for non existent transaction', async () => {
+    it('accepts a valid hash for soft-commited transaction', async () => {
       const hash = Hex(
         '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
       )
       const mempool = mockObject<Mempool>({
-        getByHash: mockFn().returnsOnce({}),
+        getByHash: mockFn().returnsOnce({
+          from: '0x5678',
+          to: '0x9abc',
+          value: 12,
+          nonce: 34,
+        }),
       })
       const transactionRepository = mockObject<TransactionRepository>({
         getByHash: mockFn().returnsOnce(undefined),
@@ -280,14 +285,14 @@ describe(createTransactionRouter.name, () => {
         .expect('Content-Type', /json/)
         .expect(
           200,
-          '{"result":{"data":{"transaction":{},"status":"Soft committed"}}}',
+          '{"result":{"data":{"transaction":{"from":"0x5678","to":"0x9abc","value":"12","nonce":"34"},"status":"Soft committed"}}}',
         )
 
       expect(mempool.getByHash).toHaveBeenCalledTimes(1)
       expect(transactionRepository.getByHash).toHaveBeenCalledTimes(0)
     })
 
-    it('accepts a valid hash for non existent transaction', async () => {
+    it('accepts a valid hash for commited transaction', async () => {
       const hash = Hex(
         '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
       )
@@ -295,7 +300,12 @@ describe(createTransactionRouter.name, () => {
         getByHash: mockFn().returnsOnce(undefined),
       })
       const transactionRepository = mockObject<TransactionRepository>({
-        getByHash: mockFn().returnsOnce({}),
+        getByHash: mockFn().returnsOnce({
+          from: '0x5678',
+          to: '0x9abc',
+          value: 12,
+          nonce: 34,
+        }),
       })
       const router = createTransactionRouter(mempool, transactionRepository)
       const server = createTestApiServer({ router })
@@ -308,7 +318,7 @@ describe(createTransactionRouter.name, () => {
         .expect('Content-Type', /json/)
         .expect(
           200,
-          '{"result":{"data":{"transaction":{},"status":"Commited"}}}',
+          '{"result":{"data":{"transaction":{"from":"0x5678","to":"0x9abc","value":"12","nonce":"34"},"status":"Committed"}}}',
         )
 
       expect(mempool.getByHash).toHaveBeenCalledTimes(1)
