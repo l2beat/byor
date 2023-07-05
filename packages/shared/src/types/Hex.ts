@@ -45,6 +45,6 @@ Hex.removePrefix = function removePrefix(a: Hex): string {
   return (a as unknown as string).slice(2)
 }
 
-Hex.getLength = function getLength(a: Hex): number {
+Hex.byteLength = function byteLength(a: Hex): number {
   return a.length / 2 - 1
 }

@@ -19,7 +19,7 @@ describe('serializeAndSign', () => {
   it('serializes a valid transaction', async () => {
     const serialized = await serializeAndSign(modelTx1, modelAccount)
 
-    expect(Hex.getLength(serialized)).toEqual(SIGNED_TX_SIZE)
+    expect(Hex.byteLength(serialized)).toEqual(SIGNED_TX_SIZE)
     expect(serialized).toEqual(modelTxSerializedHex1)
   })
 })

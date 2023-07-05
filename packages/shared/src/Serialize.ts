@@ -72,7 +72,7 @@ export function serialize(signedTx: SignedTransaction): Hex {
 export async function deserialize(
   signedTxBytes: Hex,
 ): Promise<SignedTransaction> {
-  const length = Hex.getLength(signedTxBytes)
+  const length = Hex.byteLength(signedTxBytes)
   if (length !== SIGNED_TX_SIZE) {
     throw new Error(
       `Invalid input size, got ${length}, expected ${SIGNED_TX_SIZE}`,

@@ -29,7 +29,7 @@ export async function deserializeBatch(
 ): Promise<SignedTransaction[]> {
   const result: SignedTransaction[] = []
 
-  const length = Hex.getLength(signedBatchBytes)
+  const length = Hex.byteLength(signedBatchBytes)
   if (length % SIGNED_TX_SIZE !== 0) {
     throw new Error('Length of input bytes is not multiple of SIGNED_TX_SIZE')
   }
