@@ -188,45 +188,45 @@ describe(Mempool.name, () => {
     })
   })
 
-  describe(Mempool.prototype.contains.name, () => {
-    it('returns true on a transaction that is in the mempool', () => {
+  describe(Mempool.prototype.getByHash.name, () => {
+    it('returns transaction that is in the mempool', () => {
       const mempool = new Mempool(Logger.SILENT)
 
       mempool.add([modelSignedTx1])
 
       expect(
-        mempool.contains(
+        mempool.getByHash(
           Hex(
             '0x413f5fcfd6c28cfa6d533a9f5e583e28b21dd13f3ae664e2743b65ed5b055f44',
           ),
         ),
-      ).toEqual(true)
+      ).toEqual(modelSignedTx1)
     })
 
-    it('returns false on non-existing with transactions in pool', () => {
+    it('returns undefined on non-existing with transactions in pool', () => {
       const mempool = new Mempool(Logger.SILENT)
 
       mempool.add([modelSignedTx1])
 
       expect(
-        mempool.contains(
+        mempool.getByHash(
           Hex(
             '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
           ),
         ),
-      ).toEqual(false)
+      ).toEqual(undefined)
     })
 
-    it('returns false on nothing', () => {
+    it('returns undefined on nothing', () => {
       const mempool = new Mempool(Logger.SILENT)
 
       expect(
-        mempool.contains(
+        mempool.getByHash(
           Hex(
             '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
           ),
         ),
-      ).toEqual(false)
+      ).toEqual(undefined)
     })
   })
 })

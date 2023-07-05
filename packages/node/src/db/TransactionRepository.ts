@@ -123,7 +123,7 @@ export class TransactionRepository extends BaseRepository {
     return null
   }
 
-  contains(hash: Hex): boolean {
+  getByHash(hash: Hex): TransactionRecord | undefined {
     const drizzle = this.drizzle()
     const tx = drizzle
       .select()
@@ -134,11 +134,7 @@ export class TransactionRepository extends BaseRepository {
     // NOTE(radomski): Even though the inffered type says
     // that it can not be undefined it can
     // eslint-disable-next-line
-    if (tx) {
-      return true
-    } else {
-      return false
-    }
+    return tx ? fromInternalTransaction(tx) : undefined
   }
 }
 

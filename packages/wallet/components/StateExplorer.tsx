@@ -11,8 +11,8 @@ import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
 import { Account } from './Account'
-import Transaction from './Transaction'
 import AccountBalance from './AccountBalance'
+import Transaction from './Transaction'
 
 export function StateExplorer() {
   const formSchema = z.object({

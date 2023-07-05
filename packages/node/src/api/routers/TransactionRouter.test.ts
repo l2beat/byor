@@ -236,10 +236,10 @@ describe(createTransactionRouter.name, () => {
         '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
       )
       const mempool = mockObject<Mempool>({
-        contains: mockFn().returnsOnce(false),
+        getByHash: mockFn().returnsOnce(undefined),
       })
       const transactionRepository = mockObject<TransactionRepository>({
-        contains: mockFn().returnsOnce(false),
+        getByHash: mockFn().returnsOnce(undefined),
       })
       const router = createTransactionRouter(mempool, transactionRepository)
       const server = createTestApiServer({ router })
@@ -250,10 +250,13 @@ describe(createTransactionRouter.name, () => {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .expect('Content-Type', /json/)
-        .expect(200, '{"result":{"data":"Not found"}}')
+        .expect(
+          200,
+          '{"result":{"data":{"transaction":null,"status":"Not found"}}}',
+        )
 
-      expect(mempool.contains).toHaveBeenCalledTimes(1)
-      expect(transactionRepository.contains).toHaveBeenCalledTimes(1)
+      expect(mempool.getByHash).toHaveBeenCalledTimes(1)
+      expect(transactionRepository.getByHash).toHaveBeenCalledTimes(1)
     })
 
     it('accepts a valid hash for non existent transaction', async () => {
@@ -261,10 +264,10 @@ describe(createTransactionRouter.name, () => {
         '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
       )
       const mempool = mockObject<Mempool>({
-        contains: mockFn().returnsOnce(true),
+        getByHash: mockFn().returnsOnce({}),
       })
       const transactionRepository = mockObject<TransactionRepository>({
-        contains: mockFn().returnsOnce(false),
+        getByHash: mockFn().returnsOnce(undefined),
       })
       const router = createTransactionRouter(mempool, transactionRepository)
       const server = createTestApiServer({ router })
@@ -275,10 +278,13 @@ describe(createTransactionRouter.name, () => {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .expect('Content-Type', /json/)
-        .expect(200, '{"result":{"data":"Soft committed"}}')
+        .expect(
+          200,
+          '{"result":{"data":{"transaction":{},"status":"Soft committed"}}}',
+        )
 
-      expect(mempool.contains).toHaveBeenCalledTimes(1)
-      expect(transactionRepository.contains).toHaveBeenCalledTimes(0)
+      expect(mempool.getByHash).toHaveBeenCalledTimes(1)
+      expect(transactionRepository.getByHash).toHaveBeenCalledTimes(0)
     })
 
     it('accepts a valid hash for non existent transaction', async () => {
@@ -286,10 +292,10 @@ describe(createTransactionRouter.name, () => {
         '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
       )
       const mempool = mockObject<Mempool>({
-        contains: mockFn().returnsOnce(false),
+        getByHash: mockFn().returnsOnce(undefined),
       })
       const transactionRepository = mockObject<TransactionRepository>({
-        contains: mockFn().returnsOnce(true),
+        getByHash: mockFn().returnsOnce({}),
       })
       const router = createTransactionRouter(mempool, transactionRepository)
       const server = createTestApiServer({ router })
@@ -300,10 +306,13 @@ describe(createTransactionRouter.name, () => {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .expect('Content-Type', /json/)
-        .expect(200, '{"result":{"data":"Committed"}}')
+        .expect(
+          200,
+          '{"result":{"data":{"transaction":{},"status":"Commited"}}}',
+        )
 
-      expect(mempool.contains).toHaveBeenCalledTimes(1)
-      expect(transactionRepository.contains).toHaveBeenCalledTimes(1)
+      expect(mempool.getByHash).toHaveBeenCalledTimes(1)
+      expect(transactionRepository.getByHash).toHaveBeenCalledTimes(1)
     })
 
     for (const data of [
@@ -313,10 +322,10 @@ describe(createTransactionRouter.name, () => {
       it(`discards invalid data [${data}]`, async () => {
         const hash = Hex(data)
         const mempool = mockObject<Mempool>({
-          contains: mockFn().returnsOnce(false),
+          getByHash: mockFn().returnsOnce(undefined),
         })
         const transactionRepository = mockObject<TransactionRepository>({
-          contains: mockFn().returnsOnce(false),
+          getByHash: mockFn().returnsOnce(undefined),
         })
         const router = createTransactionRouter(mempool, transactionRepository)
         const server = createTestApiServer({ router })
@@ -329,8 +338,8 @@ describe(createTransactionRouter.name, () => {
           .expect('Content-Type', /json/)
           .expect(400)
 
-        expect(mempool.contains).toHaveBeenCalledTimes(0)
-        expect(transactionRepository.contains).toHaveBeenCalledTimes(0)
+        expect(mempool.getByHash).toHaveBeenCalledTimes(0)
+        expect(transactionRepository.getByHash).toHaveBeenCalledTimes(0)
       })
     }
   })

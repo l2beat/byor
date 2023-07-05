@@ -65,11 +65,11 @@ export class Mempool {
     return this.poolTimestamps
   }
 
-  contains(hash: Hex): boolean {
-    return this.pool.some((tx) => {
+  getByHash(hash: Hex): SignedTransaction | undefined {
+    return this.pool.filter((tx) => {
       assert(tx.hash)
       return tx.hash === hash
-    })
+    })[0]
   }
 
   empty(): void {

@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react'
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi'
 
 import { Account } from './Account'
+import AccountBalance from './AccountBalance'
 import { FaucetPrivateKey } from './FaucetPrivateKey'
 import { TransactionModal } from './TransactionModal'
 import { ToastAction } from './ui/toast'
 import { useToast } from './ui/use-toast'
-import AccountBalance from './AccountBalance'
 
 export function Wallet() {
   // WalletConnect has some issues with SSR and tries to render things on the server

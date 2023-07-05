@@ -104,7 +104,9 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
         return (
           <div key={iter} className="basis-full grid grid-cols-5 gap-4">
             <Copyable toCopy={tx.hash}>
-              <span className="text-gray-400 truncate max-w-[12rem]">{tx.hash}</span>
+              <span className="text-gray-400 truncate max-w-[12rem]">
+                {tx.hash}
+              </span>
             </Copyable>
             <Copyable toCopy={tx.from}>
               <span className="text-gray-400">{minimizeAddress(tx.from)}</span>
@@ -113,7 +115,9 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
               <span className="text-gray-400">{minimizeAddress(tx.to)}</span>
             </Copyable>
             <span className="text-gray-400">{tx.value}</span>
-            <span className="text-gray-400">{formatTimeDifferenceFromNow(tx.date)}</span>
+            <span className="text-gray-400">
+              {formatTimeDifferenceFromNow(tx.date)}
+            </span>
           </div>
         )
       })}

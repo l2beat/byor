@@ -174,39 +174,39 @@ describe(TransactionRepository.name, () => {
     },
   )
 
-  describe(TransactionRepository.prototype.contains.name, () => {
-    it('returns true on a transaction that is in the database', async () => {
+  describe(TransactionRepository.prototype.getByHash.name, () => {
+    it('returns transaction that is in the database', async () => {
       repository.addMany(modelTransactions)
 
       expect(
-        repository.contains(
+        repository.getByHash(
           Hex(
             '0x227d62c499fec877231acd731b3cb3e2556c1c14328b3a9c2d1c347ec58377e6',
           ),
         ),
-      ).toEqual(true)
+      ).toEqual(modelTransactions[0])
     })
 
-    it('returns false on non-existing with transactions in database', async () => {
+    it('returns undefined on non-existing with transactions in database', async () => {
       repository.addMany(modelTransactions)
 
       expect(
-        repository.contains(
+        repository.getByHash(
           Hex(
             '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
           ),
         ),
-      ).toEqual(false)
+      ).toEqual(undefined)
     })
 
-    it('returns false on empty', async () => {
+    it('returns undefined on empty', async () => {
       expect(
-        repository.contains(
+        repository.getByHash(
           Hex(
             '0xf87a5d255ed56593f5ba3b626c3d3910cd06f6c9a36c718a6781b12b8d3abe17',
           ),
         ),
-      ).toEqual(false)
+      ).toEqual(undefined)
     })
   })
 })
