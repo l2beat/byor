@@ -1,13 +1,14 @@
 'use client'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { NextRouter, useRouter } from 'next/router'
 import { Dispatch, SetStateAction } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { copyToClipboard } from '@/utils/copyToClipboard'
 
 import { formatTimeDifferenceFromNow } from '../utils/formatTimeDifferenceFromNow'
+import { setExplorerInput } from './StateExplorer'
 
 interface ListTransaction {
   hash: string
@@ -44,6 +45,8 @@ export function GenericTransactionList({ title, state, setState }: Props) {
 }
 
 function GenericTransactionListInner({ title, state, setState }: Props) {
+  const router = useRouter()
+
   if (state.isLoading) {
     return (
       <span className="basis-full text-center text-xl font-bold">
@@ -106,15 +109,15 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
       {state.txs.slice(0, PAGINATION_SIZE).map((tx, iter) => {
         return (
           <div key={iter} className="basis-full grid grid-cols-5 gap-4">
-            <Copyable toCopy={tx.hash}>
+            <OpenInExplorer router={router} input={tx.hash}>
               <span className="truncate max-w-[12rem]">{tx.hash}</span>
-            </Copyable>
-            <Copyable toCopy={tx.from}>
+            </OpenInExplorer>
+            <OpenInExplorer router={router} input={tx.from}>
               <span>{minimizeAddress(tx.from)}</span>
-            </Copyable>
-            <Copyable toCopy={tx.to}>
+            </OpenInExplorer>
+            <OpenInExplorer router={router} input={tx.to}>
               <span>{minimizeAddress(tx.to)}</span>
-            </Copyable>
+            </OpenInExplorer>
             <span>{tx.value}</span>
             <span>{formatTimeDifferenceFromNow(tx.date)}</span>
           </div>
@@ -124,18 +127,20 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
   )
 }
 
-function Copyable({
+function OpenInExplorer({
   children,
-  toCopy,
+  input,
+  router,
 }: {
   children: JSX.Element
-  toCopy: string
+  input: string
+  router: NextRouter
 }): JSX.Element {
   return (
     <Button
       variant="link"
       className="mr-auto justify-left items-start p-0 h-0"
-      onClick={() => copyToClipboard(toCopy)}
+      onClick={() => setExplorerInput(router, input)}
     >
       {children}
     </Button>
