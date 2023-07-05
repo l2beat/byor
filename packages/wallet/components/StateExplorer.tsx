@@ -2,7 +2,8 @@
 
 import { EthereumAddress, Hex } from '@byor/shared'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { NextRouter, useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -13,6 +14,14 @@ import { Input } from '@/components/ui/input'
 import { Account } from './Account'
 import AccountBalance from './AccountBalance'
 import Transaction from './Transaction'
+
+export function setExplorerInput(router: NextRouter, input: string) {
+  router
+    .push(`/?addrhash=${input}`, undefined, { shallow: true })
+    .catch((err) => {
+      console.warn('Failed to push router path', err)
+    })
+}
 
 export function StateExplorer() {
   const formSchema = z.object({
@@ -46,9 +55,15 @@ export function StateExplorer() {
   const [addressOrHash, setAddressOrHash] = useState<string | undefined>(
     undefined,
   )
+  const router = useRouter()
+  useEffect(() => {
+    if (router.query.addrhash && typeof router.query.addrhash === 'string') {
+      setAddressOrHash(router.query.addrhash)
+    }
+  }, [router.query.addrhash])
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    setAddressOrHash(values.addressOrHash)
+    setExplorerInput(router, values.addressOrHash)
   }
 
   return (
