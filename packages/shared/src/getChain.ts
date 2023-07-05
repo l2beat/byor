@@ -18,5 +18,5 @@ export function getChain(): Chain {
       public: { http: ['http://localhost:8545'] },
       default: { http: ['http://localhost:8545'] },
     },
-  } as const satisfies Chain
+  }
 }

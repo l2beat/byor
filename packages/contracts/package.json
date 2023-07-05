@@ -1,5 +1,5 @@
 {
-  "name": "@byor/onchain",
+  "name": "@byor/contracts",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,15 +14,14 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-etherscan": "^3.1.7",
-    "@ethersproject/abi": "^5.7.0",
-    "@ethersproject/providers": "^5.7.2",
     "@typechain/ethers-v5": "^10.2.1",
-    "solidity-coverage": "^0.8.2",
     "@typechain/hardhat": "^6.1.6",
     "@types/chai": "^4.3.5",
     "@types/mocha": "^10.0.1",

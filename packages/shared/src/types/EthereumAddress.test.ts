@@ -2,15 +2,15 @@ import { expect } from 'earl'
 
 import { EthereumAddress } from './EthereumAddress'
 
-describe('EthereumAddress', () => {
+describe(EthereumAddress.name, () => {
   it('transformes a valid address', async () => {
     const address: EthereumAddress = EthereumAddress(
       '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720',
     )
 
     expect(address).toBeA(String)
-    expect(address).toEqual(
-      '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720' as unknown as EthereumAddress,
+    expect(address.toString()).toEqual(
+      '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720',
     )
   })
 
@@ -20,8 +20,8 @@ describe('EthereumAddress', () => {
     )
 
     expect(address).toBeA(String)
-    expect(address).toEqual(
-      '0xA35cdbD9a448b82cdEC0767B687aD3fA543613df' as unknown as EthereumAddress,
+    expect(address.toString()).toEqual(
+      '0xA35cdbD9a448b82cdEC0767B687aD3fA543613df',
     )
   })
 

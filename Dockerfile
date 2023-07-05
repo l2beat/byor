@@ -18,7 +18,7 @@ RUN yarn
 COPY --link . .
 
 RUN rm -rf packages/wallet
-RUN rm -rf packages/onchain
+RUN rm -rf packages/contracts
 
 RUN yarn
 RUN yarn build:dependencies

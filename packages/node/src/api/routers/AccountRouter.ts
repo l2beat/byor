@@ -1,8 +1,9 @@
-import { branded, EthereumAddress } from '@byor/shared'
+import { EthereumAddress } from '@byor/shared'
 import { z } from 'zod'
 
 import { AccountRepository } from '../../db/AccountRepository'
 import { publicProcedure, router } from '../trpc'
+import { branded } from '../types/branded'
 
 // NOTE(radomski): We need to propagte the return type
 // from this function, we can not infer it

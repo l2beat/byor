@@ -1,10 +1,11 @@
-import { EthereumAddress, Hex, Logger } from '@byor/shared'
+import { EthereumAddress, Hex } from '@byor/shared'
 import { expect, mockFn, mockObject } from 'earl'
 import { parseAbiItem } from 'viem'
 
 import { FetcherRepository } from './db/FetcherRepository'
 import { L1StateFetcher } from './L1StateFetcher'
 import { EthereumClient } from './peripherals/ethereum/EthereumClient'
+import { Logger } from './tools/Logger'
 
 describe(L1StateFetcher.name, () => {
   describe(L1StateFetcher.prototype.getNewState.name, () => {

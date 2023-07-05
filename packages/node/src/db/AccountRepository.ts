@@ -87,11 +87,11 @@ function toInternalAccount(acc: AccountRecord): InternalAccountRecord {
   // are needed please consider removing drizzle-orm!
 
   assert(
-    Unsigned64.toBigInt(acc.balance) <= BigInt(Number.MAX_SAFE_INTEGER),
+    acc.balance.valueOf() <= BigInt(Number.MAX_SAFE_INTEGER),
     'The Unsigned64 value is bigger than the biggest safely representable value',
   )
   assert(
-    Unsigned64.toBigInt(acc.nonce) <= BigInt(Number.MAX_SAFE_INTEGER),
+    acc.nonce.valueOf() <= BigInt(Number.MAX_SAFE_INTEGER),
     'The Unsigned64 value is bigger than the biggest safely representable value',
   )
 

@@ -1,7 +1,7 @@
-import { Logger } from '@byor/shared'
 import { ProcedureRouterRecord } from '@trpc/server'
 import { agent, SuperAgentTest } from 'supertest'
 
+import { Logger } from '../../../tools/Logger'
 import { ApiServer } from '../../ApiServer'
 
 export function createTestApiServer(

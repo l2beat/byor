@@ -1,11 +1,7 @@
-import {
-  assert,
-  hashTransaction,
-  Hex,
-  Logger,
-  SignedTransaction,
-} from '@byor/shared'
+import { assert, hashTransaction, Hex, SignedTransaction } from '@byor/shared'
 import { zip } from 'lodash'
+
+import { Logger } from '../../tools/Logger'
 
 export class Mempool {
   private pool: SignedTransaction[]

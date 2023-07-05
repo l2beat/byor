@@ -16,15 +16,9 @@
     "lint": "eslint --ext .ts,.tsx --max-warnings 0 src",
     "typecheck": "tsc --noEmit"
   },
-  "devDependencies": {
-    "@sinonjs/fake-timers": "^10.2.0",
-    "@types/sinonjs__fake-timers": "^8.1.2",
-    "@types/ws": "^8.5.4"
-  },
+  "devDependencies": {},
   "dependencies": {
     "abitype": "^0.8.11",
-    "chalk": "^4.1.2",
-    "viem": "^0.3.22",
-    "zod": "^3.21.4"
+    "viem": "^0.3.22"
   }
 }

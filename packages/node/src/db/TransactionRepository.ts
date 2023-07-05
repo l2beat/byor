@@ -155,15 +155,15 @@ function toInternalTransaction(
   // are needed please consider removing drizzle-orm!
 
   assert(
-    Unsigned64.toBigInt(tx.value) <= BigInt(Number.MAX_SAFE_INTEGER),
+    tx.value.valueOf() <= BigInt(Number.MAX_SAFE_INTEGER),
     'The Unsigned64 value is bigger than the biggest safely representable value',
   )
   assert(
-    Unsigned64.toBigInt(tx.nonce) <= BigInt(Number.MAX_SAFE_INTEGER),
+    tx.nonce.valueOf() <= BigInt(Number.MAX_SAFE_INTEGER),
     'The Unsigned64 value is bigger than the biggest safely representable value',
   )
   assert(
-    Unsigned64.toBigInt(tx.fee) <= BigInt(Number.MAX_SAFE_INTEGER),
+    tx.fee.valueOf() <= BigInt(Number.MAX_SAFE_INTEGER),
     'The Unsigned64 value is bigger than the biggest safely representable value',
   )
   assert(tx.hash, "expected the transaction to have it's hash calculated")

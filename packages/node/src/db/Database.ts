@@ -1,7 +1,8 @@
-import { Logger } from '@byor/shared'
 import DatabaseDriver from 'better-sqlite3'
 import { BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3'
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
+
+import { Logger } from '../tools/Logger'
 
 export class Database {
   private readonly drizzle: BetterSQLite3Database

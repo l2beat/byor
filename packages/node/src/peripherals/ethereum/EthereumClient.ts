@@ -1,12 +1,13 @@
-import { EthereumAddress, Hex, Logger } from '@byor/shared'
+import { EthereumAddress, Hex } from '@byor/shared'
 import { AbiEvent } from 'abitype'
 import {
   GetBlockReturnType,
   GetLogsReturnType,
-  Hex as ViemHex,
   PublicClient,
   Transaction,
 } from 'viem'
+
+import { Logger } from '../../tools/Logger'
 
 export class EthereumClient {
   constructor(
@@ -31,7 +32,7 @@ export class EthereumClient {
 
     try {
       return await this.publicProvider.getLogs({
-        address: contractAddress.toString() as ViemHex,
+        address: contractAddress.toString(),
         event: abi,
         fromBlock: fromBlock,
         toBlock: toBlock,
@@ -69,7 +70,7 @@ export class EthereumClient {
 
   async getTransaction(hash: Hex): Promise<Transaction> {
     const result = this.publicProvider.getTransaction({
-      hash: hash.toString() as ViemHex,
+      hash: hash.toString(),
     })
 
     return result
@@ -77,7 +78,7 @@ export class EthereumClient {
 
   async getBlockHeader(hash: Hex): Promise<GetBlockReturnType> {
     const result = this.publicProvider.getBlock({
-      blockHash: hash.toString() as ViemHex,
+      blockHash: hash.toString(),
     })
 
     return result
