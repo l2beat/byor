@@ -15,6 +15,7 @@ export function getProductionConfig(): Config {
     contractCreatedAtBlock: 0,
     databaseConnection: getEnv('DATABASE_URL'),
     migrationsPath: 'drizzle',
+    isProductionDatabase: true,
     privateKey: Hex(getEnv('PRIVATE_KEY')),
     ctcContractAddress: EthereumAddress(getEnv('CTC_ADDRESS')),
     genesisState: GENESIS_STATE,

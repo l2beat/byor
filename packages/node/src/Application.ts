@@ -32,6 +32,7 @@ export class Application {
     const database = new Database(
       config.databaseConnection,
       config.migrationsPath,
+      config.isProductionDatabase,
       logger,
     )
     const accountRepository = new AccountRepository(database)

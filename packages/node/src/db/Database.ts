@@ -11,13 +11,14 @@ export class Database {
   constructor(
     private readonly connectionString: string,
     private readonly migrationsPath: string,
+    private readonly isProduction: boolean,
     protected readonly logger: Logger,
   ) {
-    this.client = postgres(
-      this.connectionString,
-
-      { max: 1, onnotice: () => {} },
-    )
+    this.client = postgres(this.connectionString, {
+      max: 1,
+      onnotice: () => {},
+      ssl: isProduction ? { rejectUnauthorized: false } : undefined,
+    })
     this.drizzle = drizzle(this.client)
     this.logger = logger.for(this)
   }
