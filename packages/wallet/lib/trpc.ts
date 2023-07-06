@@ -19,5 +19,5 @@ export const trpc = createTRPCNext<RootRouter>({
       ],
     }
   },
-  ssr: false,
+  ssr: true,
 })
