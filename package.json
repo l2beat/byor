@@ -6,7 +6,9 @@
     "node": "^18.0.0"
   },
   "scripts": {
+    "start": "cd packages/backend && yarn start",
     "build:dependencies": "wsrun -p @byor/{shared,node} -recsm build",
+    "heroku-postbuild": "yarn build:dependencies",
     "test": "wsrun -ecam test",
     "format:fix": "wsrun -ecam format:fix",
     "format": "wsrun -ecam format",
