@@ -9,8 +9,6 @@
     "clean": "rm -rf build",
     "prebuild": "yarn clean",
     "build": "tsc -p tsconfig.build.json",
-    "postbuild": "yarn build:database",
-    "build:database": "drizzle-kit generate:sqlite --breakpoints --schema src/db/schema.ts --out db/migrations",
     "start": "node -r esbuild-register src/",
     "prestart:clean": "rm -rf main.db",
     "start:clean": "yarn start",
@@ -26,7 +24,6 @@
     "@types/cors": "^2.8.13",
     "@types/sinonjs__fake-timers": "^8.1.2",
     "@types/supertest": "^2.0.12",
-    "drizzle-kit": "^0.17.6",
     "supertest": "^6.3.3"
   },
   "dependencies": {
