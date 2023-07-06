@@ -7,7 +7,7 @@ import {
   Transaction,
   Unsigned64,
 } from '@byor/shared'
-import { command, positional, run, string, Type } from 'cmd-ts'
+import { command, positional, run, Type } from 'cmd-ts'
 import { createPublicClient, createWalletClient, http } from 'viem'
 import {
   english,
@@ -18,10 +18,14 @@ import {
 
 import { Config, getConfig } from '../../src/config'
 import { abi } from '../../src/config/abi'
-import { getGenesisState } from '../../src/config/getGenesisState'
+import GENESIS_STATE from '../../src/config/genesis.json'
+
+function getGenesisState(): Record<string, number> {
+  return GENESIS_STATE
+}
 
 async function main(config: Config, privateKey: Hex): Promise<void> {
-  const genesisState = getGenesisState(config.genesisFilePath)
+  const genesisState = getGenesisState()
   const l2Account = privateKeyToAccount(privateKey.toString())
   const accountBalance = genesisState[l2Account.address]
   assert(
@@ -89,12 +93,10 @@ const cmd = command({
   description: 'Seed random addresses with funds from provided account',
   version: '1.0.0',
   args: {
-    configPath: positional({ type: string, displayName: 'configPath' }),
     privateKey: positional({ type: HexValue, displayName: 'privateKey' }),
   },
-  handler: async ({ configPath, privateKey }) => {
-    const config = getConfig(configPath)
-
+  handler: async ({ privateKey }) => {
+    const config = getConfig()
     await main(config, privateKey)
   },
 })

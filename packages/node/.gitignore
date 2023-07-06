@@ -1,2 +1,1 @@
-*.db
-src/config/prodStateSetup.json
+.env

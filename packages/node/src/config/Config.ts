@@ -9,7 +9,7 @@ export interface Config {
   readonly migrationsPath: string
   readonly privateKey: Hex
   readonly ctcContractAddress: EthereumAddress
-  readonly genesisFilePath: string
+  readonly genesisState: Record<string, number>
   readonly rpcServePort: number
   readonly gasLimit: number
 }

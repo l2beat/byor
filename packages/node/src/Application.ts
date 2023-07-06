@@ -7,14 +7,14 @@ import { createAccountRouter } from './api/routers/AccountRouter'
 import { createStatisticsRouter } from './api/routers/StatisticRouter'
 import { createTransactionRouter } from './api/routers/TransactionRouter'
 import { AppRouters } from './api/types/AppRouter'
+import { calculateTransactionLimit } from './calculateTransactionLimit'
 import { Config } from './config'
-import { calculateTransactionLimit } from './config/calculateTransactionLimit'
-import { getContractCreationTime } from './config/getContractCreationTime'
 import { AccountRepository } from './db/AccountRepository'
 import { Database } from './db/Database'
 import { FetcherRepository } from './db/FetcherRepository'
 import { TransactionRepository } from './db/TransactionRepository'
 import { GenesisStateLoader } from './GenesisStateLoader'
+import { getContractCreationTime } from './getContractCreationTime'
 import { L1StateFetcher } from './L1StateFetcher'
 import { L1StateManager } from './L1StateManager'
 import { L1StateSubmitter } from './L1StateSubmitter'
@@ -60,7 +60,7 @@ export class Application {
     )
 
     const genesisStateLoader = new GenesisStateLoader(
-      config.genesisFilePath,
+      config.genesisState,
       accountRepository,
       logger,
     )
