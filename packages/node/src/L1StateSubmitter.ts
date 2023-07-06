@@ -35,7 +35,7 @@ export class L1StateSubmitter {
     })
 
     if (transactions.length > 0) {
-      const state = this.l1StateManager.getState()
+      const state = await this.l1StateManager.getState()
 
       const validTxs = filterValidTxs(state, transactions)
       if (validTxs.length > 0) {

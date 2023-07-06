@@ -34,74 +34,74 @@ describe(AccountRepository.name, () => {
   ]
 
   beforeEach(async () => {
-    repository.deleteAll()
+    await repository.deleteAll()
   })
 
   describe(AccountRepository.prototype.addOrUpdateMany.name, () => {
     it('updates many accounts', async () => {
-      repository.addOrUpdateMany(modelAccounts1)
-      repository.addOrUpdateMany(modelAccounts2)
+      await repository.addOrUpdateMany(modelAccounts1)
+      await repository.addOrUpdateMany(modelAccounts2)
 
-      expect(repository.getAll()).toEqual(modelAccounts2)
+      expect(await repository.getAll()).toEqual(modelAccounts2)
     })
   })
 
   describe(AccountRepository.prototype.getAll.name, () => {
     it('gets all', async () => {
-      repository.addOrUpdateMany(modelAccounts1)
+      await repository.addOrUpdateMany(modelAccounts1)
 
-      expect(repository.getAll()).toEqual(modelAccounts1)
+      expect(await repository.getAll()).toEqual(modelAccounts1)
     })
   })
 
   describe(AccountRepository.prototype.getByAddressOrDefault.name, () => {
     it('returns empty account on one that was not inserted', async () => {
       expect(
-        repository.getByAddressOrDefault(modelAccounts1[0]!.address),
+        await repository.getByAddressOrDefault(modelAccounts1[0]!.address),
       ).toEqual(modelAccounts1[0]!)
     })
 
     it('gotten account that does not exist is not inserted', async () => {
       expect(
-        repository.getByAddressOrDefault(modelAccounts1[0]!.address),
+        await repository.getByAddressOrDefault(modelAccounts1[0]!.address),
       ).toEqual(modelAccounts1[0]!)
-      expect(repository.getCount()).toEqual(0)
+      expect(await repository.getCount()).toEqual(0)
     })
 
     it('returns the account that was previously inserted', async () => {
-      repository.addOrUpdateMany(modelAccounts1)
+      await repository.addOrUpdateMany(modelAccounts1)
 
       expect(
-        repository.getByAddressOrDefault(modelAccounts1[1]!.address),
+        await repository.getByAddressOrDefault(modelAccounts1[1]!.address),
       ).toEqual(modelAccounts1[1]!)
     })
   })
 
   describe(AccountRepository.prototype.deleteAll.name, () => {
     it('deletes all', async () => {
-      repository.addOrUpdateMany(modelAccounts1)
-      repository.deleteAll()
+      await repository.addOrUpdateMany(modelAccounts1)
+      await repository.deleteAll()
 
-      expect(repository.getAll()).toEqual([])
+      expect(await repository.getAll()).toEqual([])
     })
   })
 
   describe(AccountRepository.prototype.getCount.name, () => {
     it('zero on empty', async () => {
-      expect(repository.getCount()).toEqual(0)
+      expect(await repository.getCount()).toEqual(0)
     })
 
     it('many accounts', async () => {
-      repository.addOrUpdateMany(modelAccounts1)
-      const result = repository.getCount()
+      await repository.addOrUpdateMany(modelAccounts1)
+      const result = await repository.getCount()
 
       expect(result).toEqual(modelAccounts1.length)
     })
 
     it('many accounts with deletion', async () => {
-      repository.addOrUpdateMany(modelAccounts1)
-      repository.deleteAll()
-      const result = repository.getCount()
+      await repository.addOrUpdateMany(modelAccounts1)
+      await repository.deleteAll()
+      const result = await repository.getCount()
 
       expect(result).toEqual(0)
     })

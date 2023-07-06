@@ -18,24 +18,24 @@ describe(FetcherRepository.name, () => {
   const repository = new FetcherRepository(database, modelCreationPair)
 
   beforeEach(async () => {
-    repository.deleteAll()
+    await repository.deleteAll()
   })
 
   describe(FetcherRepository.prototype.addOrUpdate.name, () => {
     it('updates many fetchers', async () => {
       const modelFetcher2 = { chainId: 7331, lastFetchedBlock: 2496n }
-      repository.addOrUpdate(modelFetcher)
-      repository.addOrUpdate(modelFetcher2)
+      await repository.addOrUpdate(modelFetcher)
+      await repository.addOrUpdate(modelFetcher2)
 
-      expect(repository.getAll()).toEqual([modelFetcher, modelFetcher2])
+      expect(await repository.getAll()).toEqual([modelFetcher, modelFetcher2])
     })
   })
 
   describe(FetcherRepository.prototype.getAll.name, () => {
     it('gets all', async () => {
-      repository.addOrUpdate(modelFetcher)
+      await repository.addOrUpdate(modelFetcher)
 
-      expect(repository.getAll()).toEqual([modelFetcher])
+      expect(await repository.getAll()).toEqual([modelFetcher])
     })
   })
 
@@ -45,33 +45,33 @@ describe(FetcherRepository.name, () => {
       lastFetchedBlock: BigInt(modelCreationPair.contractCreatedAtBlock - 1),
     }
     it('returns empty fetcher on one that was not inserted', async () => {
-      expect(repository.getByChainIdOrDefault(modelFetcher.chainId)).toEqual(
-        modelEmptyFetcher,
-      )
+      expect(
+        await repository.getByChainIdOrDefault(modelFetcher.chainId),
+      ).toEqual(modelEmptyFetcher)
     })
 
     it('gotten fetcher that does not exist is not inserted', async () => {
-      expect(repository.getByChainIdOrDefault(modelFetcher.chainId)).toEqual(
-        modelEmptyFetcher,
-      )
-      expect(repository.getAll()).toEqual([])
+      expect(
+        await repository.getByChainIdOrDefault(modelFetcher.chainId),
+      ).toEqual(modelEmptyFetcher)
+      expect(await repository.getAll()).toEqual([])
     })
 
     it('returns the fetcher that was previously inserted', async () => {
-      repository.addOrUpdate(modelFetcher)
+      await repository.addOrUpdate(modelFetcher)
 
-      expect(repository.getByChainIdOrDefault(modelFetcher.chainId)).toEqual(
-        modelFetcher,
-      )
+      expect(
+        await repository.getByChainIdOrDefault(modelFetcher.chainId),
+      ).toEqual(modelFetcher)
     })
   })
 
   describe(FetcherRepository.prototype.deleteAll.name, () => {
     it('deletes all', async () => {
-      repository.addOrUpdate(modelFetcher)
-      repository.deleteAll()
+      await repository.addOrUpdate(modelFetcher)
+      await repository.deleteAll()
 
-      expect(repository.getAll()).toEqual([])
+      expect(await repository.getAll()).toEqual([])
     })
   })
 })

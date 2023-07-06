@@ -53,9 +53,10 @@ export class L1StateManager {
     }, this.probePeriodMs).finally(unreachableCodePath)
   }
 
-  getState(): StateMap {
+  async getState(): Promise<StateMap> {
     const accountState: StateMap = {}
-    this.accountRepository.getAll().forEach(
+    const accounts = await this.accountRepository.getAll()
+    accounts.forEach(
       (acc) =>
         (accountState[acc.address.toString()] = {
           balance: acc.balance,
@@ -77,7 +78,7 @@ export class L1StateManager {
     const batches = await Promise.all(
       l1States.map((state) => deserializeBatch(state.calldata)),
     )
-    let accountState = this.getState()
+    let accountState = await this.getState()
 
     for (const [batch, state] of zip(batches, l1States)) {
       // NOTE(radomski): We know that it won't be undefined
@@ -85,7 +86,7 @@ export class L1StateManager {
       /* eslint-disable */
       accountState = executeBatch(accountState, batch!, state!.poster)
 
-      this.transactionRepository.addMany(
+      await this.transactionRepository.addMany(
         batch!.map((tx) => {
           return {
             from: tx.from,
@@ -101,7 +102,7 @@ export class L1StateManager {
       /* eslint-enable */
     }
 
-    this.accountRepository.addOrUpdateMany(
+    await this.accountRepository.addOrUpdateMany(
       Object.entries(accountState).map(([address, value]) => {
         return {
           address: EthereumAddress(address),

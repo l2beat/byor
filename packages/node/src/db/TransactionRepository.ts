@@ -19,8 +19,9 @@ export interface TransactionRecord extends Transaction {
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
 
+/* eslint-disable @typescript-eslint/require-await */
 export class TransactionRepository extends BaseRepository {
-  getAll(): TransactionRecord[] {
+  async getAll(): Promise<TransactionRecord[]> {
     const drizzle = this.drizzle()
     return drizzle
       .select()
@@ -29,7 +30,7 @@ export class TransactionRepository extends BaseRepository {
       .map((tx) => fromInternalTransaction(tx))
   }
 
-  getRange(start: number, end: number): TransactionRecord[] {
+  async getRange(start: number, end: number): Promise<TransactionRecord[]> {
     if (end - start === 0 || end < start) {
       return []
     }
@@ -45,7 +46,7 @@ export class TransactionRepository extends BaseRepository {
       .map((tx) => fromInternalTransaction(tx))
   }
 
-  addMany(txs: TransactionRecord[]): void {
+  async addMany(txs: TransactionRecord[]): Promise<void> {
     txs.forEach((tx) => {
       if (!tx.hash) {
         tx.hash = hashTransaction(tx)
@@ -59,7 +60,7 @@ export class TransactionRepository extends BaseRepository {
       .run()
   }
 
-  getCount(): number {
+  async getCount(): Promise<number> {
     const drizzle = this.drizzle()
     return drizzle
       .select({ count: sql<number>`count(*)` })
@@ -67,7 +68,7 @@ export class TransactionRepository extends BaseRepository {
       .get().count
   }
 
-  getCountSinceLast24h(): number {
+  async getCountSinceLast24h(): Promise<number> {
     const drizzle = this.drizzle()
     return drizzle
       .select({ count: sql<number>`count(*)` })
@@ -81,12 +82,12 @@ export class TransactionRepository extends BaseRepository {
       .get().count
   }
 
-  deleteAll(): void {
+  async deleteAll(): Promise<void> {
     const drizzle = this.drizzle()
     drizzle.delete(transactionsSchema).run()
   }
 
-  getDailyTokenVolume(): number {
+  async getDailyTokenVolume(): Promise<number> {
     const drizzle = this.drizzle()
     const volume = drizzle
       .select({
@@ -104,7 +105,7 @@ export class TransactionRepository extends BaseRepository {
     return volume ? volume : 0
   }
 
-  getYoungestTransactionDate(): Date | null {
+  async getYoungestTransactionDate(): Promise<Date | null> {
     const drizzle = this.drizzle()
     const tx = drizzle
       .select()
@@ -123,7 +124,7 @@ export class TransactionRepository extends BaseRepository {
     return null
   }
 
-  getByHash(hash: Hex): TransactionRecord | undefined {
+  async getByHash(hash: Hex): Promise<TransactionRecord | undefined> {
     const drizzle = this.drizzle()
     const tx = drizzle
       .select()

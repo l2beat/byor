@@ -13,6 +13,7 @@ export interface FetcherRecord {
   lastFetchedBlock: bigint
 }
 
+/* eslint-disable @typescript-eslint/require-await */
 export class FetcherRepository extends BaseRepository {
   constructor(
     database: Database,
@@ -21,7 +22,7 @@ export class FetcherRepository extends BaseRepository {
     super(database)
   }
 
-  addOrUpdate(fetcher: FetcherRecord): void {
+  async addOrUpdate(fetcher: FetcherRecord): Promise<void> {
     const drizzle = this.drizzle()
     const internalFetcher = toInternalFetcher(fetcher)
 
@@ -36,7 +37,7 @@ export class FetcherRepository extends BaseRepository {
     })
   }
 
-  getAll(): FetcherRecord[] {
+  async getAll(): Promise<FetcherRecord[]> {
     const drizzle = this.drizzle()
     return drizzle
       .select()
@@ -45,7 +46,7 @@ export class FetcherRepository extends BaseRepository {
       .map((fetcher) => fromInternalFetcher(fetcher))
   }
 
-  getByChainIdOrDefault(chainId: number): FetcherRecord {
+  async getByChainIdOrDefault(chainId: number): Promise<FetcherRecord> {
     const drizzle = this.drizzle()
     const res = drizzle
       .select()
@@ -80,7 +81,7 @@ export class FetcherRepository extends BaseRepository {
     return fromInternalFetcher(res)
   }
 
-  deleteAll(): void {
+  async deleteAll(): Promise<void> {
     const drizzle = this.drizzle()
     drizzle.delete(fetcherSchema).run()
   }

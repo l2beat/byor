@@ -12,8 +12,9 @@ export interface AccountRecord {
   nonce: Unsigned64
 }
 
+/* eslint-disable @typescript-eslint/require-await */
 export class AccountRepository extends BaseRepository {
-  addOrUpdateMany(accounts: AccountRecord[]): void {
+  async addOrUpdateMany(accounts: AccountRecord[]): Promise<void> {
     const drizzle = this.drizzle()
     const internalAccounts = accounts.map((acc) => toInternalAccount(acc))
 
@@ -30,7 +31,7 @@ export class AccountRepository extends BaseRepository {
     })
   }
 
-  getAll(): AccountRecord[] {
+  async getAll(): Promise<AccountRecord[]> {
     const drizzle = this.drizzle()
     return drizzle
       .select()
@@ -39,7 +40,9 @@ export class AccountRepository extends BaseRepository {
       .map((acc) => fromInternalAccount(acc))
   }
 
-  getByAddressOrDefault(address: EthereumAddress): AccountRecord {
+  async getByAddressOrDefault(
+    address: EthereumAddress,
+  ): Promise<AccountRecord> {
     const drizzle = this.drizzle()
     const res = drizzle
       .select()
@@ -62,12 +65,12 @@ export class AccountRepository extends BaseRepository {
     return fromInternalAccount(res)
   }
 
-  deleteAll(): void {
+  async deleteAll(): Promise<void> {
     const drizzle = this.drizzle()
     drizzle.delete(accountsSchema).run()
   }
 
-  getCount(): number {
+  async getCount(): Promise<number> {
     const drizzle = this.drizzle()
     return drizzle
       .select({ count: sql<number>`count(*)` })

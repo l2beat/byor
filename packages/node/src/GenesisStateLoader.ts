@@ -16,8 +16,9 @@ export class GenesisStateLoader {
     this.logger = logger.for(this)
   }
 
-  apply(): void {
-    if (this.accountRepository.getCount() !== 0) {
+  async apply(): Promise<void> {
+    const count = await this.accountRepository.getCount()
+    if (count !== 0) {
       this.logger.debug('Genesis state already applied, skipping')
       return
     }
@@ -33,6 +34,6 @@ export class GenesisStateLoader {
       },
     )
 
-    this.accountRepository.addOrUpdateMany(accounts)
+    await this.accountRepository.addOrUpdateMany(accounts)
   }
 }

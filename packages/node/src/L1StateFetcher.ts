@@ -13,7 +13,8 @@ type EventAbiType = typeof eventAbi
 type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
 
 export class L1StateFetcher {
-  private lastFetchedBlock: bigint
+  private lastFetchedBlock = 0n
+
   constructor(
     private readonly client: EthereumClient,
     private readonly fetcherRepository: FetcherRepository,
@@ -21,8 +22,11 @@ export class L1StateFetcher {
     private readonly logger: Logger,
   ) {
     this.logger = logger.for(this)
-    const fetcher = this.fetcherRepository.getByChainIdOrDefault(
-      client.getChainId(),
+  }
+
+  async start(): Promise<void> {
+    const fetcher = await this.fetcherRepository.getByChainIdOrDefault(
+      this.client.getChainId(),
     )
     this.lastFetchedBlock = fetcher.lastFetchedBlock
   }
@@ -57,7 +61,7 @@ export class L1StateFetcher {
       }
     }
 
-    this.updateFetcherDatabase()
+    await this.updateFetcherDatabase()
 
     return zipWith(
       posters,
@@ -112,13 +116,13 @@ export class L1StateFetcher {
     return timestamps
   }
 
-  updateFetcherDatabase(): void {
+  async updateFetcherDatabase(): Promise<void> {
     const record: FetcherRecord = {
       chainId: this.client.getChainId(),
       lastFetchedBlock: this.lastFetchedBlock,
     }
 
-    this.fetcherRepository.addOrUpdate(record)
+    await this.fetcherRepository.addOrUpdate(record)
   }
 }
 

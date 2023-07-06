@@ -97,11 +97,11 @@ export class Application {
 
     const apiServer = new ApiServer(config.rpcServePort, logger, routers)
 
-    genesisStateLoader.apply()
-
     this.start = async (): Promise<void> => {
       logger.info('Starting...')
 
+      await l1Fetcher.start()
+      await genesisStateLoader.apply()
       await l1Manager.start()
       l1Submitter.start()
 
