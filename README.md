@@ -18,7 +18,19 @@ Install the following:
 - node v18
 - [yarn](https://classic.yarnpkg.com/lang/en/docs/install/)
 - [foundry](https://book.getfoundry.sh/getting-started/installation)
-- sqlite3 (the command line interface, not the library)
+- Postgresql. We recommend running it through docker for local development.
+
+### Database
+
+The recommended way of setting the postgres database is through docker using the commands below.
+
+```
+docker run -d --name=byor -p 5432:5432 -e POSTGRES_PASSWORD=password postgres:14
+docker exec -it byor psql -U postgres -c 'CREATE DATABASE byor_local'
+docker exec -it byor psql -U postgres -c 'CREATE DATABASE byor_test'
+```
+
+If you restart your system running `docker start byor` will bring the database back online.
 
 ### Exection
 

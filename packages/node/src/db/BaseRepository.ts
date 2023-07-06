@@ -1,11 +1,11 @@
-import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 
 import { Database } from './Database'
 
 export abstract class BaseRepository {
   constructor(protected readonly database: Database) {}
 
-  protected drizzle(): BetterSQLite3Database {
+  protected drizzle(): PostgresJsDatabase {
     return this.database.getDrizzle()
   }
 }

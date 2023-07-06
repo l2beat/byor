@@ -1,25 +1,34 @@
-import DatabaseDriver from 'better-sqlite3'
-import { BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3'
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
+import { drizzle, PostgresJsDatabase } from 'drizzle-orm/postgres-js'
+import { migrate } from 'drizzle-orm/postgres-js/migrator'
+import postgres from 'postgres'
 
 import { Logger } from '../tools/Logger'
 
 export class Database {
-  private readonly drizzle: BetterSQLite3Database
-  protected readonly logger: Logger
+  private readonly client: postgres.Sql
+  private readonly drizzle: PostgresJsDatabase
 
-  constructor(dbPath: string, migrationsPath: string, logger: Logger) {
-    const sqlite = new DatabaseDriver(dbPath)
-    this.drizzle = drizzle(sqlite)
+  constructor(
+    private readonly migrationsPath: string,
+    protected readonly logger: Logger,
+  ) {
+    this.client = postgres(
+      'postgresql://postgres:password@localhost:5432/byor_local',
+      { max: 1, onnotice: () => {} },
+    )
+    this.drizzle = drizzle(this.client)
     this.logger = logger.for(this)
-    this.createTables(migrationsPath)
   }
 
-  createTables(migrationsPath: string): void {
-    migrate(this.drizzle, { migrationsFolder: migrationsPath })
+  async migrate(): Promise<void> {
+    await migrate(this.drizzle, { migrationsFolder: this.migrationsPath })
   }
 
-  getDrizzle(): BetterSQLite3Database {
+  async close(): Promise<void> {
+    await this.client.end()
+  }
+
+  getDrizzle(): PostgresJsDatabase {
     return this.drizzle
   }
 

@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1688647486912,
+      "tag": "0000_perpetual_psynapse",
+      "breakpoints": false
+    }
+  ]
+}

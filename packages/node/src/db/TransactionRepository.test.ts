@@ -40,7 +40,12 @@ describe(TransactionRepository.name, () => {
   })
 
   beforeEach(async () => {
+    await database.migrate()
     await repository.deleteAll()
+  })
+
+  after(async () => {
+    await database.close()
   })
 
   describe(TransactionRepository.prototype.addMany.name, () => {

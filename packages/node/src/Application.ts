@@ -29,11 +29,7 @@ export class Application {
   constructor(config: Config) {
     const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
 
-    const database = new Database(
-      config.databasePath,
-      config.migrationsPath,
-      logger,
-    )
+    const database = new Database(config.migrationsPath, logger)
     const accountRepository = new AccountRepository(database)
     // NOTE(radomski): We store transactions only for statistics and transaction status query
     const transactionRepository = new TransactionRepository(database)
@@ -100,6 +96,7 @@ export class Application {
     this.start = async (): Promise<void> => {
       logger.info('Starting...')
 
+      await database.migrate()
       await l1Fetcher.start()
       await genesisStateLoader.apply()
       await l1Manager.start()

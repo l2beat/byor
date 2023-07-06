@@ -22,8 +22,8 @@
     "seeder": "node -r esbuild-register scripts/seeder"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.13",
     "@sinonjs/fake-timers": "^10.2.0",
+    "@types/cors": "^2.8.13",
     "@types/sinonjs__fake-timers": "^8.1.2",
     "@types/supertest": "^2.0.12",
     "drizzle-kit": "^0.17.6",
@@ -41,6 +41,7 @@
     "cors": "^2.8.5",
     "drizzle-orm": "^0.25.4",
     "lodash": "^4.17.21",
+    "postgres": "^3.3.5",
     "viem": "^0.3.22",
     "zod": "^3.21.4"
   }

@@ -18,7 +18,12 @@ describe(FetcherRepository.name, () => {
   const repository = new FetcherRepository(database, modelCreationPair)
 
   beforeEach(async () => {
+    await database.migrate()
     await repository.deleteAll()
+  })
+
+  after(async () => {
+    await database.close()
   })
 
   describe(FetcherRepository.prototype.addOrUpdate.name, () => {

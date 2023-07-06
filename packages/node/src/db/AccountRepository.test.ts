@@ -34,7 +34,12 @@ describe(AccountRepository.name, () => {
   ]
 
   beforeEach(async () => {
+    await database.migrate()
     await repository.deleteAll()
+  })
+
+  after(async () => {
+    await database.close()
   })
 
   describe(AccountRepository.prototype.addOrUpdateMany.name, () => {

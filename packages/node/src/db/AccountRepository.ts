@@ -18,41 +18,35 @@ export class AccountRepository extends BaseRepository {
     const drizzle = this.drizzle()
     const internalAccounts = accounts.map((acc) => toInternalAccount(acc))
 
-    drizzle.transaction((tx) => {
-      internalAccounts.forEach((account) => {
-        tx.insert(accountsSchema)
+    await drizzle.transaction(async (tx) => {
+      for (const account of internalAccounts) {
+        await tx
+          .insert(accountsSchema)
           .values(account)
           .onConflictDoUpdate({
             target: accountsSchema.address,
             set: { nonce: account.nonce, balance: account.balance },
           })
-          .run()
-      })
+      }
     })
   }
 
   async getAll(): Promise<AccountRecord[]> {
     const drizzle = this.drizzle()
-    return drizzle
-      .select()
-      .from(accountsSchema)
-      .all()
-      .map((acc) => fromInternalAccount(acc))
+    const values = await drizzle.select().from(accountsSchema)
+    return values.map(fromInternalAccount)
   }
 
   async getByAddressOrDefault(
     address: EthereumAddress,
   ): Promise<AccountRecord> {
     const drizzle = this.drizzle()
-    const res = drizzle
+    const [res] = await drizzle
       .select()
       .from(accountsSchema)
       .where(eq(accountsSchema.address, address.toString()))
-      .get()
+      .limit(1)
 
-    // NOTE(radomski): Even though the inffered type says
-    // that it can not be undefined it can
-    // eslint-disable-next-line
     if (!res) {
       const res = {
         address,
@@ -67,15 +61,15 @@ export class AccountRepository extends BaseRepository {
 
   async deleteAll(): Promise<void> {
     const drizzle = this.drizzle()
-    drizzle.delete(accountsSchema).run()
+    await drizzle.delete(accountsSchema)
   }
 
   async getCount(): Promise<number> {
     const drizzle = this.drizzle()
-    return drizzle
-      .select({ count: sql<number>`count(*)` })
+    const result = await drizzle
+      .select({ count: sql<string>`count(*)` })
       .from(accountsSchema)
-      .get().count
+    return parseInt(result[0]?.count ?? '0')
   }
 }
 
