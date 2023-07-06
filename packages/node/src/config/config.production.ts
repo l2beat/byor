@@ -12,7 +12,7 @@ export function getProductionConfig(): Config {
     probePeriodSec: 5,
     flushPeriodSec: 10,
     chainId: 31337,
-    contractCreatedAtBlock: 0,
+    contractCreatedAtBlock: 9219782,
     databaseConnection: getEnv('DATABASE_URL'),
     migrationsPath: 'drizzle',
     isProductionDatabase: true,
