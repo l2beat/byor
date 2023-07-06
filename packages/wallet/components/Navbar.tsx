@@ -12,7 +12,7 @@ export function Navbar(): JSX.Element {
           <L2BeatLogo />
         </div>
       </Link>
-      <div className="flex ml-auto">
+      <div className="flex ml-auto px-2">
         <Link href="https://github.com/l2beat/byor">
         <Github />
         </Link>
