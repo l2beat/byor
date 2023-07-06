@@ -2,8 +2,8 @@
 
 Install the following:
 
-- node v20
-- [yarn](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
+- node v18
+- [yarn](https://classic.yarnpkg.com/lang/en/docs/install/)
 - [foundry](https://book.getfoundry.sh/getting-started/installation)
 - sqlite3 (the command line interface, not the library)
 
@@ -18,7 +18,7 @@ To run the application, follow these steps:
 ```bash
 anvil
 # open new terminal window
-cd packages/onchain
+cd packages/contracts
 yarn deploy --network localhost
 # open new terminal window
 cd packages/node
@@ -39,3 +39,10 @@ yarn dev --port 8080
 
 Anvil is used because hardhat is incapable of filtering logs using the `fromBlock`/`toBlock`.
 Read more about this issue [here](https://github.com/wagmi-dev/viem/discussions/366) and [here](https://github.com/foundry-rs/foundry/issues/4729).
+
+## Reading the code
+
+If you want to read the code and understand how it works you should start with the following files:
+
+1. [The smart contract](./packages/contracts/src/CanonicalTransactionChain.sol)
+2. [The node](./packages/node/src/index.ts)

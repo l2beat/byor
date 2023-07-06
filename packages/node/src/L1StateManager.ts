@@ -1,8 +1,6 @@
 import {
   deserializeBatch,
   EthereumAddress,
-  Logger,
-  setIntervalAsync,
   unreachableCodePath,
 } from '@byor/shared'
 import { zip } from 'lodash'
@@ -15,6 +13,8 @@ import {
 import { executeBatch, StateMap } from './executeBatch'
 import { L1EventStateType } from './L1EventStateType'
 import { L1StateFetcher } from './L1StateFetcher'
+import { setIntervalAsync } from './tools/asyncTimeUtils'
+import { Logger } from './tools/Logger'
 
 export class L1StateManager {
   private readonly probePeriodMs: number

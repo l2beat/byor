@@ -1,4 +1,4 @@
-import { json } from '../types'
+import { json } from './json'
 
 export enum LogLevel {
   NONE = 0,

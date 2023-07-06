@@ -1,7 +1,8 @@
-import { EthereumAddress, Hex, Logger } from '@byor/shared'
+import { EthereumAddress, Hex } from '@byor/shared'
 import { expect, mockFn, mockObject } from 'earl'
-import { Hex as ViemHex, parseAbiItem, PublicClient } from 'viem'
+import { parseAbiItem, PublicClient } from 'viem'
 
+import { Logger } from '../../tools/Logger'
 import { EthereumClient } from './EthereumClient'
 
 describe(EthereumClient.name, () => {
@@ -25,19 +26,19 @@ describe(EthereumClient.name, () => {
 
       expect(provider.getLogs).toHaveBeenCalledTimes(3)
       expect(provider.getLogs).toHaveBeenCalledWith({
-        address: EthereumAddress.ZERO.toString() as ViemHex,
+        address: EthereumAddress.ZERO.toString(),
         event: eventAbi,
         fromBlock: 1000n,
         toBlock: 2000n,
       })
       expect(provider.getLogs).toHaveBeenCalledWith({
-        address: EthereumAddress.ZERO.toString() as ViemHex,
+        address: EthereumAddress.ZERO.toString(),
         event: eventAbi,
         fromBlock: 1000n,
         toBlock: 1500n,
       })
       expect(provider.getLogs).toHaveBeenCalledWith({
-        address: EthereumAddress.ZERO.toString() as ViemHex,
+        address: EthereumAddress.ZERO.toString(),
         event: eventAbi,
         fromBlock: 1501n,
         toBlock: 2000n,
@@ -54,7 +55,7 @@ describe(EthereumClient.name, () => {
       await ethereumClient.getLogsInRange(eventAbi, EthereumAddress.ZERO, 42n)
 
       expect(provider.getLogs).toHaveBeenCalledWith({
-        address: EthereumAddress.ZERO.toString() as ViemHex,
+        address: EthereumAddress.ZERO.toString(),
         event: eventAbi,
         fromBlock: 42n,
         toBlock: undefined,

@@ -3,12 +3,11 @@
 import {
   deserialize,
   EthereumAddress,
+  getTypedData,
   hashTransaction,
   Hex,
   serialize,
   SignedTransaction,
-  typedDataPrimaryType,
-  typedDataTypes,
   Unsigned8,
   Unsigned64,
 } from '@byor/shared'
@@ -19,7 +18,6 @@ import { useForm } from 'react-hook-form'
 import { useSignTypedData } from 'wagmi'
 import * as z from 'zod'
 
-import { getTypedDataDomain } from '@/../shared/build'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -121,17 +119,14 @@ export function TransactionModal() {
   })
 
   const handleSend = (values: z.infer<typeof formSchema>) => {
-    signTypedData({
-      domain: getTypedDataDomain(),
-      types: typedDataTypes,
-      primaryType: typedDataPrimaryType,
-      message: {
-        to: values.receiver,
-        value: values.value,
-        nonce: parseInt(acc.nonce, 10) + 1,
-        fee: values.fee,
-      },
-    })
+    signTypedData(
+      getTypedData({
+        to: EthereumAddress(values.receiver),
+        value: Unsigned64(values.value),
+        nonce: Unsigned64(parseInt(acc.nonce, 10) + 1),
+        fee: Unsigned64(values.fee),
+      }),
+    )
   }
 
   return (

@@ -1,5 +1,6 @@
 'use client'
 
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Dispatch, SetStateAction } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -59,6 +60,7 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
           {state.pageNum !== 0 && (
             <Button
               variant={'secondary'}
+              className="px-0"
               onClick={() =>
                 setState({
                   ...state,
@@ -67,13 +69,14 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
                 })
               }
             >
-              {state.pageNum}
+              <ChevronLeft size={18} />
             </Button>
           )}
           <Button className="col-start-2">{state.pageNum + 1}</Button>
           {state.txs.length / PAGINATION_SIZE > 1 && (
             <Button
               variant={'secondary'}
+              className="px-0"
               onClick={() =>
                 setState({
                   ...state,
@@ -82,7 +85,7 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
                 })
               }
             >
-              {state.pageNum + 2}
+              <ChevronRight size={18} />
             </Button>
           )}
         </div>

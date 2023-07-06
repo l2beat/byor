@@ -14,8 +14,10 @@ describe('CanonicalTransactionChain', () => {
   it('Should emit BatchAppended event', async () => {
     const deployer = await getDeployer()
 
-    const CTC = await hre.ethers.getContractFactory('CanonicalTransactionChain')
-    const ctc = await CTC.deploy()
+    const ctcFactory = await hre.ethers.getContractFactory(
+      'CanonicalTransactionChain',
+    )
+    const ctc = await ctcFactory.deploy()
 
     await expect(ctc.appendBatch(randomBytes))
       .to.emit(ctc, 'BatchAppended')
@@ -23,13 +25,13 @@ describe('CanonicalTransactionChain', () => {
   })
 
   it('Should revert if called from another contract', async () => {
-    const CTC = await hre.ethers.getContractFactory('CanonicalTransactionChain')
-    const ctc = await CTC.deploy()
-    const CTCRevert = await hre.ethers.getContractFactory(
-      'CanonicalTransactionChainRevert',
+    const ctcFactory = await hre.ethers.getContractFactory(
+      'CanonicalTransactionChain',
     )
-    const ctcRevert = await CTCRevert.deploy(ctc.address)
+    const ctc = await ctcFactory.deploy()
+    const callerFactory = await hre.ethers.getContractFactory('Caller')
+    const caller = await callerFactory.deploy(ctc.address)
 
-    await expect(ctcRevert.appendBatch(randomBytes)).to.be.reverted
+    await expect(caller.appendBatch(randomBytes)).to.be.reverted
   })
 })

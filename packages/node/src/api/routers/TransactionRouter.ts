@@ -1,4 +1,4 @@
-import { assert, branded, deserializeBatch, Hex } from '@byor/shared'
+import { assert, deserializeBatch, Hex } from '@byor/shared'
 import { TRPCError } from '@trpc/server'
 import { zip } from 'lodash'
 import { z } from 'zod'
@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { TransactionRepository } from '../../db/TransactionRepository'
 import { Mempool } from '../../peripherals/mempool/Mempool'
 import { publicProcedure, router } from '../trpc'
+import { branded } from '../types/branded'
 
 interface TransactionJSON {
   from: string
