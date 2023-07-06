@@ -1,6 +1,7 @@
-import Link from 'next/link'
-import { L2BeatLogo } from './L2BeatLogo'
 import { Github } from 'lucide-react'
+import Link from 'next/link'
+
+import { L2BeatLogo } from './L2BeatLogo'
 
 export function Navbar(): JSX.Element {
   return (
@@ -14,7 +15,7 @@ export function Navbar(): JSX.Element {
       </Link>
       <div className="flex ml-auto px-2">
         <Link href="https://github.com/l2beat/byor">
-        <Github />
+          <Github />
         </Link>
       </div>
     </div>
