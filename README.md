@@ -1,4 +1,17 @@
-# Prerequisites
+# BYOR
+
+Build Your Own Rollup - A simple rollup implementation for educational purposes.
+
+## Reading the code
+
+If you want to read the code and understand how it works you should start with the following files:
+
+1. [The smart contract](./packages/contracts/src/CanonicalTransactionChain.sol)
+2. [The node](./packages/node/src/index.ts)
+
+## Running the code
+
+### Prerequisites
 
 Install the following:
 
@@ -7,7 +20,7 @@ Install the following:
 - [foundry](https://book.getfoundry.sh/getting-started/installation)
 - sqlite3 (the command line interface, not the library)
 
-# Running
+### Exection
 
 To build the application, follow these steps:
 
@@ -35,14 +48,7 @@ yarn dev --port 8080
 # open localhost:8080 in your web browser
 ```
 
-## Sidenotes
+### Sidenotes
 
 Anvil is used because hardhat is incapable of filtering logs using the `fromBlock`/`toBlock`.
 Read more about this issue [here](https://github.com/wagmi-dev/viem/discussions/366) and [here](https://github.com/foundry-rs/foundry/issues/4729).
-
-## Reading the code
-
-If you want to read the code and understand how it works you should start with the following files:
-
-1. [The smart contract](./packages/contracts/src/CanonicalTransactionChain.sol)
-2. [The node](./packages/node/src/index.ts)
