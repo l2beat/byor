@@ -9,11 +9,13 @@ export class Database {
   private readonly drizzle: PostgresJsDatabase
 
   constructor(
+    private readonly connectionString: string,
     private readonly migrationsPath: string,
     protected readonly logger: Logger,
   ) {
     this.client = postgres(
-      'postgresql://postgres:password@localhost:5432/byor_local',
+      this.connectionString,
+
       { max: 1, onnotice: () => {} },
     )
     this.drizzle = drizzle(this.client)

@@ -29,7 +29,11 @@ export class Application {
   constructor(config: Config) {
     const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
 
-    const database = new Database(config.migrationsPath, logger)
+    const database = new Database(
+      config.databaseConnection,
+      config.migrationsPath,
+      logger,
+    )
     const accountRepository = new AccountRepository(database)
     // NOTE(radomski): We store transactions only for statistics and transaction status query
     const transactionRepository = new TransactionRepository(database)
