@@ -8,7 +8,26 @@ import { Mempool } from '../../peripherals/mempool/Mempool'
 import { publicProcedure, router } from '../trpc'
 import { branded } from '../types/branded'
 
-type TransactionStatus = 'Not found' | 'Committed' | 'Soft committed'
+interface TransactionJSON {
+  from: string
+  to: string
+  value: string
+  nonce: string
+}
+
+type TransactionStatus =
+  | {
+      transaction: TransactionJSON
+      status: 'Committed'
+    }
+  | {
+      transaction: TransactionJSON
+      status: 'Soft committed'
+    }
+  | {
+      transaction: null
+      status: 'Not found'
+    }
 
 // NOTE(radomski): We need to propagte the return type
 // from this function, we can not infer it
@@ -96,13 +115,36 @@ export function createTransactionRouter(
         }),
       )
       .query(({ input }): TransactionStatus => {
-        if (transactionMempool.contains(input)) {
-          return 'Soft committed'
-        } else if (transactionRepository.contains(input)) {
-          return 'Committed'
+        const mempoolTx = transactionMempool.getByHash(input)
+        if (mempoolTx) {
+          return {
+            transaction: {
+              from: mempoolTx.from.toString(),
+              to: mempoolTx.to.toString(),
+              value: mempoolTx.value.toString(),
+              nonce: mempoolTx.nonce.toString(),
+            },
+            status: 'Soft committed',
+          }
         }
 
-        return 'Not found'
+        const dbTx = transactionRepository.getByHash(input)
+        if (dbTx) {
+          return {
+            transaction: {
+              from: dbTx.from.toString(),
+              to: dbTx.to.toString(),
+              value: dbTx.value.toString(),
+              nonce: dbTx.nonce.toString(),
+            },
+            status: 'Committed',
+          }
+        }
+
+        return {
+          transaction: null,
+          status: 'Not found',
+        }
       }),
   })
 }

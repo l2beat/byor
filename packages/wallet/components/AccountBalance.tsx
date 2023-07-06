@@ -10,18 +10,18 @@ export default function AccountBalance() {
   return (
     <div className="text-xl">
       <div>
-        <span className="text-accent-foreground/50">Address: </span>
-        <span>{acc.address}</span>
+        <span>Address: </span>
+        <span className="text-gray-400">{acc.address}</span>
       </div>
 
       <div>
-        <span className="text-accent-foreground/50">Balance: </span>
-        <span>{acc.balance}</span>
+        <span>Balance: </span>
+        <span className="text-gray-400">{acc.balance}</span>
       </div>
 
       <div>
-        <span className="text-accent-foreground/50">Nonce: </span>
-        <span>{acc.nonce}</span>
+        <span>Nonce: </span>
+        <span className="text-gray-400">{acc.nonce}</span>
       </div>
     </div>
   )

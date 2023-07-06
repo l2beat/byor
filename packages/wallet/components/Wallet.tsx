@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react'
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi'
 
 import { Account } from './Account'
+import AccountBalance from './AccountBalance'
 import { FaucetPrivateKey } from './FaucetPrivateKey'
 import { TransactionModal } from './TransactionModal'
 import { ToastAction } from './ui/toast'
 import { useToast } from './ui/use-toast'
-import AccountBalance from './WalletBalance'
 
 export function Wallet() {
   // WalletConnect has some issues with SSR and tries to render things on the server
@@ -56,7 +56,7 @@ export function Wallet() {
   }, [chain, chains, status])
 
   return (
-    <div className="container flex border rounded mt-10 column flex-wrap">
+    <div className="container flex bg-zinc-800 rounded-xl mt-10 column flex-wrap">
       {!isSSR && (
         <div className="flex basis-full my-2">
           {status === 'connected' ? (

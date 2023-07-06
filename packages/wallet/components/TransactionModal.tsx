@@ -132,7 +132,12 @@ export function TransactionModal() {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Send Transaction</Button>
+        <Button
+          className="bg-gradient-to-r from-gradient-1 via-gradient-2 to-gradient-3"
+          variant="outline"
+        >
+          Send Transaction
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[655px]">
         <DialogHeader>
@@ -214,7 +219,7 @@ export function TransactionModal() {
             <DialogFooter>
               <div className="flex justify-center basis-full">
                 <DialogTrigger asChild>
-                  <Button className="mx-1" variant="outline">
+                  <Button className="mx-1" variant="secondary">
                     Cancel
                   </Button>
                 </DialogTrigger>

@@ -33,7 +33,7 @@ interface Props {
 
 export function GenericTransactionList({ title, state, setState }: Props) {
   return (
-    <div className="container items-center flex border rounded mt-10 column flex-wrap">
+    <div className="container items-center flex bg-zinc-800 rounded-xl mt-10 column flex-wrap">
       <GenericTransactionListInner
         title={title}
         state={state}
@@ -107,16 +107,20 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
         return (
           <div key={iter} className="basis-full grid grid-cols-5 gap-4">
             <Copyable toCopy={tx.hash}>
-              <span className="truncate max-w-[12rem]">{tx.hash}</span>
+              <span className="text-gray-400 truncate max-w-[12rem]">
+                {tx.hash}
+              </span>
             </Copyable>
             <Copyable toCopy={tx.from}>
-              <span>{minimizeAddress(tx.from)}</span>
+              <span className="text-gray-400">{minimizeAddress(tx.from)}</span>
             </Copyable>
             <Copyable toCopy={tx.to}>
-              <span>{minimizeAddress(tx.to)}</span>
+              <span className="text-gray-400">{minimizeAddress(tx.to)}</span>
             </Copyable>
-            <span>{tx.value}</span>
-            <span>{formatTimeDifferenceFromNow(tx.date)}</span>
+            <span className="text-gray-400">{tx.value}</span>
+            <span className="text-gray-400">
+              {formatTimeDifferenceFromNow(tx.date)}
+            </span>
           </div>
         )
       })}

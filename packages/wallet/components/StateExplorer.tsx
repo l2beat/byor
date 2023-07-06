@@ -11,8 +11,8 @@ import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
 import { Account } from './Account'
+import AccountBalance from './AccountBalance'
 import Transaction from './Transaction'
-import AccountBalance from './WalletBalance'
 
 export function StateExplorer() {
   const formSchema = z.object({
@@ -52,7 +52,7 @@ export function StateExplorer() {
   }
 
   return (
-    <div className="container flex border rounded mt-10 column flex-wrap">
+    <div className="container flex bg-zinc-800 rounded-xl mt-10 column flex-wrap">
       <div className="basis-full my-2">
         <Form {...form}>
           <form

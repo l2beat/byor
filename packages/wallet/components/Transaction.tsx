@@ -16,34 +16,66 @@ interface Props {
 }
 
 export default function Transaction(props: Props) {
-  const [status, setStatus] = useState<TransactionGetStatusOutput | undefined>(
+  const [tx, setTx] = useState<TransactionGetStatusOutput | undefined>(
     undefined,
   )
   trpc.transactions.getStatus.useQuery(Hex(props.hash), {
     onSuccess: (data) => {
-      setStatus(data)
+      setTx(data)
     },
   })
 
   return (
     <>
-      {status ? (
+      {tx ? (
         <div className="text-xl">
           <div>
-            <span className="text-accent-foreground/50">
-              Transaction Hash:{' '}
-            </span>
-            <span>{props.hash}</span>
+            <span>Transaction Hash: </span>
+            <span className="text-gray-400">{props.hash}</span>
           </div>
 
           <div>
-            <span className="text-accent-foreground/50">Status: </span>
+            <span>Status: </span>
 
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>{status}</TooltipTrigger>
+                <TooltipTrigger className="text-gray-400">
+                  {tx.status}
+                </TooltipTrigger>
+                {tx.status !== 'Not found' && (
+                  <div>
+                    <div>
+                      <span>{'From: '}</span>
+                      <span className="text-gray-400">
+                        {' '}
+                        {tx.transaction.from}{' '}
+                      </span>
+                    </div>
+                    <div>
+                      <span>{'To: '}</span>
+                      <span className="text-gray-400">
+                        {' '}
+                        {tx.transaction.to}{' '}
+                      </span>
+                    </div>
+                    <div>
+                      <span>{'Value: '}</span>
+                      <span className="text-gray-400">
+                        {' '}
+                        {tx.transaction.value}{' '}
+                      </span>
+                    </div>
+                    <div>
+                      <span>{'Nonce: '}</span>
+                      <span className="text-gray-400">
+                        {' '}
+                        {tx.transaction.nonce}{' '}
+                      </span>
+                    </div>
+                  </div>
+                )}
                 <TooltipContent>
-                  <p>{getTooltipContent(status)}</p>
+                  <p className="text-gray-400">{getTooltipContent(tx)}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -56,8 +88,8 @@ export default function Transaction(props: Props) {
   )
 }
 
-function getTooltipContent(status: TransactionGetStatusOutput): string {
-  switch (status) {
+function getTooltipContent(tx: TransactionGetStatusOutput): string {
+  switch (tx.status) {
     case 'Committed': {
       return 'Transaction data now part of the L1 chain'
     }
