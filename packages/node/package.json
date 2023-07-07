@@ -9,8 +9,6 @@
     "clean": "rm -rf build",
     "prebuild": "yarn clean",
     "build": "tsc -p tsconfig.build.json",
-    "postbuild": "yarn build:database",
-    "build:database": "drizzle-kit generate:sqlite --breakpoints --schema src/db/schema.ts --out db/migrations",
     "start": "node -r esbuild-register src/",
     "prestart:clean": "rm -rf main.db",
     "start:clean": "yarn start",
@@ -22,25 +20,24 @@
     "seeder": "node -r esbuild-register scripts/seeder"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.13",
     "@sinonjs/fake-timers": "^10.2.0",
+    "@types/cors": "^2.8.13",
     "@types/sinonjs__fake-timers": "^8.1.2",
     "@types/supertest": "^2.0.12",
-    "drizzle-kit": "^0.17.6",
     "supertest": "^6.3.3"
   },
   "dependencies": {
     "@byor/shared": "*",
     "@trpc/server": "^10.28.1",
-    "@types/better-sqlite3": "^7.6.4",
     "@types/lodash": "^4.14.194",
     "abitype": "^0.8.4",
-    "better-sqlite3": "^8.4.0",
     "chalk": "^4.1.2",
     "cmd-ts": "^0.12.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "drizzle-orm": "^0.25.4",
     "lodash": "^4.17.21",
+    "postgres": "^3.3.5",
     "viem": "^0.3.22",
     "zod": "^3.21.4"
   }

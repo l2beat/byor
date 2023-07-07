@@ -1,28 +1,24 @@
 import { EthereumAddress, Unsigned64 } from '@byor/shared'
 
-import { getGenesisState } from './config/getGenesisState'
 import { AccountRecord, AccountRepository } from './db/AccountRepository'
 import { Logger } from './tools/Logger'
 
 export class GenesisStateLoader {
-  private readonly genesisState: Record<string, number>
-
   constructor(
-    genesisFilePath: string,
+    private readonly genesisState: Record<string, number>,
     private readonly accountRepository: AccountRepository,
     private readonly logger: Logger,
   ) {
-    this.genesisState = getGenesisState(genesisFilePath)
     this.logger = logger.for(this)
   }
 
-  apply(): void {
-    if (this.accountRepository.getCount() !== 0) {
-      this.logger.debug('Genesis state already applied, skipping')
+  async apply(): Promise<void> {
+    const count = await this.accountRepository.getCount()
+    if (count !== 0) {
+      this.logger.info('Genesis state already applied, skipping')
       return
     }
 
-    this.logger.debug('Applying genesis state', this.genesisState)
     const accounts: AccountRecord[] = Object.entries(this.genesisState).map(
       ([address, balance]) => {
         return {
@@ -33,6 +29,7 @@ export class GenesisStateLoader {
       },
     )
 
-    this.accountRepository.addOrUpdateMany(accounts)
+    await this.accountRepository.addOrUpdateMany(accounts)
+    this.logger.info('Applied genesis state', this.genesisState)
   }
 }

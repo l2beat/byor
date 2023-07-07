@@ -60,21 +60,23 @@ export function createTransactionRouter(
             return i.end >= i.start
           }),
       )
-      .query(({ input }) => {
-        return transactionRepository
-          .getRange(input.start, input.end)
-          .map((tx) => {
-            return {
-              // NOTE(radomski): We know that it won't be undefined
-              // because hashes are always stored in the database
-              /* eslint-disable-next-line */
-              hash: tx.hash!.toString(),
-              from: tx.from.toString(),
-              to: tx.to.toString(),
-              value: tx.value.toString(),
-              date: tx.l1SubmittedDate.getTime(),
-            }
-          })
+      .query(async ({ input }) => {
+        const transactions = await transactionRepository.getRange(
+          input.start,
+          input.end,
+        )
+        return transactions.map((tx) => {
+          return {
+            // NOTE(radomski): We know that it won't be undefined
+            // because hashes are always stored in the database
+            /* eslint-disable-next-line */
+            hash: tx.hash!.toString(),
+            from: tx.from.toString(),
+            to: tx.to.toString(),
+            value: tx.value.toString(),
+            date: tx.l1SubmittedDate.getTime(),
+          }
+        })
       }),
     getMempoolRange: publicProcedure
       .input(
@@ -114,7 +116,7 @@ export function createTransactionRouter(
           return Hex.removePrefix(a).length === 64
         }),
       )
-      .query(({ input }): TransactionStatus => {
+      .query(async ({ input }): Promise<TransactionStatus> => {
         const mempoolTx = transactionMempool.getByHash(input)
         if (mempoolTx) {
           return {
@@ -128,7 +130,7 @@ export function createTransactionRouter(
           }
         }
 
-        const dbTx = transactionRepository.getByHash(input)
+        const dbTx = await transactionRepository.getByHash(input)
         if (dbTx) {
           return {
             transaction: {

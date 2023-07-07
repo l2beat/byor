@@ -1,6 +1,12 @@
-import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import {
+  integer,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from 'drizzle-orm/pg-core'
 
-export const transactionsSchema = sqliteTable(
+export const transactionsSchema = pgTable(
   'transactions',
   {
     id: integer('id'),
@@ -10,9 +16,7 @@ export const transactionsSchema = sqliteTable(
     nonce: integer('nonce').notNull(),
     fee: integer('fee').notNull(),
     feeReceipent: text('feeReceipent').notNull(),
-    l1SubmittedDate: integer('l1SubmittedDate', {
-      mode: 'timestamp',
-    }).notNull(),
+    l1SubmittedDate: timestamp('l1SubmittedDate').notNull(),
     hash: text('hash').notNull(),
   },
   (transactions) => ({
@@ -25,13 +29,13 @@ export const transactionsSchema = sqliteTable(
   }),
 )
 
-export const accountsSchema = sqliteTable('accounts', {
+export const accountsSchema = pgTable('accounts', {
   address: text('address').primaryKey(),
   balance: integer('balance').default(0).notNull(),
   nonce: integer('nonce').default(0).notNull(),
 })
 
-export const fetcherSchema = sqliteTable('fetcherStates', {
+export const fetcherSchema = pgTable('fetcherStates', {
   chainId: integer('chainId').primaryKey(),
   lastFetchedBlock: integer('lastFetchedBlock').default(0).notNull(),
 })

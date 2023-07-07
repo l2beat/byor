@@ -5,7 +5,6 @@ import {
   Transaction,
   Unsigned64,
 } from '@byor/shared'
-import { install, InstalledClock } from '@sinonjs/fake-timers'
 import { expect, mockFn, mockObject } from 'earl'
 import { privateKeyToAccount } from 'viem/accounts'
 
@@ -40,33 +39,23 @@ describe(L1StateManager.name, () => {
     let modelTx2SerializedHex: Hex
     const PROBE_PERIOD_SEC = 1
 
-    let time: InstalledClock
-
     before(async () => {
       modelTx1SerializedHex = await serializeAndSign(modelTx1, modelAccount)
       modelTx2SerializedHex = await serializeAndSign(modelTx2, modelAccount)
     })
 
-    beforeEach(async () => {
-      time = install()
-    })
-
-    afterEach(() => {
-      time.uninstall()
-    })
-
     it('triggers the update since the genesis block and keeps on updating not emitting events', async () => {
       const l1Fetcher = mockObject<L1StateFetcher>({
         getNewState: mockFn()
-          .returnsOnce([
+          .resolvesToOnce([
             {
               poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
               calldata: modelTx1SerializedHex,
             },
           ])
-          .returnsOnce(Promise.resolve([]))
-          .returnsOnce(Promise.resolve([]))
-          .returnsOnce(Promise.resolve([])),
+          .resolvesToOnce([])
+          .resolvesToOnce([])
+          .resolvesToOnce([]),
       })
       const accountRepository = mockObject<AccountRepository>({
         addOrUpdateMany: mockFn().returnsOnce([]),
@@ -91,8 +80,10 @@ describe(L1StateManager.name, () => {
         Logger.SILENT,
       )
 
-      await l1Manager.start()
-      await time.tickAsync(PROBE_PERIOD_SEC * 3000)
+      await l1Manager.update()
+      await l1Manager.update()
+      await l1Manager.update()
+      await l1Manager.update()
 
       expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(4)
       expect(accountRepository.getAll).toHaveBeenCalledTimes(1)
@@ -124,22 +115,20 @@ describe(L1StateManager.name, () => {
     it('updates since the genesis and keeps on updating emitting events after new calldata', async () => {
       const l1Fetcher = mockObject<L1StateFetcher>({
         getNewState: mockFn()
-          .returnsOnce([
+          .resolvesToOnce([
             {
               poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
               calldata: modelTx1SerializedHex,
             },
           ])
-          .returnsOnce(Promise.resolve([]))
-          .returnsOnce(
-            Promise.resolve([
-              {
-                poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
-                calldata: modelTx2SerializedHex,
-              },
-            ]),
-          )
-          .returnsOnce(Promise.resolve([])),
+          .resolvesToOnce([])
+          .resolvesToOnce([
+            {
+              poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+              calldata: modelTx2SerializedHex,
+            },
+          ])
+          .resolvesToOnce([]),
       })
       const accountRepository = mockObject<AccountRepository>({
         addOrUpdateMany: mockFn().returns([]),
@@ -188,10 +177,10 @@ describe(L1StateManager.name, () => {
         Logger.SILENT,
       )
 
-      await l1Manager.start()
-      await time.tickAsync(PROBE_PERIOD_SEC * 1000)
-      await time.tickAsync(PROBE_PERIOD_SEC * 1000)
-      await time.tickAsync(PROBE_PERIOD_SEC * 1000)
+      await l1Manager.update()
+      await l1Manager.update()
+      await l1Manager.update()
+      await l1Manager.update()
 
       expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(4)
       expect(accountRepository.getAll).toHaveBeenCalledTimes(2)
@@ -247,28 +236,24 @@ describe(L1StateManager.name, () => {
     it('updates since the genesis and while updating does not apply error data', async () => {
       const l1Fetcher = mockObject<L1StateFetcher>({
         getNewState: mockFn()
-          .returnsOnce([
+          .resolvesToOnce([
             {
               poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
               calldata: modelTx1SerializedHex,
             },
           ])
-          .returnsOnce(
-            Promise.resolve([
-              {
-                poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
-                calldata: '0x1234',
-              },
-            ]),
-          )
-          .returnsOnce(
-            Promise.resolve([
-              {
-                poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
-                calldata: modelTx2SerializedHex,
-              },
-            ]),
-          ),
+          .resolvesToOnce([
+            {
+              poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+              calldata: '0x1234',
+            },
+          ])
+          .resolvesToOnce([
+            {
+              poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
+              calldata: modelTx2SerializedHex,
+            },
+          ]),
       })
       const accountRepository = mockObject<AccountRepository>({
         addOrUpdateMany: mockFn().returns([]),
@@ -317,9 +302,9 @@ describe(L1StateManager.name, () => {
         Logger.SILENT,
       )
 
-      await l1Manager.start()
-      await time.tickAsync(PROBE_PERIOD_SEC * 1000)
-      await time.tickAsync(PROBE_PERIOD_SEC * 1000)
+      await l1Manager.update()
+      await l1Manager.update()
+      await l1Manager.update()
 
       expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(3)
       expect(accountRepository.getAll).toHaveBeenCalledTimes(2)

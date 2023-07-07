@@ -6,14 +6,14 @@ import { publicProcedure, router } from '../trpc'
 // eslint-disable-next-line
 export function createStatisticsRouter(txRepository: TransactionRepository) {
   return router({
-    getOverview: publicProcedure.query(() => {
-      const date = txRepository.getYoungestTransactionDate()
+    getOverview: publicProcedure.query(async () => {
+      const date = await txRepository.getYoungestTransactionDate()
       const timestamp = date ? date.getTime() : null
 
       return {
-        l2TransactionCount: txRepository.getCount(),
-        l2DailyTransactionCount: txRepository.getCountSinceLast24h(),
-        l2DailyTokenVolume: txRepository.getDailyTokenVolume(),
+        l2TransactionCount: await txRepository.getCount(),
+        l2DailyTransactionCount: await txRepository.getCountSinceLast24h(),
+        l2DailyTokenVolume: await txRepository.getDailyTokenVolume(),
         l1LastBatchUploadTimestamp: timestamp,
       }
     }),

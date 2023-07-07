@@ -30,32 +30,32 @@ export class L1StateManager {
     this.probePeriodMs = probePeriodSec * 1000
   }
 
-  async start(): Promise<void> {
-    this.logger.info('Starting')
-
-    const eventState = await this.l1Fetcher.getNewState()
-    await this.apply(eventState)
-
-    setIntervalAsync(async () => {
-      await this.l1Fetcher
-        .getNewState()
-        .then((eventState) => {
-          return this.apply(eventState)
-        })
-        .catch((err: Error) => {
-          this.logger.warn(
-            'Trying to update the state using the L1 resuled in an error',
-            {
-              error: err.message,
-            },
-          )
-        })
-    }, this.probePeriodMs).finally(unreachableCodePath)
+  start(): void {
+    this.logger.info('Started')
+    setIntervalAsync(
+      async () => this.update(),
+      this.probePeriodMs,
+      true,
+    ).finally(unreachableCodePath)
   }
 
-  getState(): StateMap {
+  async update(): Promise<void> {
+    this.logger.info('Getting new state')
+    await this.l1Fetcher
+      .getNewState()
+      .then((eventState) => this.apply(eventState))
+      .catch((err: Error) => {
+        this.logger.warn(
+          'Trying to update the state using the L1 resuled in an error',
+          { error: err.message },
+        )
+      })
+  }
+
+  async getState(): Promise<StateMap> {
     const accountState: StateMap = {}
-    this.accountRepository.getAll().forEach(
+    const accounts = await this.accountRepository.getAll()
+    accounts.forEach(
       (acc) =>
         (accountState[acc.address.toString()] = {
           balance: acc.balance,
@@ -77,7 +77,7 @@ export class L1StateManager {
     const batches = await Promise.all(
       l1States.map((state) => deserializeBatch(state.calldata)),
     )
-    let accountState = this.getState()
+    let accountState = await this.getState()
 
     for (const [batch, state] of zip(batches, l1States)) {
       // NOTE(radomski): We know that it won't be undefined
@@ -85,7 +85,7 @@ export class L1StateManager {
       /* eslint-disable */
       accountState = executeBatch(accountState, batch!, state!.poster)
 
-      this.transactionRepository.addMany(
+      await this.transactionRepository.addMany(
         batch!.map((tx) => {
           return {
             from: tx.from,
@@ -101,7 +101,7 @@ export class L1StateManager {
       /* eslint-enable */
     }
 
-    this.accountRepository.addOrUpdateMany(
+    await this.accountRepository.addOrUpdateMany(
       Object.entries(accountState).map(([address, value]) => {
         return {
           address: EthereumAddress(address),

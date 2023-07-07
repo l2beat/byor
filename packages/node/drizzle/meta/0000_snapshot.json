@@ -1,11 +1,12 @@
 {
   "version": "5",
-  "dialect": "sqlite",
-  "id": "5c548fe5-4d4f-4456-bee2-cd1be5d6fedd",
+  "dialect": "pg",
+  "id": "242690f2-ea9d-48cc-ba0f-70da7a81e37b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accounts": {
       "name": "accounts",
+      "schema": "",
       "columns": {
         "address": {
           "name": "address",
@@ -18,7 +19,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": 0
         },
         "nonce": {
@@ -26,7 +26,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": 0
         }
       },
@@ -36,20 +35,19 @@
     },
     "fetcherStates": {
       "name": "fetcherStates",
+      "schema": "",
       "columns": {
         "chainId": {
           "name": "chainId",
           "type": "integer",
           "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "lastFetchedBlock": {
           "name": "lastFetchedBlock",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": 0
         }
       },
@@ -59,13 +57,13 @@
     },
     "transactions": {
       "name": "transactions",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "from": {
           "name": "from",
@@ -83,22 +81,19 @@
           "name": "value",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "nonce": {
           "name": "nonce",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "fee": {
           "name": "fee",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "feeReceipent": {
           "name": "feeReceipent",
@@ -108,22 +103,29 @@
         },
         "l1SubmittedDate": {
           "name": "l1SubmittedDate",
-          "type": "integer",
+          "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
+        },
+        "hash": {
+          "name": "hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "transactions_from_nonce_pk": {
+        "transactions_from_nonce": {
+          "name": "transactions_from_nonce",
           "columns": ["from", "nonce"]
         }
       }
     }
   },
   "enums": {},
+  "schemas": {},
   "_meta": {
     "schemas": {},
     "tables": {},

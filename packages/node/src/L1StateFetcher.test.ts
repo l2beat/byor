@@ -14,57 +14,43 @@ describe(L1StateFetcher.name, () => {
         '0x5FbDB2315678afecb367f032d93F642f64180aa3',
       )
       const fetcherRepository = mockObject<FetcherRepository>({
-        addOrUpdate: mockFn().returns(null),
-        getByChainIdOrDefault: mockFn().returnsOnce({
+        addOrUpdate: async () => undefined,
+        getByChainIdOrDefault: async () => ({
           chainId: 1337,
-          lastFetchedBlock: 0n,
+          lastFetchedBlock: 100n,
         }),
       })
+      const logs = [
+        {
+          args: {
+            sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
+          },
+          transactionHash: '0xaabb',
+          blockHash: '0xaabbaabb',
+          blockNumber: 11n,
+        },
+        {
+          args: {
+            sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
+          },
+          transactionHash: '0xffee',
+          blockHash: '0xffeeffee',
+          blockNumber: 17n,
+        },
+        {
+          args: {
+            sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
+          },
+          transactionHash: '0xbbcc',
+          blockHash: '0xbbccbbcc',
+          blockNumber: 12n,
+        },
+      ]
       const client = mockObject<EthereumClient>({
-        getChainId: mockFn().returns(1337),
-        getLogsInRange: mockFn()
-          .returnsOnce([
-            {
-              args: {
-                sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
-              },
-              transactionHash: '0x1234',
-              blockHash: '0x12341234',
-              blockNumber: 10n,
-            },
-          ])
-          .returnsOnce([
-            {
-              args: {
-                sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
-              },
-              transactionHash: '0xaabb',
-              blockHash: '0xaabbaabb',
-              blockNumber: 11n,
-            },
-            {
-              args: {
-                sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
-              },
-              transactionHash: '0xffee',
-              blockHash: '0xffeeffee',
-              blockNumber: 17n,
-            },
-            {
-              args: {
-                sender: '0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3',
-              },
-              transactionHash: '0xbbcc',
-              blockHash: '0xbbccbbcc',
-              blockNumber: 12n,
-            },
-          ])
-          .returnsOnce([]),
+        getBlockNumber: async () => 1234n,
+        getChainId: () => 1337,
+        getLogsInRange: async () => logs as any,
         getTransaction: mockFn()
-          .returnsOnce({
-            input:
-              '0x96677ca200000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000006aabbccddeeff0000000000000000000000000000000000000000000000000000',
-          })
           .returnsOnce({
             input:
               '0x96677ca20000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000caaaabbbbccccddddeeeeffff0000000000000000000000000000000000000000',
@@ -78,7 +64,6 @@ describe(L1StateFetcher.name, () => {
               '0x96677ca20000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000cffffeeeeddddccccbbbbaaaa0000000000000000000000000000000000000000',
           }),
         getBlockHeader: mockFn()
-          .returnsOnce({ timestamp: 1646701020n })
           .returnsOnce({ timestamp: 1645878310n })
           .returnsOnce({ timestamp: 1608293972n })
           .returnsOnce({ timestamp: 1749685967n }),
@@ -90,36 +75,16 @@ describe(L1StateFetcher.name, () => {
         Logger.SILENT,
       )
 
-      const genesis = await l1Fetcher.getNewState()
-      const update1 = await l1Fetcher.getNewState()
-      const update2 = await l1Fetcher.getNewState()
+      await l1Fetcher.start()
+      const events = await l1Fetcher.getNewState()
 
-      expect(client.getLogsInRange).toHaveBeenNthCalledWith(
-        1,
+      expect(client.getLogsInRange).toHaveBeenOnlyCalledWith(
         parseAbiItem('event BatchAppended(address sender)'),
         EthereumAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3'),
-        1n,
+        101n,
+        1234n - 15n, // TODO: make this obvious
       )
-      expect(client.getLogsInRange).toHaveBeenNthCalledWith(
-        2,
-        parseAbiItem('event BatchAppended(address sender)'),
-        EthereumAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3'),
-        11n,
-      )
-      expect(client.getLogsInRange).toHaveBeenNthCalledWith(
-        3,
-        parseAbiItem('event BatchAppended(address sender)'),
-        EthereumAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3'),
-        18n,
-      )
-      expect(genesis).toEqual([
-        {
-          poster: EthereumAddress('0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3'),
-          calldata: Hex('0xaabbccddeeff'),
-          timestamp: new Date(1646701020 * 1000),
-        },
-      ])
-      expect(update1).toEqual([
+      expect(events).toEqual([
         {
           poster: EthereumAddress('0xF6431Fc84dbb761c0cc3825362EeA71c2AfAf2a3'),
           calldata: Hex('0xaaaabbbbccccddddeeeeffff'),
@@ -136,7 +101,8 @@ describe(L1StateFetcher.name, () => {
           timestamp: new Date(1749685967 * 1000),
         },
       ])
-      expect(update2).toEqual([])
+      // TODO: make this obvious
+      expect(l1Fetcher.getLastFetchedBlock()).toEqual(1234n - 15n)
     })
 
     it('decodes correct event and transaction data', async () => {
@@ -151,6 +117,7 @@ describe(L1StateFetcher.name, () => {
         }),
       })
       const client = mockObject<EthereumClient>({
+        getBlockNumber: mockFn().returns(1234n),
         getChainId: mockFn().returns(1337),
         getLogsInRange: mockFn().returnsOnce([
           {
@@ -176,10 +143,11 @@ describe(L1StateFetcher.name, () => {
 
       const result = await l1Fetcher.getNewState()
 
-      expect(client.getLogsInRange).toHaveBeenCalledWith(
+      expect(client.getLogsInRange).toHaveBeenOnlyCalledWith(
         parseAbiItem('event BatchAppended(address sender)'),
         EthereumAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3'),
         1n,
+        1234n - 15n, // TODO: make this obvious
       )
       expect(result).toEqual([
         {
@@ -202,6 +170,7 @@ describe(L1StateFetcher.name, () => {
         }),
       })
       const client = mockObject<EthereumClient>({
+        getBlockNumber: mockFn().returns(1234n),
         getChainId: mockFn().returns(1337),
         getLogsInRange: mockFn().returnsOnce([
           {
@@ -227,10 +196,11 @@ describe(L1StateFetcher.name, () => {
 
       const result = await l1Fetcher.getNewState()
 
-      expect(client.getLogsInRange).toHaveBeenCalledWith(
+      expect(client.getLogsInRange).toHaveBeenOnlyCalledWith(
         parseAbiItem('event BatchAppended(address sender)'),
         EthereumAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3'),
         1n,
+        1234n - 15n, // TODO: make this obvious
       )
       expect(result).toEqual([
         {
@@ -253,6 +223,7 @@ describe(L1StateFetcher.name, () => {
         }),
       })
       const client = mockObject<EthereumClient>({
+        getBlockNumber: mockFn().returns(1234n),
         getChainId: mockFn().returns(1337),
         getLogsInRange: mockFn().returnsOnce([
           {
@@ -291,6 +262,7 @@ describe(L1StateFetcher.name, () => {
         }),
       })
       const client = mockObject<EthereumClient>({
+        getBlockNumber: mockFn().returns(1234n),
         getChainId: mockFn().returns(1337),
         getLogsInRange: mockFn().returnsOnce([
           {

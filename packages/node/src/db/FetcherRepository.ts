@@ -1,7 +1,7 @@
 import { assert } from '@byor/shared'
 import { eq, InferModel } from 'drizzle-orm'
 
-import { ChainContractCreationTime } from '../config/getContractCreationTime'
+import { ChainContractCreationTime } from '../getContractCreationTime'
 import { BaseRepository } from './BaseRepository'
 import { Database } from './Database'
 import { fetcherSchema } from './schema'
@@ -13,6 +13,7 @@ export interface FetcherRecord {
   lastFetchedBlock: bigint
 }
 
+/* eslint-disable @typescript-eslint/require-await */
 export class FetcherRepository extends BaseRepository {
   constructor(
     database: Database,
@@ -21,41 +22,35 @@ export class FetcherRepository extends BaseRepository {
     super(database)
   }
 
-  addOrUpdate(fetcher: FetcherRecord): void {
+  async addOrUpdate(fetcher: FetcherRecord): Promise<void> {
     const drizzle = this.drizzle()
     const internalFetcher = toInternalFetcher(fetcher)
 
-    drizzle.transaction((tx) => {
-      tx.insert(fetcherSchema)
+    await drizzle.transaction(async (tx) => {
+      await tx
+        .insert(fetcherSchema)
         .values(internalFetcher)
         .onConflictDoUpdate({
           target: fetcherSchema.chainId,
           set: { lastFetchedBlock: internalFetcher.lastFetchedBlock },
         })
-        .run()
     })
   }
 
-  getAll(): FetcherRecord[] {
+  async getAll(): Promise<FetcherRecord[]> {
     const drizzle = this.drizzle()
-    return drizzle
-      .select()
-      .from(fetcherSchema)
-      .all()
-      .map((fetcher) => fromInternalFetcher(fetcher))
+    const values = await drizzle.select().from(fetcherSchema)
+    return values.map(fromInternalFetcher)
   }
 
-  getByChainIdOrDefault(chainId: number): FetcherRecord {
+  async getByChainIdOrDefault(chainId: number): Promise<FetcherRecord> {
     const drizzle = this.drizzle()
-    const res = drizzle
+    const [res] = await drizzle
       .select()
       .from(fetcherSchema)
       .where(eq(fetcherSchema.chainId, chainId))
-      .get()
+      .limit(1)
 
-    // NOTE(radomski): Even though the inffered type says
-    // that it can not be undefined it can
-    // eslint-disable-next-line
     if (!res) {
       if (chainId !== this.creationPair.chainId) {
         this.database
@@ -80,9 +75,9 @@ export class FetcherRepository extends BaseRepository {
     return fromInternalFetcher(res)
   }
 
-  deleteAll(): void {
+  async deleteAll(): Promise<void> {
     const drizzle = this.drizzle()
-    drizzle.delete(fetcherSchema).run()
+    await drizzle.delete(fetcherSchema)
   }
 }
 

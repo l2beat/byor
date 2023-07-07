@@ -19,33 +19,31 @@ export interface TransactionRecord extends Transaction {
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
 
+/* eslint-disable @typescript-eslint/require-await */
 export class TransactionRepository extends BaseRepository {
-  getAll(): TransactionRecord[] {
+  async getAll(): Promise<TransactionRecord[]> {
     const drizzle = this.drizzle()
-    return drizzle
-      .select()
-      .from(transactionsSchema)
-      .all()
-      .map((tx) => fromInternalTransaction(tx))
+    const values = await drizzle.select().from(transactionsSchema)
+    return values.map(fromInternalTransaction)
   }
 
-  getRange(start: number, end: number): TransactionRecord[] {
+  async getRange(start: number, end: number): Promise<TransactionRecord[]> {
     if (end - start === 0 || end < start) {
       return []
     }
 
     const drizzle = this.drizzle()
-    return drizzle
+    const values = await drizzle
       .select()
       .from(transactionsSchema)
       .orderBy(desc(transactionsSchema.l1SubmittedDate))
       .limit(end - start)
       .offset(start)
-      .all()
-      .map((tx) => fromInternalTransaction(tx))
+
+    return values.map(fromInternalTransaction)
   }
 
-  addMany(txs: TransactionRecord[]): void {
+  async addMany(txs: TransactionRecord[]): Promise<void> {
     txs.forEach((tx) => {
       if (!tx.hash) {
         tx.hash = hashTransaction(tx)
@@ -53,24 +51,23 @@ export class TransactionRepository extends BaseRepository {
     })
 
     const drizzle = this.drizzle()
-    drizzle
+    await drizzle
       .insert(transactionsSchema)
       .values(txs.map(toInternalTransaction))
-      .run()
   }
 
-  getCount(): number {
+  async getCount(): Promise<number> {
     const drizzle = this.drizzle()
-    return drizzle
-      .select({ count: sql<number>`count(*)` })
+    const result = await drizzle
+      .select({ count: sql<string>`count(*)` })
       .from(transactionsSchema)
-      .get().count
+    return parseInt(result[0]?.count ?? '0')
   }
 
-  getCountSinceLast24h(): number {
+  async getCountSinceLast24h(): Promise<number> {
     const drizzle = this.drizzle()
-    return drizzle
-      .select({ count: sql<number>`count(*)` })
+    const result = await drizzle
+      .select({ count: sql<string>`count(*)` })
       .from(transactionsSchema)
       .where(
         gte(
@@ -78,19 +75,19 @@ export class TransactionRepository extends BaseRepository {
           new Date(new Date().getTime() - ONE_DAY_MS),
         ),
       )
-      .get().count
+    return parseInt(result[0]?.count ?? '0')
   }
 
-  deleteAll(): void {
+  async deleteAll(): Promise<void> {
     const drizzle = this.drizzle()
-    drizzle.delete(transactionsSchema).run()
+    await drizzle.delete(transactionsSchema)
   }
 
-  getDailyTokenVolume(): number {
+  async getDailyTokenVolume(): Promise<number> {
     const drizzle = this.drizzle()
-    const volume = drizzle
+    const result = await drizzle
       .select({
-        volume: sql<number>`sum(${transactionsSchema.fee}) + sum(${transactionsSchema.value})`,
+        volume: sql<string>`sum(${transactionsSchema.fee}) + sum(${transactionsSchema.value})`,
       })
       .from(transactionsSchema)
       .where(
@@ -99,23 +96,18 @@ export class TransactionRepository extends BaseRepository {
           new Date(new Date().getTime() - ONE_DAY_MS),
         ),
       )
-      .get().volume
 
-    return volume ? volume : 0
+    return parseInt(result[0]?.volume ?? '0')
   }
 
-  getYoungestTransactionDate(): Date | null {
+  async getYoungestTransactionDate(): Promise<Date | null> {
     const drizzle = this.drizzle()
-    const tx = drizzle
+    const [tx] = await drizzle
       .select()
       .from(transactionsSchema)
       .orderBy(desc(transactionsSchema.l1SubmittedDate))
       .limit(1)
-      .get()
 
-    // NOTE(radomski): Even though the inffered type says
-    // that it can not be undefined it can
-    // eslint-disable-next-line
     if (tx) {
       return tx.l1SubmittedDate
     }
@@ -123,17 +115,14 @@ export class TransactionRepository extends BaseRepository {
     return null
   }
 
-  getByHash(hash: Hex): TransactionRecord | undefined {
+  async getByHash(hash: Hex): Promise<TransactionRecord | undefined> {
     const drizzle = this.drizzle()
-    const tx = drizzle
+    const [tx] = await drizzle
       .select()
       .from(transactionsSchema)
       .where(eq(transactionsSchema.hash, hash.toString()))
-      .get()
+      .limit(1)
 
-    // NOTE(radomski): Even though the inffered type says
-    // that it can not be undefined it can
-    // eslint-disable-next-line
     return tx ? fromInternalTransaction(tx) : undefined
   }
 }

@@ -12,9 +12,9 @@ export function createAccountRouter(accountRepository: AccountRepository) {
   return router({
     getState: publicProcedure
       .input(branded(z.string(), EthereumAddress))
-      .query((opts) => {
+      .query(async (opts) => {
         const address = opts.input
-        const account = accountRepository.getByAddressOrDefault(address)
+        const account = await accountRepository.getByAddressOrDefault(address)
 
         // NOTE(radomski): JSON is incapable of serializing a BigInt lol
         return {

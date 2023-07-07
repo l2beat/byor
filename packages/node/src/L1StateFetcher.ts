@@ -10,21 +10,34 @@ import { Logger } from './tools/Logger'
 
 const eventAbi = parseAbiItem('event BatchAppended(address sender)')
 type EventAbiType = typeof eventAbi
-type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
+export type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
 
 export class L1StateFetcher {
-  private lastFetchedBlock: bigint
+  private lastFetchedBlock = 0n
+
   constructor(
     private readonly client: EthereumClient,
     private readonly fetcherRepository: FetcherRepository,
     private readonly contractAddress: EthereumAddress,
     private readonly logger: Logger,
+    private readonly reorgOffset = 15n,
+    private readonly batchSize = 10_000n,
   ) {
     this.logger = logger.for(this)
-    const fetcher = this.fetcherRepository.getByChainIdOrDefault(
-      client.getChainId(),
+  }
+
+  async start(): Promise<void> {
+    const fetcher = await this.fetcherRepository.getByChainIdOrDefault(
+      this.client.getChainId(),
     )
     this.lastFetchedBlock = fetcher.lastFetchedBlock
+    this.logger.info('Started', {
+      lastFetchedBlock: Number(this.lastFetchedBlock),
+    })
+  }
+
+  getLastFetchedBlock(): bigint {
+    return this.lastFetchedBlock
   }
 
   async getNewState(): Promise<L1EventStateType[]> {
@@ -34,30 +47,40 @@ export class L1StateFetcher {
       lastFetchedBlock: this.lastFetchedBlock.toString(),
     })
 
-    const l1State = await this.client.getLogsInRange(
+    const lastBlock = await this.client.getBlockNumber()
+    const fromBlock = this.lastFetchedBlock + 1n
+    const toBlock = BigInt(
+      Math.min(
+        Number(lastBlock - this.reorgOffset),
+        Number(this.lastFetchedBlock + this.batchSize),
+      ),
+    )
+
+    if (fromBlock > toBlock) {
+      this.logger.debug('No new events')
+      return []
+    }
+
+    const events = await this.client.getLogsInRange(
       eventAbi,
       this.contractAddress,
-      this.lastFetchedBlock + 1n,
+      fromBlock,
+      toBlock,
     )
-    const calldata = await this.eventsToCallData(l1State)
-    const timestamps = await this.eventsToTimestamps(l1State)
-    const posters = eventsToPosters(l1State)
+
+    this.logger.debug('Fetched new events', { length: events.length })
+
+    const calldata = await this.eventsToCallData(events)
+    const timestamps = await this.eventsToTimestamps(events)
+    const posters = eventsToPosters(events)
 
     assert(
-      l1State.length === posters.length && l1State.length === timestamps.length,
+      events.length === posters.length && events.length === timestamps.length,
       'The amount of calldata is not equal to the amount of poster address or amount of timestamps',
     )
 
-    for (const event of l1State) {
-      if (event.blockNumber) {
-        this.lastFetchedBlock =
-          this.lastFetchedBlock > event.blockNumber
-            ? this.lastFetchedBlock
-            : event.blockNumber
-      }
-    }
-
-    this.updateFetcherDatabase()
+    this.lastFetchedBlock = toBlock
+    await this.updateFetcherDatabase()
 
     return zipWith(
       posters,
@@ -112,13 +135,13 @@ export class L1StateFetcher {
     return timestamps
   }
 
-  updateFetcherDatabase(): void {
+  async updateFetcherDatabase(): Promise<void> {
     const record: FetcherRecord = {
       chainId: this.client.getChainId(),
       lastFetchedBlock: this.lastFetchedBlock,
     }
 
-    this.fetcherRepository.addOrUpdate(record)
+    await this.fetcherRepository.addOrUpdate(record)
   }
 }
 

@@ -5,11 +5,12 @@ export interface Config {
   readonly flushPeriodSec: number
   readonly chainId: number
   readonly contractCreatedAtBlock: number
-  readonly databasePath: string
+  readonly databaseConnection: string
   readonly migrationsPath: string
+  readonly isProductionDatabase: boolean
   readonly privateKey: Hex
   readonly ctcContractAddress: EthereumAddress
-  readonly genesisFilePath: string
+  readonly genesisState: Record<string, number>
   readonly rpcServePort: number
   readonly gasLimit: number
 }
