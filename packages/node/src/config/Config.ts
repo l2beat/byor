@@ -1,9 +1,10 @@
 import { EthereumAddress, Hex } from '@byor/shared'
+import { Chain } from 'viem'
 
 export interface Config {
+  readonly chain: Chain
   readonly probePeriodSec: number
   readonly flushPeriodSec: number
-  readonly chainId: number
   readonly contractCreatedAtBlock: number
   readonly databaseConnection: string
   readonly migrationsPath: string

@@ -1,7 +1,6 @@
 import {
   assert,
   EthereumAddress,
-  getChain,
   Hex,
   serializeAndSignBatch,
   Transaction,
@@ -57,17 +56,15 @@ async function submitToL1(
   config: Config,
   serializedBatchBytes: Hex,
 ): Promise<void> {
-  const chain = getChain()
-
   const l1Account = privateKeyToAccount(config.privateKey.toString())
   const client = createWalletClient({
     account: l1Account,
-    chain,
+    chain: config.chain,
     transport: http(),
   })
 
   const publicClient = createPublicClient({
-    chain,
+    chain: config.chain,
     transport: http(),
   })
 

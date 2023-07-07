@@ -1,4 +1,4 @@
-import { EthereumAddress, Hex } from '@byor/shared'
+import { EthereumAddress, Hex, localNetwork } from '@byor/shared'
 import { config as dotenv } from 'dotenv'
 
 import { Config } from './Config'
@@ -8,9 +8,9 @@ export function getLocalConfig(): Config {
   dotenv()
 
   return {
+    chain: localNetwork,
     probePeriodSec: 5,
     flushPeriodSec: 10,
-    chainId: 31337,
     contractCreatedAtBlock: 0,
     databaseConnection:
       process.env.LOCAL_DB_URL ??

@@ -1,5 +1,6 @@
 import { EthereumAddress, Hex } from '@byor/shared'
 import { config as dotenv } from 'dotenv'
+import { goerli } from 'viem/chains'
 
 import { Config } from './Config'
 import GENESIS_STATE from './genesis.json'
@@ -9,9 +10,9 @@ export function getProductionConfig(): Config {
   dotenv()
 
   return {
+    chain: goerli,
     probePeriodSec: 5,
     flushPeriodSec: 10,
-    chainId: 5,
     contractCreatedAtBlock: 9219782,
     databaseConnection: getEnv('DATABASE_URL'),
     migrationsPath: 'drizzle',

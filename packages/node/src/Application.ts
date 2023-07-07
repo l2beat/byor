@@ -1,4 +1,3 @@
-import { getChain } from '@byor/shared'
 import { createPublicClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
@@ -43,13 +42,12 @@ export class Application {
       getContractCreationTime(config),
     )
 
-    const chain = getChain()
     const publicProvider = createPublicClient({
-      chain,
+      chain: config.chain,
       transport: http(),
     })
     const signer = createWalletClient({
-      chain,
+      chain: config.chain,
       account: privateKeyToAccount(config.privateKey.toString()),
       transport: http(),
     })
