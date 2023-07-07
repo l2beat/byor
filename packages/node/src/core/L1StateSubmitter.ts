@@ -9,12 +9,12 @@ import { L1StateManager } from './L1StateManager'
 
 export class L1StateSubmitter {
   constructor(
-    private readonly flushPeriodSec: number,
-    private readonly transactionLimit: number,
     private readonly l1StateManager: L1StateManager,
     private readonly client: EthereumPrivateClient,
     private readonly mempool: Mempool,
     private readonly logger: Logger,
+    private readonly transactionLimit: number,
+    private readonly intervalMs: number,
   ) {
     this.logger = logger.for(this)
   }
@@ -25,7 +25,7 @@ export class L1StateSubmitter {
       await this.mempoolSubmit().catch((err: Error) => {
         this.logger.warn('Failed to submit batch to L1', { error: err.message })
       })
-    }, this.flushPeriodSec * 1000).finally(unreachableCodePath)
+    }, this.intervalMs).finally(unreachableCodePath)
   }
 
   private async mempoolSubmit(): Promise<void> {

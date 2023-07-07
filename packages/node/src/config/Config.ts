@@ -6,9 +6,15 @@ export interface Config {
   readonly rpcUrl?: string
   readonly contractAddress: EthereumAddress
   readonly contractCreationBlock: number
-  readonly eventQueryIntervalSeconds: number
-  readonly batchPostingIntervalSeconds: number
-  readonly batchPostingGasLimit: number
+  readonly eventQuery: {
+    readonly intervalMs: number
+    readonly reorgOffset: bigint
+    readonly batchSize: bigint
+  }
+  readonly batchPosting: {
+    intervalMs: number
+    gasLimit: number
+  }
   readonly privateKey: Hex
   readonly genesisState: Record<string, number>
   readonly database: {

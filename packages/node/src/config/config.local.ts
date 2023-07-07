@@ -14,9 +14,15 @@ export function getLocalConfig(): Config {
       '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     ),
     contractCreationBlock: 0,
-    eventQueryIntervalSeconds: 5,
-    batchPostingIntervalSeconds: 10,
-    batchPostingGasLimit: 3_000_000,
+    eventQuery: {
+      intervalMs: 5_000,
+      reorgOffset: 0n,
+      batchSize: 10n,
+    },
+    batchPosting: {
+      intervalMs: 10_000,
+      gasLimit: 3_000_000,
+    },
     privateKey: Hex(
       '0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a',
     ),

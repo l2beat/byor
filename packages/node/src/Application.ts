@@ -68,26 +68,25 @@ export class Application {
       fetcherRepository,
       config.contractAddress,
       logger,
+      config.eventQuery.reorgOffset,
+      config.eventQuery.batchSize,
     )
     const l1Manager = new L1StateManager(
-      config.eventQueryIntervalSeconds,
       accountRepository,
       transactionRepository,
       l1Fetcher,
       logger,
+      config.eventQuery.intervalMs,
     )
 
     const mempool = new Mempool(logger)
-    const transactionLimit = calculateTransactionLimit(
-      config.batchPostingGasLimit,
-    )
     const l1Submitter = new L1StateSubmitter(
-      config.batchPostingIntervalSeconds,
-      transactionLimit,
       l1Manager,
       ethereumClient,
       mempool,
       logger,
+      calculateTransactionLimit(config.batchPosting.gasLimit),
+      config.batchPosting.intervalMs,
     )
 
     const routers: AppRouters = {

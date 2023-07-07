@@ -16,9 +16,15 @@ export function getProductionConfig(): Config {
       '0x1155cBF8aAf5d086051A0D5a3f1B900473d22419',
     ),
     contractCreationBlock: 9219782,
-    eventQueryIntervalSeconds: 5,
-    batchPostingIntervalSeconds: 10,
-    batchPostingGasLimit: 3_000_000,
+    eventQuery: {
+      intervalMs: 5_000,
+      reorgOffset: 15n,
+      batchSize: 10_000n,
+    },
+    batchPosting: {
+      intervalMs: 10_000,
+      gasLimit: 3_000_000,
+    },
     privateKey: Hex(getEnv('PRIVATE_KEY')),
     genesisState: GENESIS_STATE,
     database: {
