@@ -104,7 +104,7 @@ export class Application {
       await database.migrate()
       await l1Fetcher.start()
       await genesisStateLoader.apply()
-      await l1Manager.start()
+      l1Manager.start()
       l1Submitter.start()
 
       apiServer.listen()

@@ -91,7 +91,7 @@ describe(L1StateManager.name, () => {
         Logger.SILENT,
       )
 
-      await l1Manager.start()
+      l1Manager.start()
       await time.tickAsync(PROBE_PERIOD_SEC * 3000)
 
       expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(4)
@@ -188,7 +188,7 @@ describe(L1StateManager.name, () => {
         Logger.SILENT,
       )
 
-      await l1Manager.start()
+      l1Manager.start()
       await time.tickAsync(PROBE_PERIOD_SEC * 1000)
       await time.tickAsync(PROBE_PERIOD_SEC * 1000)
       await time.tickAsync(PROBE_PERIOD_SEC * 1000)
@@ -317,7 +317,7 @@ describe(L1StateManager.name, () => {
         Logger.SILENT,
       )
 
-      await l1Manager.start()
+      l1Manager.start()
       await time.tickAsync(PROBE_PERIOD_SEC * 1000)
       await time.tickAsync(PROBE_PERIOD_SEC * 1000)
 

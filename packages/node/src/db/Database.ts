@@ -25,6 +25,7 @@ export class Database {
 
   async migrate(): Promise<void> {
     await migrate(this.drizzle, { migrationsFolder: this.migrationsPath })
+    this.logger.info('Migrations completed')
   }
 
   async close(): Promise<void> {

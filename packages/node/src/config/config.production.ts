@@ -11,7 +11,7 @@ export function getProductionConfig(): Config {
   return {
     probePeriodSec: 5,
     flushPeriodSec: 10,
-    chainId: 31337,
+    chainId: 5,
     contractCreatedAtBlock: 9219782,
     databaseConnection: getEnv('DATABASE_URL'),
     migrationsPath: 'drizzle',
@@ -21,7 +21,7 @@ export function getProductionConfig(): Config {
       '0x1155cBF8aAf5d086051A0D5a3f1B900473d22419',
     ),
     genesisState: GENESIS_STATE,
-    rpcServePort: 3000,
+    rpcServePort: parseInt(getEnv('PORT')),
     gasLimit: 3_000_000,
   }
 }

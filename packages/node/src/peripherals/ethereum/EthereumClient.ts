@@ -17,6 +17,10 @@ export class EthereumClient {
     this.logger = this.logger.for(this)
   }
 
+  async getBlockNumber(): Promise<bigint> {
+    return await this.publicProvider.getBlockNumber()
+  }
+
   async getLogsInRange<TAbiEvent extends AbiEvent>(
     abi: TAbiEvent,
     contractAddress: EthereumAddress,

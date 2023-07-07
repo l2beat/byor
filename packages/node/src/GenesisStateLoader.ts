@@ -15,11 +15,10 @@ export class GenesisStateLoader {
   async apply(): Promise<void> {
     const count = await this.accountRepository.getCount()
     if (count !== 0) {
-      this.logger.debug('Genesis state already applied, skipping')
+      this.logger.info('Genesis state already applied, skipping')
       return
     }
 
-    this.logger.debug('Applying genesis state', this.genesisState)
     const accounts: AccountRecord[] = Object.entries(this.genesisState).map(
       ([address, balance]) => {
         return {
@@ -31,5 +30,6 @@ export class GenesisStateLoader {
     )
 
     await this.accountRepository.addOrUpdateMany(accounts)
+    this.logger.info('Applied genesis state', this.genesisState)
   }
 }

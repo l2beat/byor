@@ -30,13 +30,10 @@ export class L1StateManager {
     this.probePeriodMs = probePeriodSec * 1000
   }
 
-  async start(): Promise<void> {
-    this.logger.info('Starting')
-
-    const eventState = await this.l1Fetcher.getNewState()
-    await this.apply(eventState)
-
+  start(): void {
+    this.logger.info('Started')
     setIntervalAsync(async () => {
+      this.logger.info('Getting new state')
       await this.l1Fetcher
         .getNewState()
         .then((eventState) => {

@@ -29,6 +29,9 @@ export class L1StateFetcher {
       this.client.getChainId(),
     )
     this.lastFetchedBlock = fetcher.lastFetchedBlock
+    this.logger.info('Started', {
+      lastFetchedBlock: Number(this.lastFetchedBlock),
+    })
   }
 
   async getNewState(): Promise<L1EventStateType[]> {
@@ -38,11 +41,31 @@ export class L1StateFetcher {
       lastFetchedBlock: this.lastFetchedBlock.toString(),
     })
 
+    const lastBlock = await this.client.getBlockNumber()
+    const fromBlock = this.lastFetchedBlock + 1n
+    const toBlock = BigInt(
+      Math.min(
+        Number(lastBlock - 15n), // TODO: proper constant. Offset for reorgs
+        Number(this.lastFetchedBlock) + 10_000, // TODO proper constant. Batch size
+      ),
+    )
+
+    if (fromBlock > toBlock) {
+      this.logger.debug('No new events')
+      return []
+    }
+
     const l1State = await this.client.getLogsInRange(
       eventAbi,
       this.contractAddress,
-      this.lastFetchedBlock + 1n,
+      fromBlock,
+      toBlock,
     )
+
+    this.logger.debug('Fetched new events', {
+      length: l1State.length,
+    })
+
     const calldata = await this.eventsToCallData(l1State)
     const timestamps = await this.eventsToTimestamps(l1State)
     const posters = eventsToPosters(l1State)
@@ -52,15 +75,7 @@ export class L1StateFetcher {
       'The amount of calldata is not equal to the amount of poster address or amount of timestamps',
     )
 
-    for (const event of l1State) {
-      if (event.blockNumber) {
-        this.lastFetchedBlock =
-          this.lastFetchedBlock > event.blockNumber
-            ? this.lastFetchedBlock
-            : event.blockNumber
-      }
-    }
-
+    this.lastFetchedBlock = toBlock
     await this.updateFetcherDatabase()
 
     return zipWith(
