@@ -12,8 +12,8 @@ export interface Config {
     readonly batchSize: bigint
   }
   readonly batchPosting: {
-    intervalMs: number
-    gasLimit: number
+    readonly intervalMs: number
+    readonly gasLimit: number
   }
   readonly privateKey: Hex
   readonly genesisState: Record<string, number>
