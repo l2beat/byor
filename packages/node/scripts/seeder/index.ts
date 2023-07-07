@@ -16,8 +16,8 @@ import {
 } from 'viem/accounts'
 
 import { Config, getConfig } from '../../src/config'
-import { abi } from '../../src/config/abi'
 import GENESIS_STATE from '../../src/config/genesis.json'
+import { abi } from '../../src/core/abi'
 
 function getGenesisState(): Record<string, number> {
   return GENESIS_STATE
