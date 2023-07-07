@@ -11,11 +11,11 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { AccountRepository } from '../peripherals/database/AccountRepository'
 import { TransactionRepository } from '../peripherals/database/TransactionRepository'
 import { Logger } from '../tools/Logger'
-import { L1StateFetcher } from './L1StateFetcher'
-import { L1StateManager } from './L1StateManager'
+import { BatchDownloader } from './BatchDownloader'
+import { StateUpdater } from './StateUpdater'
 
-describe(L1StateManager.name, () => {
-  describe(L1StateManager.prototype.start.name, () => {
+describe(StateUpdater.name, () => {
+  describe(StateUpdater.prototype.start.name, () => {
     const modelAccount = privateKeyToAccount(
       '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
     )
@@ -45,8 +45,8 @@ describe(L1StateManager.name, () => {
     })
 
     it('triggers the update since the genesis block and keeps on updating not emitting events', async () => {
-      const l1Fetcher = mockObject<L1StateFetcher>({
-        getNewState: mockFn()
+      const batchDownloader = mockObject<BatchDownloader>({
+        getNewBatches: mockFn()
           .resolvesToOnce([
             {
               poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
@@ -72,20 +72,20 @@ describe(L1StateManager.name, () => {
       const transactionRepository = mockObject<TransactionRepository>({
         addMany: mockFn().returns(null),
       })
-      const l1Manager = new L1StateManager(
+      const stateUpdater = new StateUpdater(
         accountRepository,
         transactionRepository,
-        l1Fetcher,
+        batchDownloader,
         Logger.SILENT,
         PROBE_PERIOD_MS,
       )
 
-      await l1Manager.update()
-      await l1Manager.update()
-      await l1Manager.update()
-      await l1Manager.update()
+      await stateUpdater.update()
+      await stateUpdater.update()
+      await stateUpdater.update()
+      await stateUpdater.update()
 
-      expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(4)
+      expect(batchDownloader.getNewBatches).toHaveBeenCalledTimes(4)
       expect(accountRepository.getAll).toHaveBeenCalledTimes(1)
       expect(accountRepository.addOrUpdateMany).toHaveBeenOnlyCalledWith([
         {
@@ -113,8 +113,8 @@ describe(L1StateManager.name, () => {
     })
 
     it('updates since the genesis and keeps on updating emitting events after new calldata', async () => {
-      const l1Fetcher = mockObject<L1StateFetcher>({
-        getNewState: mockFn()
+      const batchDownloader = mockObject<BatchDownloader>({
+        getNewBatches: mockFn()
           .resolvesToOnce([
             {
               poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
@@ -169,20 +169,20 @@ describe(L1StateManager.name, () => {
       const transactionRepository = mockObject<TransactionRepository>({
         addMany: mockFn().returns(null),
       })
-      const l1Manager = new L1StateManager(
+      const stateUpdater = new StateUpdater(
         accountRepository,
         transactionRepository,
-        l1Fetcher,
+        batchDownloader,
         Logger.SILENT,
         PROBE_PERIOD_MS,
       )
 
-      await l1Manager.update()
-      await l1Manager.update()
-      await l1Manager.update()
-      await l1Manager.update()
+      await stateUpdater.update()
+      await stateUpdater.update()
+      await stateUpdater.update()
+      await stateUpdater.update()
 
-      expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(4)
+      expect(batchDownloader.getNewBatches).toHaveBeenCalledTimes(4)
       expect(accountRepository.getAll).toHaveBeenCalledTimes(2)
       expect(accountRepository.addOrUpdateMany).toHaveBeenCalledTimes(2)
       expect(accountRepository.addOrUpdateMany).toHaveBeenCalledWith([
@@ -234,8 +234,8 @@ describe(L1StateManager.name, () => {
     })
 
     it('updates since the genesis and while updating does not apply error data', async () => {
-      const l1Fetcher = mockObject<L1StateFetcher>({
-        getNewState: mockFn()
+      const batchDownloader = mockObject<BatchDownloader>({
+        getNewBatches: mockFn()
           .resolvesToOnce([
             {
               poster: '0xEcb9C375d3182853656221Bd2d01c14850d52D81',
@@ -294,19 +294,19 @@ describe(L1StateManager.name, () => {
       const transactionRepository = mockObject<TransactionRepository>({
         addMany: mockFn().returns(null),
       })
-      const l1Manager = new L1StateManager(
+      const stateUpdater = new StateUpdater(
         accountRepository,
         transactionRepository,
-        l1Fetcher,
+        batchDownloader,
         Logger.SILENT,
         PROBE_PERIOD_MS,
       )
 
-      await l1Manager.update()
-      await l1Manager.update()
-      await l1Manager.update()
+      await stateUpdater.update()
+      await stateUpdater.update()
+      await stateUpdater.update()
 
-      expect(l1Fetcher.getNewState).toHaveBeenCalledTimes(3)
+      expect(batchDownloader.getNewBatches).toHaveBeenCalledTimes(3)
       expect(accountRepository.getAll).toHaveBeenCalledTimes(2)
       expect(accountRepository.addOrUpdateMany).toHaveBeenCalledTimes(2)
       expect(accountRepository.addOrUpdateMany).toHaveBeenCalledWith([

@@ -5,10 +5,10 @@ import { parseAbiItem } from 'viem'
 import { FetcherRepository } from '../peripherals/database/FetcherRepository'
 import { EthereumClient } from '../peripherals/ethereum/EthereumClient'
 import { Logger } from '../tools/Logger'
-import { L1StateFetcher } from './L1StateFetcher'
+import { BatchDownloader } from './BatchDownloader'
 
-describe(L1StateFetcher.name, () => {
-  describe(L1StateFetcher.prototype.getNewState.name, () => {
+describe(BatchDownloader.name, () => {
+  describe(BatchDownloader.prototype.getNewBatches.name, () => {
     it('decodes correct event and transaction data while keeping track of last block number', async () => {
       const ctcContractAddress = EthereumAddress(
         '0x5FbDB2315678afecb367f032d93F642f64180aa3',
@@ -68,15 +68,15 @@ describe(L1StateFetcher.name, () => {
           .returnsOnce({ timestamp: 1608293972n })
           .returnsOnce({ timestamp: 1749685967n }),
       })
-      const l1Fetcher = new L1StateFetcher(
+      const batchDownloader = new BatchDownloader(
         client,
         fetcherRepository,
         ctcContractAddress,
         Logger.SILENT,
       )
 
-      await l1Fetcher.start()
-      const events = await l1Fetcher.getNewState()
+      await batchDownloader.start()
+      const events = await batchDownloader.getNewBatches()
 
       expect(client.getLogsInRange).toHaveBeenOnlyCalledWith(
         parseAbiItem('event BatchAppended(address sender)'),
@@ -102,7 +102,7 @@ describe(L1StateFetcher.name, () => {
         },
       ])
       // TODO: make this obvious
-      expect(l1Fetcher.getLastFetchedBlock()).toEqual(1234n - 15n)
+      expect(batchDownloader.getLastFetchedBlock()).toEqual(1234n - 15n)
     })
 
     it('decodes correct event and transaction data', async () => {
@@ -134,14 +134,14 @@ describe(L1StateFetcher.name, () => {
         }),
         getBlockHeader: mockFn().returnsOnce({ timestamp: 1646701020n }),
       })
-      const l1Fetcher = new L1StateFetcher(
+      const batchDownloader = new BatchDownloader(
         client,
         fetcherRepository,
         ctcContractAddress,
         Logger.SILENT,
       )
 
-      const result = await l1Fetcher.getNewState()
+      const result = await batchDownloader.getNewBatches()
 
       expect(client.getLogsInRange).toHaveBeenOnlyCalledWith(
         parseAbiItem('event BatchAppended(address sender)'),
@@ -187,14 +187,14 @@ describe(L1StateFetcher.name, () => {
         }),
         getBlockHeader: mockFn().returnsOnce({ timestamp: 1646701020n }),
       })
-      const l1Fetcher = new L1StateFetcher(
+      const batchDownloader = new BatchDownloader(
         client,
         fetcherRepository,
         ctcContractAddress,
         Logger.SILENT,
       )
 
-      const result = await l1Fetcher.getNewState()
+      const result = await batchDownloader.getNewBatches()
 
       expect(client.getLogsInRange).toHaveBeenOnlyCalledWith(
         parseAbiItem('event BatchAppended(address sender)'),
@@ -238,14 +238,14 @@ describe(L1StateFetcher.name, () => {
             '0x96677ca20000000000000000000000000000000000000000000000000000000000000020',
         }),
       })
-      const l1Fetcher = new L1StateFetcher(
+      const batchDownloader = new BatchDownloader(
         client,
         fetcherRepository,
         ctcContractAddress,
         Logger.SILENT,
       )
 
-      await expect(l1Fetcher.getNewState()).toBeRejectedWith(
+      await expect(batchDownloader.getNewBatches()).toBeRejectedWith(
         'Slice starting at offset',
       )
     })
@@ -276,14 +276,14 @@ describe(L1StateFetcher.name, () => {
           input: '0x96677ca2234567890',
         }),
       })
-      const l1Fetcher = new L1StateFetcher(
+      const batchDownloader = new BatchDownloader(
         client,
         fetcherRepository,
         ctcContractAddress,
         Logger.SILENT,
       )
 
-      await expect(l1Fetcher.getNewState()).toBeRejectedWith(
+      await expect(batchDownloader.getNewBatches()).toBeRejectedWith(
         'Size must be in increments of 32 bytes',
       )
     })

@@ -7,11 +7,11 @@ import { createStatisticsRouter } from './api/routers/StatisticRouter'
 import { createTransactionRouter } from './api/routers/TransactionRouter'
 import { AppRouters } from './api/types/AppRouter'
 import { Config } from './config'
+import { BatchDownloader } from './core/BatchDownloader'
+import { BatchPoster } from './core/BatchPoster'
 import { calculateTransactionLimit } from './core/calculateTransactionLimit'
 import { GenesisStateLoader } from './core/GenesisStateLoader'
-import { L1StateFetcher } from './core/L1StateFetcher'
-import { L1StateManager } from './core/L1StateManager'
-import { L1StateSubmitter } from './core/L1StateSubmitter'
+import { StateUpdater } from './core/StateUpdater'
 import { AccountRepository } from './peripherals/database/AccountRepository'
 import { FetcherRepository } from './peripherals/database/FetcherRepository'
 import { getContractCreationTime } from './peripherals/database/getContractCreationTime'
@@ -63,30 +63,30 @@ export class Application {
       accountRepository,
       logger,
     )
-    const l1Fetcher = new L1StateFetcher(
+    const batchDownloader = new BatchDownloader(
       ethereumClient,
       fetcherRepository,
       config.contractAddress,
       logger,
-      config.eventQuery.reorgOffset,
-      config.eventQuery.batchSize,
+      config.batchDownloader.reorgOffset,
+      config.batchDownloader.maxBlocksPerQuery,
     )
-    const l1Manager = new L1StateManager(
+    const stateUpdater = new StateUpdater(
       accountRepository,
       transactionRepository,
-      l1Fetcher,
+      batchDownloader,
       logger,
-      config.eventQuery.intervalMs,
+      config.batchDownloader.intervalMs,
     )
 
     const mempool = new Mempool(logger)
-    const l1Submitter = new L1StateSubmitter(
-      l1Manager,
+    const batchPoster = new BatchPoster(
+      stateUpdater,
       ethereumClient,
       mempool,
       logger,
-      calculateTransactionLimit(config.batchPosting.gasLimit),
-      config.batchPosting.intervalMs,
+      calculateTransactionLimit(config.batchPoster.gasLimit),
+      config.batchPoster.intervalMs,
     )
 
     const routers: AppRouters = {
@@ -101,10 +101,10 @@ export class Application {
       logger.info('Starting...')
 
       await database.migrate()
-      await l1Fetcher.start()
+      await batchDownloader.start()
       await genesisStateLoader.apply()
-      l1Manager.start()
-      l1Submitter.start()
+      stateUpdater.start()
+      batchPoster.start()
 
       apiServer.listen()
     }
