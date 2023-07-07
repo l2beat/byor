@@ -1,7 +1,6 @@
 import {
   assert,
   EthereumAddress,
-  getChain,
   Hex,
   serializeAndSignBatch,
   Transaction,
@@ -17,8 +16,8 @@ import {
 } from 'viem/accounts'
 
 import { Config, getConfig } from '../../src/config'
-import { abi } from '../../src/config/abi'
 import GENESIS_STATE from '../../src/config/genesis.json'
+import { abi } from '../../src/core/abi'
 
 function getGenesisState(): Record<string, number> {
   return GENESIS_STATE
@@ -57,22 +56,20 @@ async function submitToL1(
   config: Config,
   serializedBatchBytes: Hex,
 ): Promise<void> {
-  const chain = getChain()
-
   const l1Account = privateKeyToAccount(config.privateKey.toString())
   const client = createWalletClient({
     account: l1Account,
-    chain,
+    chain: config.chain,
     transport: http(),
   })
 
   const publicClient = createPublicClient({
-    chain,
+    chain: config.chain,
     transport: http(),
   })
 
   const { request } = await publicClient.simulateContract({
-    address: config.ctcContractAddress.toString(),
+    address: config.contractAddress.toString(),
     abi: abi,
     functionName: 'appendBatch',
     args: [serializedBatchBytes.toString()],

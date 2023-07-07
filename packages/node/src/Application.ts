@@ -1,4 +1,3 @@
-import { getChain } from '@byor/shared'
 import { createPublicClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
@@ -30,9 +29,9 @@ export class Application {
     const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
 
     const database = new Database(
-      config.databaseConnection,
-      config.migrationsPath,
-      config.isProductionDatabase,
+      config.database.connection,
+      config.database.migrationPath,
+      config.database.isProduction,
       logger,
     )
     const accountRepository = new AccountRepository(database)
@@ -43,20 +42,19 @@ export class Application {
       getContractCreationTime(config),
     )
 
-    const chain = getChain()
-    const publicProvider = createPublicClient({
-      chain,
-      transport: http(),
+    const publicClient = createPublicClient({
+      chain: config.chain,
+      transport: http(config.rpcUrl),
     })
-    const signer = createWalletClient({
-      chain,
+    const walletClient = createWalletClient({
+      chain: config.chain,
       account: privateKeyToAccount(config.privateKey.toString()),
-      transport: http(),
+      transport: http(config.rpcUrl),
     })
     const ethereumClient = new EthereumPrivateClient(
-      signer,
-      publicProvider,
-      config.ctcContractAddress,
+      walletClient,
+      publicClient,
+      config.contractAddress,
       logger,
     )
 
@@ -68,26 +66,27 @@ export class Application {
     const l1Fetcher = new L1StateFetcher(
       ethereumClient,
       fetcherRepository,
-      config.ctcContractAddress,
+      config.contractAddress,
       logger,
+      config.eventQuery.reorgOffset,
+      config.eventQuery.batchSize,
     )
     const l1Manager = new L1StateManager(
-      config.probePeriodSec,
       accountRepository,
       transactionRepository,
       l1Fetcher,
       logger,
+      config.eventQuery.intervalMs,
     )
 
     const mempool = new Mempool(logger)
-    const transactionLimit = calculateTransactionLimit(config.gasLimit)
     const l1Submitter = new L1StateSubmitter(
-      config.flushPeriodSec,
-      transactionLimit,
       l1Manager,
       ethereumClient,
       mempool,
       logger,
+      calculateTransactionLimit(config.batchPosting.gasLimit),
+      config.batchPosting.intervalMs,
     )
 
     const routers: AppRouters = {
@@ -96,7 +95,7 @@ export class Application {
       statistics: createStatisticsRouter(transactionRepository),
     }
 
-    const apiServer = new ApiServer(config.rpcServePort, logger, routers)
+    const apiServer = new ApiServer(config.apiPort, logger, routers)
 
     this.start = async (): Promise<void> => {
       logger.info('Starting...')

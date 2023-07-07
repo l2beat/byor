@@ -37,7 +37,7 @@ describe(L1StateManager.name, () => {
 
     let modelTx1SerializedHex: Hex
     let modelTx2SerializedHex: Hex
-    const PROBE_PERIOD_SEC = 1
+    const PROBE_PERIOD_MS = 1_000
 
     before(async () => {
       modelTx1SerializedHex = await serializeAndSign(modelTx1, modelAccount)
@@ -73,11 +73,11 @@ describe(L1StateManager.name, () => {
         addMany: mockFn().returns(null),
       })
       const l1Manager = new L1StateManager(
-        PROBE_PERIOD_SEC,
         accountRepository,
         transactionRepository,
         l1Fetcher,
         Logger.SILENT,
+        PROBE_PERIOD_MS,
       )
 
       await l1Manager.update()
@@ -170,11 +170,11 @@ describe(L1StateManager.name, () => {
         addMany: mockFn().returns(null),
       })
       const l1Manager = new L1StateManager(
-        PROBE_PERIOD_SEC,
         accountRepository,
         transactionRepository,
         l1Fetcher,
         Logger.SILENT,
+        PROBE_PERIOD_MS,
       )
 
       await l1Manager.update()
@@ -295,11 +295,11 @@ describe(L1StateManager.name, () => {
         addMany: mockFn().returns(null),
       })
       const l1Manager = new L1StateManager(
-        PROBE_PERIOD_SEC,
         accountRepository,
         transactionRepository,
         l1Fetcher,
         Logger.SILENT,
+        PROBE_PERIOD_MS,
       )
 
       await l1Manager.update()

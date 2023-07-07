@@ -59,7 +59,7 @@ describe(L1StateSubmitter.name, () => {
     time.uninstall()
   })
 
-  const FLUSH_PERIOD_SEC = 1
+  const FLUSH_PERIOD_MS = 1_000
   const TRANSACTION_LIMIT = 100
 
   describe(L1StateSubmitter.prototype.start.name, () => {
@@ -97,15 +97,15 @@ describe(L1StateSubmitter.name, () => {
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
-        FLUSH_PERIOD_SEC,
-        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
         Logger.SILENT,
+        TRANSACTION_LIMIT,
+        FLUSH_PERIOD_MS,
       )
       l1Submitter.start()
-      await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
+      await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
@@ -154,15 +154,15 @@ describe(L1StateSubmitter.name, () => {
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
-        FLUSH_PERIOD_SEC,
-        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
         Logger.SILENT,
+        TRANSACTION_LIMIT,
+        FLUSH_PERIOD_MS,
       )
       l1Submitter.start()
-      await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
+      await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
@@ -207,15 +207,15 @@ describe(L1StateSubmitter.name, () => {
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
-        FLUSH_PERIOD_SEC,
-        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
         Logger.SILENT,
+        TRANSACTION_LIMIT,
+        FLUSH_PERIOD_MS,
       )
       l1Submitter.start()
-      await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
+      await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
@@ -257,15 +257,15 @@ describe(L1StateSubmitter.name, () => {
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
-        FLUSH_PERIOD_SEC,
-        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
         Logger.SILENT,
+        TRANSACTION_LIMIT,
+        FLUSH_PERIOD_MS,
       )
       l1Submitter.start()
-      await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
+      await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(3)
@@ -314,15 +314,15 @@ describe(L1StateSubmitter.name, () => {
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
-        FLUSH_PERIOD_SEC,
-        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
         Logger.SILENT,
+        TRANSACTION_LIMIT,
+        FLUSH_PERIOD_MS,
       )
       l1Submitter.start()
-      await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
+      await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
@@ -363,15 +363,15 @@ describe(L1StateSubmitter.name, () => {
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
-        FLUSH_PERIOD_SEC,
-        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
         Logger.SILENT,
+        TRANSACTION_LIMIT,
+        FLUSH_PERIOD_MS,
       )
       l1Submitter.start()
-      await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
+      await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
@@ -414,15 +414,15 @@ describe(L1StateSubmitter.name, () => {
         empty: mockFn().returns(null),
       })
       const l1Submitter = new L1StateSubmitter(
-        FLUSH_PERIOD_SEC,
-        TRANSACTION_LIMIT,
         l1Manager,
         client,
         mempool,
         Logger.SILENT,
+        TRANSACTION_LIMIT,
+        FLUSH_PERIOD_MS,
       )
       l1Submitter.start()
-      await time.tickAsync(FLUSH_PERIOD_SEC * 3000)
+      await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)

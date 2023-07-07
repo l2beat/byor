@@ -2,7 +2,7 @@ import { EthereumAddress, Hex } from '@byor/shared'
 import { expect, mockFn, mockObject } from 'earl'
 import { Account, Chain, PublicClient, WalletClient } from 'viem'
 
-import { abi } from '../../config/abi'
+import { abi } from '../../core/abi'
 import { Logger } from '../../tools/Logger'
 import { EthereumPrivateClient } from './EthereumPrivateClient'
 

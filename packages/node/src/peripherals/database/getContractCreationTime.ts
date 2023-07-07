@@ -9,7 +9,7 @@ export function getContractCreationTime(
   config: Config,
 ): ChainContractCreationTime {
   return {
-    chainId: config.chainId,
-    contractCreatedAtBlock: config.contractCreatedAtBlock,
+    chainId: config.chain.id,
+    contractCreatedAtBlock: config.contractCreationBlock,
   }
 }

@@ -17,26 +17,21 @@ import { L1EventStateType } from './L1EventStateType'
 import { L1StateFetcher } from './L1StateFetcher'
 
 export class L1StateManager {
-  private readonly probePeriodMs: number
-
   constructor(
-    probePeriodSec: number,
     private readonly accountRepository: AccountRepository,
     private readonly transactionRepository: TransactionRepository,
     private readonly l1Fetcher: L1StateFetcher,
     private readonly logger: Logger,
+    private readonly intervalMs: number,
   ) {
     this.logger = logger.for(this)
-    this.probePeriodMs = probePeriodSec * 1000
   }
 
   start(): void {
     this.logger.info('Started')
-    setIntervalAsync(
-      async () => this.update(),
-      this.probePeriodMs,
-      true,
-    ).finally(unreachableCodePath)
+    setIntervalAsync(async () => this.update(), this.intervalMs, true).finally(
+      unreachableCodePath,
+    )
   }
 
   async update(): Promise<void> {
