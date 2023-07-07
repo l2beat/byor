@@ -15,7 +15,11 @@ export async function delay(timeoutPeriodMs: number): Promise<void> {
 export async function setIntervalAsync(
   callback: () => Promise<void>,
   delayMs: number,
+  leading = false,
 ): Promise<void> {
+  if (leading) {
+    await callback()
+  }
   for (;;) {
     await delay(delayMs)
     await callback()

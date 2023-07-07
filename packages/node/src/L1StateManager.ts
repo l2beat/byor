@@ -32,22 +32,24 @@ export class L1StateManager {
 
   start(): void {
     this.logger.info('Started')
-    setIntervalAsync(async () => {
-      this.logger.info('Getting new state')
-      await this.l1Fetcher
-        .getNewState()
-        .then((eventState) => {
-          return this.apply(eventState)
-        })
-        .catch((err: Error) => {
-          this.logger.warn(
-            'Trying to update the state using the L1 resuled in an error',
-            {
-              error: err.message,
-            },
-          )
-        })
-    }, this.probePeriodMs).finally(unreachableCodePath)
+    setIntervalAsync(
+      async () => this.update(),
+      this.probePeriodMs,
+      true,
+    ).finally(unreachableCodePath)
+  }
+
+  async update(): Promise<void> {
+    this.logger.info('Getting new state')
+    await this.l1Fetcher
+      .getNewState()
+      .then((eventState) => this.apply(eventState))
+      .catch((err: Error) => {
+        this.logger.warn(
+          'Trying to update the state using the L1 resuled in an error',
+          { error: err.message },
+        )
+      })
   }
 
   async getState(): Promise<StateMap> {

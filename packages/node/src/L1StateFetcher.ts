@@ -10,7 +10,7 @@ import { Logger } from './tools/Logger'
 
 const eventAbi = parseAbiItem('event BatchAppended(address sender)')
 type EventAbiType = typeof eventAbi
-type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
+export type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
 
 export class L1StateFetcher {
   private lastFetchedBlock = 0n
@@ -20,6 +20,8 @@ export class L1StateFetcher {
     private readonly fetcherRepository: FetcherRepository,
     private readonly contractAddress: EthereumAddress,
     private readonly logger: Logger,
+    private readonly reorgOffset = 15n,
+    private readonly batchSize = 10_000n,
   ) {
     this.logger = logger.for(this)
   }
@@ -34,6 +36,10 @@ export class L1StateFetcher {
     })
   }
 
+  getLastFetchedBlock(): bigint {
+    return this.lastFetchedBlock
+  }
+
   async getNewState(): Promise<L1EventStateType[]> {
     this.logger.debug('Fetching new events', {
       contractAddress: this.contractAddress.toString(),
@@ -45,8 +51,8 @@ export class L1StateFetcher {
     const fromBlock = this.lastFetchedBlock + 1n
     const toBlock = BigInt(
       Math.min(
-        Number(lastBlock - 15n), // TODO: proper constant. Offset for reorgs
-        Number(this.lastFetchedBlock) + 10_000, // TODO proper constant. Batch size
+        Number(lastBlock - this.reorgOffset),
+        Number(this.lastFetchedBlock + this.batchSize),
       ),
     )
 
@@ -55,23 +61,21 @@ export class L1StateFetcher {
       return []
     }
 
-    const l1State = await this.client.getLogsInRange(
+    const events = await this.client.getLogsInRange(
       eventAbi,
       this.contractAddress,
       fromBlock,
       toBlock,
     )
 
-    this.logger.debug('Fetched new events', {
-      length: l1State.length,
-    })
+    this.logger.debug('Fetched new events', { length: events.length })
 
-    const calldata = await this.eventsToCallData(l1State)
-    const timestamps = await this.eventsToTimestamps(l1State)
-    const posters = eventsToPosters(l1State)
+    const calldata = await this.eventsToCallData(events)
+    const timestamps = await this.eventsToTimestamps(events)
+    const posters = eventsToPosters(events)
 
     assert(
-      l1State.length === posters.length && l1State.length === timestamps.length,
+      events.length === posters.length && events.length === timestamps.length,
       'The amount of calldata is not equal to the amount of poster address or amount of timestamps',
     )
 
