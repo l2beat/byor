@@ -9,13 +9,18 @@ import {
 import { EthereumClient } from '../peripherals/ethereum/EthereumClient'
 import { Logger } from '../tools/Logger'
 import { abi } from './abi'
-import { L1EventStateType } from './L1EventStateType'
+
+export interface Batch {
+  poster: EthereumAddress
+  timestamp: Date
+  calldata: Hex
+}
 
 const eventAbi = parseAbiItem('event BatchAppended(address sender)')
 type EventAbiType = typeof eventAbi
 export type BatchAppendedLogsType = GetLogsReturnType<EventAbiType>
 
-export class L1StateFetcher {
+export class BatchDownloader {
   private lastFetchedBlock = 0n
 
   constructor(
@@ -24,7 +29,7 @@ export class L1StateFetcher {
     private readonly contractAddress: EthereumAddress,
     private readonly logger: Logger,
     private readonly reorgOffset = 15n,
-    private readonly batchSize = 10_000n,
+    private readonly maxBlocksPerQuery = 10_000n,
   ) {
     this.logger = logger.for(this)
   }
@@ -43,7 +48,7 @@ export class L1StateFetcher {
     return this.lastFetchedBlock
   }
 
-  async getNewState(): Promise<L1EventStateType[]> {
+  async getNewBatches(): Promise<Batch[]> {
     this.logger.debug('Fetching new events', {
       contractAddress: this.contractAddress.toString(),
       eventAbi: eventAbi.name,
@@ -55,7 +60,7 @@ export class L1StateFetcher {
     const toBlock = BigInt(
       Math.min(
         Number(lastBlock - this.reorgOffset),
-        Number(this.lastFetchedBlock + this.batchSize),
+        Number(this.lastFetchedBlock + this.maxBlocksPerQuery),
       ),
     )
 

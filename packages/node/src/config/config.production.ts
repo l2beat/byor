@@ -16,12 +16,12 @@ export function getProductionConfig(): Config {
       '0x1155cBF8aAf5d086051A0D5a3f1B900473d22419',
     ),
     contractCreationBlock: 9219782,
-    eventQuery: {
+    batchDownloader: {
       intervalMs: 5_000,
       reorgOffset: 15n,
-      batchSize: 10_000n,
+      maxBlocksPerQuery: 10_000n,
     },
-    batchPosting: {
+    batchPoster: {
       intervalMs: 10_000,
       gasLimit: 3_000_000,
     },

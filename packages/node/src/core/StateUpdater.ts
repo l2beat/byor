@@ -12,15 +12,14 @@ import {
 } from '../peripherals/database/TransactionRepository'
 import { setIntervalAsync } from '../tools/asyncTimeUtils'
 import { Logger } from '../tools/Logger'
+import { Batch, BatchDownloader } from './BatchDownloader'
 import { executeBatch, StateMap } from './executeBatch'
-import { L1EventStateType } from './L1EventStateType'
-import { L1StateFetcher } from './L1StateFetcher'
 
-export class L1StateManager {
+export class StateUpdater {
   constructor(
     private readonly accountRepository: AccountRepository,
     private readonly transactionRepository: TransactionRepository,
-    private readonly l1Fetcher: L1StateFetcher,
+    private readonly batchDownloader: BatchDownloader,
     private readonly logger: Logger,
     private readonly intervalMs: number,
   ) {
@@ -36,9 +35,9 @@ export class L1StateManager {
 
   async update(): Promise<void> {
     this.logger.info('Getting new state')
-    await this.l1Fetcher
-      .getNewState()
-      .then((eventState) => this.apply(eventState))
+    await this.batchDownloader
+      .getNewBatches()
+      .then((events) => this.apply(events))
       .catch((err: Error) => {
         this.logger.warn(
           'Trying to update the state using the L1 resuled in an error',
@@ -61,7 +60,7 @@ export class L1StateManager {
     return accountState
   }
 
-  private async apply(l1States: L1EventStateType[]): Promise<void> {
+  private async apply(l1States: Batch[]): Promise<void> {
     if (l1States.length === 0) {
       return
     }

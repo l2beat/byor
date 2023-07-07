@@ -13,6 +13,10 @@ export class Mempool {
     this.poolTimestamps = []
   }
 
+  size(): number {
+    return this.pool.length
+  }
+
   add(transactions: SignedTransaction[]): void {
     this.logger.info('Adding', { transactionCount: transactions.length })
     transactions.forEach((tx) => {

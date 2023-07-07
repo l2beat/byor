@@ -14,10 +14,10 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { EthereumPrivateClient } from '../peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from '../peripherals/mempool/Mempool'
 import { Logger } from '../tools/Logger'
-import { L1StateManager } from './L1StateManager'
-import { L1StateSubmitter } from './L1StateSubmitter'
+import { BatchPoster } from './BatchPoster'
+import { StateUpdater } from './StateUpdater'
 
-describe(L1StateSubmitter.name, () => {
+describe(BatchPoster.name, () => {
   const modelAccount1 = privateKeyToAccount(
     '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
   )
@@ -62,9 +62,9 @@ describe(L1StateSubmitter.name, () => {
   const FLUSH_PERIOD_MS = 1_000
   const TRANSACTION_LIMIT = 100
 
-  describe(L1StateSubmitter.prototype.start.name, () => {
+  describe(BatchPoster.prototype.start.name, () => {
     it('submits transactions where every one applies every flush period seconds', async () => {
-      const l1Manager = mockObject<L1StateManager>({
+      const stateUpdater = mockObject<StateUpdater>({
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -96,15 +96,15 @@ describe(L1StateSubmitter.name, () => {
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
-      const l1Submitter = new L1StateSubmitter(
-        l1Manager,
+      const batchPoster = new BatchPoster(
+        stateUpdater,
         client,
         mempool,
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
       )
-      l1Submitter.start()
+      batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
@@ -121,7 +121,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('submits transactions where only some apply every flush period seconds', async () => {
-      const l1Manager = mockObject<L1StateManager>({
+      const stateUpdater = mockObject<StateUpdater>({
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -153,15 +153,15 @@ describe(L1StateSubmitter.name, () => {
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
-      const l1Submitter = new L1StateSubmitter(
-        l1Manager,
+      const batchPoster = new BatchPoster(
+        stateUpdater,
         client,
         mempool,
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
       )
-      l1Submitter.start()
+      batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
@@ -174,7 +174,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('submits nothing if all transactions can not be applied', async () => {
-      const l1Manager = mockObject<L1StateManager>({
+      const stateUpdater = mockObject<StateUpdater>({
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -206,15 +206,15 @@ describe(L1StateSubmitter.name, () => {
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
-      const l1Submitter = new L1StateSubmitter(
-        l1Manager,
+      const batchPoster = new BatchPoster(
+        stateUpdater,
         client,
         mempool,
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
       )
-      l1Submitter.start()
+      batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
@@ -223,7 +223,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('does not submit empty transactions', async () => {
-      const l1Manager = mockObject<L1StateManager>({
+      const stateUpdater = mockObject<StateUpdater>({
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -256,15 +256,15 @@ describe(L1StateSubmitter.name, () => {
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
-      const l1Submitter = new L1StateSubmitter(
-        l1Manager,
+      const batchPoster = new BatchPoster(
+        stateUpdater,
         client,
         mempool,
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
       )
-      l1Submitter.start()
+      batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
@@ -281,7 +281,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('does not submit transaction if balance is too low', async () => {
-      const l1Manager = mockObject<L1StateManager>({
+      const stateUpdater = mockObject<StateUpdater>({
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -313,15 +313,15 @@ describe(L1StateSubmitter.name, () => {
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
-      const l1Submitter = new L1StateSubmitter(
-        l1Manager,
+      const batchPoster = new BatchPoster(
+        stateUpdater,
         client,
         mempool,
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
       )
-      l1Submitter.start()
+      batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
@@ -330,7 +330,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('does not submit transaction if balance if nonce is wrong', async () => {
-      const l1Manager = mockObject<L1StateManager>({
+      const stateUpdater = mockObject<StateUpdater>({
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -362,15 +362,15 @@ describe(L1StateSubmitter.name, () => {
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
-      const l1Submitter = new L1StateSubmitter(
-        l1Manager,
+      const batchPoster = new BatchPoster(
+        stateUpdater,
         client,
         mempool,
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
       )
-      l1Submitter.start()
+      batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
@@ -379,7 +379,7 @@ describe(L1StateSubmitter.name, () => {
     })
 
     it('submits transactions every flush period seconds', async () => {
-      const l1Manager = mockObject<L1StateManager>({
+      const stateUpdater = mockObject<StateUpdater>({
         getState: mockFn()
           .returnsOnce({
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
@@ -413,15 +413,15 @@ describe(L1StateSubmitter.name, () => {
           .returnsOnce([modelSignedTx2]),
         empty: mockFn().returns(null),
       })
-      const l1Submitter = new L1StateSubmitter(
-        l1Manager,
+      const batchPoster = new BatchPoster(
+        stateUpdater,
         client,
         mempool,
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
       )
-      l1Submitter.start()
+      batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)

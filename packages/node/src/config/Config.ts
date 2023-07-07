@@ -6,12 +6,12 @@ export interface Config {
   readonly rpcUrl?: string
   readonly contractAddress: EthereumAddress
   readonly contractCreationBlock: number
-  readonly eventQuery: {
+  readonly batchDownloader: {
     readonly intervalMs: number
     readonly reorgOffset: bigint
-    readonly batchSize: bigint
+    readonly maxBlocksPerQuery: bigint
   }
-  readonly batchPosting: {
+  readonly batchPoster: {
     readonly intervalMs: number
     readonly gasLimit: number
   }

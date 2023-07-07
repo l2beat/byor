@@ -14,12 +14,12 @@ export function getLocalConfig(): Config {
       '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     ),
     contractCreationBlock: 0,
-    eventQuery: {
+    batchDownloader: {
       intervalMs: 5_000,
       reorgOffset: 0n,
-      batchSize: 10n,
+      maxBlocksPerQuery: 10n,
     },
-    batchPosting: {
+    batchPoster: {
       intervalMs: 10_000,
       gasLimit: 3_000_000,
     },
