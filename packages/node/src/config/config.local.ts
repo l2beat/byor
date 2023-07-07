@@ -10,9 +10,17 @@ export function getLocalConfig(): Config {
   return {
     chain: localNetwork,
     rpcUrl: process.env.LOCAL_RPC_URL ?? 'http://localhost:8545',
-    probePeriodSec: 5,
-    flushPeriodSec: 10,
-    contractCreatedAtBlock: 0,
+    contractAddress: EthereumAddress(
+      '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+    ),
+    contractCreationBlock: 0,
+    eventQueryIntervalSeconds: 5,
+    batchPostingIntervalSeconds: 10,
+    batchPostingGasLimit: 3_000_000,
+    privateKey: Hex(
+      '0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a',
+    ),
+    genesisState: GENESIS_STATE,
     database: {
       connection:
         process.env.LOCAL_DB_URL ??
@@ -20,14 +28,6 @@ export function getLocalConfig(): Config {
       migrationPath: 'drizzle',
       isProduction: false,
     },
-    privateKey: Hex(
-      '0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a',
-    ),
-    ctcContractAddress: EthereumAddress(
-      '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-    ),
-    genesisState: GENESIS_STATE,
-    rpcServePort: 3000,
-    gasLimit: 3_000_000,
+    apiPort: 3000,
   }
 }

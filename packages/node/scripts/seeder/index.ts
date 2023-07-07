@@ -69,7 +69,7 @@ async function submitToL1(
   })
 
   const { request } = await publicClient.simulateContract({
-    address: config.ctcContractAddress.toString(),
+    address: config.contractAddress.toString(),
     abi: abi,
     functionName: 'appendBatch',
     args: [serializedBatchBytes.toString()],

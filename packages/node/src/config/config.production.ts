@@ -12,20 +12,20 @@ export function getProductionConfig(): Config {
   return {
     chain: goerli,
     rpcUrl: getEnv('RPC_URL'),
-    probePeriodSec: 5,
-    flushPeriodSec: 10,
-    contractCreatedAtBlock: 9219782,
+    contractAddress: EthereumAddress(
+      '0x1155cBF8aAf5d086051A0D5a3f1B900473d22419',
+    ),
+    contractCreationBlock: 9219782,
+    eventQueryIntervalSeconds: 5,
+    batchPostingIntervalSeconds: 10,
+    batchPostingGasLimit: 3_000_000,
+    privateKey: Hex(getEnv('PRIVATE_KEY')),
+    genesisState: GENESIS_STATE,
     database: {
       connection: getEnv('DATABASE_URL'),
       migrationPath: 'drizzle',
       isProduction: true,
     },
-    privateKey: Hex(getEnv('PRIVATE_KEY')),
-    ctcContractAddress: EthereumAddress(
-      '0x1155cBF8aAf5d086051A0D5a3f1B900473d22419',
-    ),
-    genesisState: GENESIS_STATE,
-    rpcServePort: parseInt(getEnv('PORT')),
-    gasLimit: 3_000_000,
+    apiPort: parseInt(getEnv('PORT')),
   }
 }

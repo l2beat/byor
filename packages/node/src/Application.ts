@@ -54,7 +54,7 @@ export class Application {
     const ethereumClient = new EthereumPrivateClient(
       walletClient,
       publicClient,
-      config.ctcContractAddress,
+      config.contractAddress,
       logger,
     )
 
@@ -66,11 +66,11 @@ export class Application {
     const l1Fetcher = new L1StateFetcher(
       ethereumClient,
       fetcherRepository,
-      config.ctcContractAddress,
+      config.contractAddress,
       logger,
     )
     const l1Manager = new L1StateManager(
-      config.probePeriodSec,
+      config.eventQueryIntervalSeconds,
       accountRepository,
       transactionRepository,
       l1Fetcher,
@@ -78,9 +78,11 @@ export class Application {
     )
 
     const mempool = new Mempool(logger)
-    const transactionLimit = calculateTransactionLimit(config.gasLimit)
+    const transactionLimit = calculateTransactionLimit(
+      config.batchPostingGasLimit,
+    )
     const l1Submitter = new L1StateSubmitter(
-      config.flushPeriodSec,
+      config.batchPostingIntervalSeconds,
       transactionLimit,
       l1Manager,
       ethereumClient,
@@ -94,7 +96,7 @@ export class Application {
       statistics: createStatisticsRouter(transactionRepository),
     }
 
-    const apiServer = new ApiServer(config.rpcServePort, logger, routers)
+    const apiServer = new ApiServer(config.apiPort, logger, routers)
 
     this.start = async (): Promise<void> => {
       logger.info('Starting...')
