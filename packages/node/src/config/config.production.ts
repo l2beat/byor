@@ -11,12 +11,15 @@ export function getProductionConfig(): Config {
 
   return {
     chain: goerli,
+    rpcUrl: getEnv('RPC_URL'),
     probePeriodSec: 5,
     flushPeriodSec: 10,
     contractCreatedAtBlock: 9219782,
-    databaseConnection: getEnv('DATABASE_URL'),
-    migrationsPath: 'drizzle',
-    isProductionDatabase: true,
+    database: {
+      connection: getEnv('DATABASE_URL'),
+      migrationPath: 'drizzle',
+      isProduction: true,
+    },
     privateKey: Hex(getEnv('PRIVATE_KEY')),
     ctcContractAddress: EthereumAddress(
       '0x1155cBF8aAf5d086051A0D5a3f1B900473d22419',

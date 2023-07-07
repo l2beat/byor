@@ -29,9 +29,9 @@ export class Application {
     const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
 
     const database = new Database(
-      config.databaseConnection,
-      config.migrationsPath,
-      config.isProductionDatabase,
+      config.database.connection,
+      config.database.migrationPath,
+      config.database.isProduction,
       logger,
     )
     const accountRepository = new AccountRepository(database)
@@ -42,18 +42,18 @@ export class Application {
       getContractCreationTime(config),
     )
 
-    const publicProvider = createPublicClient({
+    const publicClient = createPublicClient({
       chain: config.chain,
-      transport: http(),
+      transport: http(config.rpcUrl),
     })
-    const signer = createWalletClient({
+    const walletClient = createWalletClient({
       chain: config.chain,
       account: privateKeyToAccount(config.privateKey.toString()),
-      transport: http(),
+      transport: http(config.rpcUrl),
     })
     const ethereumClient = new EthereumPrivateClient(
-      signer,
-      publicProvider,
+      walletClient,
+      publicClient,
       config.ctcContractAddress,
       logger,
     )

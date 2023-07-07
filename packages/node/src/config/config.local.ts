@@ -9,14 +9,17 @@ export function getLocalConfig(): Config {
 
   return {
     chain: localNetwork,
+    rpcUrl: process.env.LOCAL_RPC_URL ?? 'http://localhost:8545',
     probePeriodSec: 5,
     flushPeriodSec: 10,
     contractCreatedAtBlock: 0,
-    databaseConnection:
-      process.env.LOCAL_DB_URL ??
-      'postgresql://postgres:password@localhost:5432/byor_local',
-    migrationsPath: 'drizzle',
-    isProductionDatabase: false,
+    database: {
+      connection:
+        process.env.LOCAL_DB_URL ??
+        'postgresql://postgres:password@localhost:5432/byor_local',
+      migrationPath: 'drizzle',
+      isProduction: false,
+    },
     privateKey: Hex(
       '0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a',
     ),

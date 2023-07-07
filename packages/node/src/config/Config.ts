@@ -3,12 +3,15 @@ import { Chain } from 'viem'
 
 export interface Config {
   readonly chain: Chain
+  readonly rpcUrl?: string
   readonly probePeriodSec: number
   readonly flushPeriodSec: number
   readonly contractCreatedAtBlock: number
-  readonly databaseConnection: string
-  readonly migrationsPath: string
-  readonly isProductionDatabase: boolean
+  readonly database: {
+    readonly connection: string
+    readonly migrationPath: string
+    readonly isProduction: boolean
+  }
   readonly privateKey: Hex
   readonly ctcContractAddress: EthereumAddress
   readonly genesisState: Record<string, number>
