@@ -14,13 +14,14 @@ export function FaucetPrivateKey() {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger className="">
-          <div className="text-xl text-left">
-            <span className="text-accent-foreground/60">
+        <TooltipTrigger className="max-w-full">
+          <div className="text-xl text-left max-w-full">
+            <div className="text-accent-foreground/60 max-w-full">
               {'To send yourself some tokens, use this private key: '}
-            </span>
-            <br />
-            <span>{PUBLIC_FAUCET_PRIVATE_KEY}</span>
+            </div>
+            <div className="truncate max-w-full">
+              {PUBLIC_FAUCET_PRIVATE_KEY}
+            </div>
           </div>
         </TooltipTrigger>
         <TooltipContent>
