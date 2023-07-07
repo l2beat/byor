@@ -15,11 +15,12 @@ export function Overview(): JSX.Element {
 
   if (!data) {
     return (
-    <div className="container flex bg-zinc-800 rounded-xl mt-10 justify-around">
-      <span className="basis-full text-center text-xl font-bold">
-        Overview is loading...
-      </span>
-    </div>)
+      <div className="container flex bg-zinc-800 rounded-xl mt-10 justify-around">
+        <span className="basis-full text-center text-xl font-bold">
+          Overview is loading...
+        </span>
+      </div>
+    )
   }
 
   return (
