@@ -1,8 +1,8 @@
 import { assert, EthereumAddress, Unsigned64 } from '@byor/shared'
 import { eq, InferModel, sql } from 'drizzle-orm'
 
-import { BaseRepository } from './BaseRepository'
-import { accountsSchema } from './schema'
+import { BaseRepository } from './shared/BaseRepository'
+import { accountsSchema } from './shared/schema'
 
 type InternalAccountRecord = InferModel<typeof accountsSchema>
 

@@ -1,5 +1,5 @@
-import { Logger } from '../../tools/Logger'
-import { Database } from '../Database'
+import { Logger } from '../../../tools/Logger'
+import { Database } from '../shared/Database'
 
 export function setupDatabaseTestSuite(): Database {
   const connection =

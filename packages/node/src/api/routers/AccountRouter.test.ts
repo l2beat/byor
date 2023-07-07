@@ -1,7 +1,7 @@
 import { EthereumAddress, Unsigned64 } from '@byor/shared'
 import { mockFn, mockObject } from 'earl'
 
-import { AccountRepository } from '../../db/AccountRepository'
+import { AccountRepository } from '../../peripherals/database/AccountRepository'
 import { createAccountRouter } from './AccountRouter'
 import { createTestApiServer } from './test/createTestApiServer'
 
