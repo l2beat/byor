@@ -5,16 +5,16 @@ import {
 } from '@byor/shared'
 import { zip } from 'lodash'
 
-import { AccountRepository } from './db/AccountRepository'
+import { AccountRepository } from '../peripherals/database/AccountRepository'
 import {
   TransactionRecord,
   TransactionRepository,
-} from './db/TransactionRepository'
+} from '../peripherals/database/TransactionRepository'
+import { setIntervalAsync } from '../tools/asyncTimeUtils'
+import { Logger } from '../tools/Logger'
 import { executeBatch, StateMap } from './executeBatch'
 import { L1EventStateType } from './L1EventStateType'
 import { L1StateFetcher } from './L1StateFetcher'
-import { setIntervalAsync } from './tools/asyncTimeUtils'
-import { Logger } from './tools/Logger'
 
 export class L1StateManager {
   private readonly probePeriodMs: number

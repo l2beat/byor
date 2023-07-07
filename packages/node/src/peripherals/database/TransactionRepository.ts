@@ -8,8 +8,8 @@ import {
 } from '@byor/shared'
 import { desc, eq, gte, InferModel, sql } from 'drizzle-orm'
 
-import { BaseRepository } from './BaseRepository'
-import { transactionsSchema } from './schema'
+import { BaseRepository } from './shared/BaseRepository'
+import { transactionsSchema } from './shared/schema'
 
 type InternalTransactionRecord = InferModel<typeof transactionsSchema>
 export interface TransactionRecord extends Transaction {

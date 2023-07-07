@@ -1,7 +1,7 @@
 import { Hex } from '@byor/shared'
 import { expect, mockFn, mockObject } from 'earl'
 
-import { TransactionRepository } from '../../db/TransactionRepository'
+import { TransactionRepository } from '../../peripherals/database/TransactionRepository'
 import { Mempool } from '../../peripherals/mempool/Mempool'
 import { createTestApiServer } from './test/createTestApiServer'
 import { createTransactionRouter } from './TransactionRouter'

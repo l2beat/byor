@@ -8,11 +8,11 @@ import {
 import { expect, mockFn, mockObject } from 'earl'
 import { privateKeyToAccount } from 'viem/accounts'
 
-import { AccountRepository } from './db/AccountRepository'
-import { TransactionRepository } from './db/TransactionRepository'
+import { AccountRepository } from '../peripherals/database/AccountRepository'
+import { TransactionRepository } from '../peripherals/database/TransactionRepository'
+import { Logger } from '../tools/Logger'
 import { L1StateFetcher } from './L1StateFetcher'
 import { L1StateManager } from './L1StateManager'
-import { Logger } from './tools/Logger'
 
 describe(L1StateManager.name, () => {
   describe(L1StateManager.prototype.start.name, () => {

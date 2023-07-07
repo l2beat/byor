@@ -1,11 +1,11 @@
 import { serializeBatch, unreachableCodePath } from '@byor/shared'
 
+import { EthereumPrivateClient } from '../peripherals/ethereum/EthereumPrivateClient'
+import { Mempool } from '../peripherals/mempool/Mempool'
+import { setIntervalAsync } from '../tools/asyncTimeUtils'
+import { Logger } from '../tools/Logger'
 import { filterValidTxs } from './executeBatch'
 import { L1StateManager } from './L1StateManager'
-import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
-import { Mempool } from './peripherals/mempool/Mempool'
-import { setIntervalAsync } from './tools/asyncTimeUtils'
-import { Logger } from './tools/Logger'
 
 export class L1StateSubmitter {
   constructor(

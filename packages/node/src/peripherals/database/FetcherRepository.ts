@@ -1,10 +1,10 @@
 import { assert } from '@byor/shared'
 import { eq, InferModel } from 'drizzle-orm'
 
-import { ChainContractCreationTime } from '../getContractCreationTime'
-import { BaseRepository } from './BaseRepository'
-import { Database } from './Database'
-import { fetcherSchema } from './schema'
+import { ChainContractCreationTime } from './getContractCreationTime'
+import { BaseRepository } from './shared/BaseRepository'
+import { Database } from './shared/Database'
+import { fetcherSchema } from './shared/schema'
 
 type InternalFetcherRecord = InferModel<typeof fetcherSchema>
 

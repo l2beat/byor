@@ -11,11 +11,11 @@ import { install, InstalledClock } from '@sinonjs/fake-timers'
 import { expect, mockFn, mockObject } from 'earl'
 import { privateKeyToAccount } from 'viem/accounts'
 
+import { EthereumPrivateClient } from '../peripherals/ethereum/EthereumPrivateClient'
+import { Mempool } from '../peripherals/mempool/Mempool'
+import { Logger } from '../tools/Logger'
 import { L1StateManager } from './L1StateManager'
 import { L1StateSubmitter } from './L1StateSubmitter'
-import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
-import { Mempool } from './peripherals/mempool/Mempool'
-import { Logger } from './tools/Logger'
 
 describe(L1StateSubmitter.name, () => {
   const modelAccount1 = privateKeyToAccount(

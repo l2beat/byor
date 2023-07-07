@@ -1,7 +1,7 @@
 import { EthereumAddress } from '@byor/shared'
 import { z } from 'zod'
 
-import { AccountRepository } from '../../db/AccountRepository'
+import { AccountRepository } from '../../peripherals/database/AccountRepository'
 import { publicProcedure, router } from '../trpc'
 import { branded } from '../types/branded'
 

@@ -1,6 +1,6 @@
 import { mockFn, mockObject } from 'earl'
 
-import { TransactionRepository } from '../../db/TransactionRepository'
+import { TransactionRepository } from '../../peripherals/database/TransactionRepository'
 import { createStatisticsRouter } from './StatisticRouter'
 import { createTestApiServer } from './test/createTestApiServer'
 

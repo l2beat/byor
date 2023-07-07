@@ -2,7 +2,7 @@ import { drizzle, PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import postgres from 'postgres'
 
-import { Logger } from '../tools/Logger'
+import { Logger } from '../../../tools/Logger'
 
 export class Database {
   private readonly client: postgres.Sql

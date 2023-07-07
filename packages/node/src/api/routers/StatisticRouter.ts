@@ -1,4 +1,4 @@
-import { TransactionRepository } from '../../db/TransactionRepository'
+import { TransactionRepository } from '../../peripherals/database/TransactionRepository'
 import { publicProcedure, router } from '../trpc'
 
 // NOTE(radomski): We need to propagte the return type
