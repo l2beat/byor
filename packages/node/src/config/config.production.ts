@@ -17,7 +17,9 @@ export function getProductionConfig(): Config {
     migrationsPath: 'drizzle',
     isProductionDatabase: true,
     privateKey: Hex(getEnv('PRIVATE_KEY')),
-    ctcContractAddress: EthereumAddress(getEnv('CTC_ADDRESS')),
+    ctcContractAddress: EthereumAddress(
+      '0x1155cBF8aAf5d086051A0D5a3f1B900473d22419',
+    ),
     genesisState: GENESIS_STATE,
     rpcServePort: 3000,
     gasLimit: 3_000_000,
