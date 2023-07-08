@@ -67,7 +67,7 @@ export function Wallet() {
           {status === 'connected' ? (
             <Account address={address}>
               <>{walletReady && <TransactionModal />}</>
-              <div className="basis-full my-2">
+              <div className="max-w-full my-2">
                 <AccountBalance />
               </div>
             </Account>
