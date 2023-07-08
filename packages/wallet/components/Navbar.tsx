@@ -5,7 +5,7 @@ import { L2BeatLogo } from './L2BeatLogo'
 
 export function Navbar(): JSX.Element {
   return (
-    <div className="container flex font-semibold py-2 items-end px-0">
+    <div className="container flex font-semibold py-2 items-start sm:items-end px-0">
       <span className="text-4xl max-w-[13rem] sm:max-w-[26rem] italic">
         Build Your Own Rollup
       </span>
