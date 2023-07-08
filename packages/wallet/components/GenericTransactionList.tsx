@@ -34,7 +34,7 @@ interface Props {
 
 export function GenericTransactionList({ title, state, setState }: Props) {
   return (
-    <div className="container items-center flex bg-zinc-800 rounded-xl mt-10 column flex-wrap">
+    <div className="container sm:px-8 px-2 items-center flex bg-zinc-800 rounded-xl mt-10 column flex-wrap">
       <GenericTransactionListInner
         title={title}
         state={state}
@@ -59,7 +59,7 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
     <>
       <div className="grid grid-cols-12 basis-full justify-center items-center text-xl mb-6 mt-2 font-semibold">
         <span className="text-center col-span-4 col-start-5">{title}</span>
-        <div className="col-start-12 grid grid-cols-3">
+        <div className="col-start-10 col-span-3 sm:col-start-11 sm:col-span-2 lg:col-start-12 lg:col-span-1 grid grid-cols-3">
           {state.pageNum !== 0 && (
             <Button
               variant={'secondary'}
@@ -108,22 +108,29 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
       )}
       {state.txs.slice(0, PAGINATION_SIZE).map((tx, iter) => {
         return (
-          <div key={iter} className="basis-full grid grid-cols-5 gap-4">
+          <div
+            key={iter}
+            className="basis-full max-w-full grid grid-cols-5 gap-4"
+          >
             <OpenInExplorer router={router} input={tx.hash}>
-              <span className="text-gray-400 truncate max-w-[12rem]">
+              <div className="text-gray-400 truncate sm:max-w-[12rem]">
                 {tx.hash}
-              </span>
+              </div>
             </OpenInExplorer>
             <OpenInExplorer router={router} input={tx.from}>
-              <span className="text-gray-400">{minimizeAddress(tx.from)}</span>
+              <div className="text-gray-400 truncate">
+                {minimizeAddress(tx.from)}
+              </div>
             </OpenInExplorer>
             <OpenInExplorer router={router} input={tx.to}>
-              <span className="text-gray-400">{minimizeAddress(tx.to)}</span>
+              <div className="text-gray-400 truncate">
+                {minimizeAddress(tx.to)}
+              </div>
             </OpenInExplorer>
-            <span className="text-gray-400">{tx.value}</span>
-            <span className="text-gray-400">
+            <div className="text-gray-400">{tx.value}</div>
+            <div className="text-gray-400 sm:max-w-none truncate">
               {formatTimeDifferenceFromNow(tx.date)}
-            </span>
+            </div>
           </div>
         )
       })}
@@ -143,7 +150,7 @@ function OpenInExplorer({
   return (
     <Button
       variant="link"
-      className="mr-auto justify-left items-start p-0 h-0"
+      className="mr-auto max-w-full col-span-1 items-start p-0 h-0"
       onClick={() => setExplorerInput(router, input)}
     >
       {children}
