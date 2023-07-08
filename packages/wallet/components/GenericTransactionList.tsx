@@ -57,40 +57,45 @@ function GenericTransactionListInner({ title, state, setState }: Props) {
 
   return (
     <>
-      <div className="grid grid-cols-12 basis-full justify-center items-center text-xl mb-6 mt-2 font-semibold">
-        <span className="text-center col-span-4 col-start-5">{title}</span>
-        <div className="col-start-10 col-span-3 sm:col-start-11 sm:col-span-2 lg:col-start-12 lg:col-span-1 grid grid-cols-3">
-          {state.pageNum !== 0 && (
-            <Button
-              variant={'secondary'}
-              className="px-0"
-              onClick={() =>
-                setState({
-                  ...state,
-                  isLoading: true,
-                  pageNum: state.pageNum - 1,
-                })
-              }
-            >
-              <ChevronLeft size={18} />
+      <div className="flex basis-full center items-center text-xl mb-6 mt-2 font-semibold">
+        <div className="flex-1" />
+        <div className="text-center flex-none max-w-[33%]">{title}</div>
+        <div className="flex-1 flex justify-end">
+          <div className="grid grid-cols-3 aspect-[3/1]">
+            {state.pageNum !== 0 && (
+              <Button
+                variant={'secondary'}
+                className="px-0 aspect-square"
+                onClick={() =>
+                  setState({
+                    ...state,
+                    isLoading: true,
+                    pageNum: state.pageNum - 1,
+                  })
+                }
+              >
+                <ChevronLeft size={18} />
+              </Button>
+            )}
+            <Button className="col-start-2 aspect-square">
+              {state.pageNum + 1}
             </Button>
-          )}
-          <Button className="col-start-2">{state.pageNum + 1}</Button>
-          {state.txs.length / PAGINATION_SIZE > 1 && (
-            <Button
-              variant={'secondary'}
-              className="px-0"
-              onClick={() =>
-                setState({
-                  ...state,
-                  isLoading: true,
-                  pageNum: state.pageNum + 1,
-                })
-              }
-            >
-              <ChevronRight size={18} />
-            </Button>
-          )}
+            {state.txs.length / PAGINATION_SIZE > 1 && (
+              <Button
+                variant={'secondary'}
+                className="px-0 aspect-square"
+                onClick={() =>
+                  setState({
+                    ...state,
+                    isLoading: true,
+                    pageNum: state.pageNum + 1,
+                  })
+                }
+              >
+                <ChevronRight size={18} />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
       <div className="basis-full grid grid-cols-5 gap-4 text-xl">
