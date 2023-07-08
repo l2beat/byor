@@ -56,25 +56,31 @@ export function Wallet() {
   }, [chain, chains, status])
 
   return (
-    <div className="container flex bg-zinc-800 rounded-xl mt-10">
+    <div className="container flex flex-wrap bg-zinc-800 rounded-xl mt-10">
       {!isSSR && (
-        <div className="w-full my-2">
-          <div className="flex w-full">
-            <div className="ml-auto mb-2">
+        <>
+          <div className="flex basis-full mt-2">
+            {status === 'connected' ? (
+              <Account address={address}>
+                <>{walletReady && <TransactionModal />}</>
+              </Account>
+            ) : (
+              <FaucetPrivateKey />
+            )}
+            <div className="ml-auto">
               <Web3Button />
             </div>
           </div>
-          {status === 'connected' ? (
-            <Account address={address}>
-              <>{walletReady && <TransactionModal />}</>
-              <div className="max-w-full my-2">
-                <AccountBalance />
-              </div>
-            </Account>
-          ) : (
-            <FaucetPrivateKey />
-          )}
-        </div>
+          <div className="basis-full max-w-full">
+            {status === 'connected' && (
+              <Account address={address}>
+                <div className="max-w-full my-2">
+                  <AccountBalance />
+                </div>
+              </Account>
+            )}
+          </div>
+        </>
       )}
     </div>
   )
