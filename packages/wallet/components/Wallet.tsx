@@ -60,24 +60,26 @@ export function Wallet() {
       {!isSSR && (
         <>
           <div className="flex basis-full mt-2">
-            {status === 'connected' ? (
+            {status === 'connected' && (
               <Account address={address}>
                 <>{walletReady && <TransactionModal />}</>
               </Account>
-            ) : (
-              <FaucetPrivateKey />
             )}
             <div className="ml-auto">
               <Web3Button />
             </div>
           </div>
           <div className="basis-full max-w-full">
-            {status === 'connected' && (
+            {status === 'connected' ? (
               <Account address={address}>
                 <div className="max-w-full my-2">
                   <AccountBalance />
                 </div>
               </Account>
+            ) : (
+              <div className="max-w-full my-2">
+                <FaucetPrivateKey />
+              </div>
             )}
           </div>
         </>
