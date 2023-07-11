@@ -29,9 +29,11 @@ export default function Transaction(props: Props) {
     <>
       {tx ? (
         <div className="text-xl">
-          <div>
-            <span>Transaction Hash: </span>
-            <span className="text-gray-400">{props.hash}</span>
+          <div className="flex max-w-full">
+            <div>
+              <span className="whitespace-nowrap">{'Transaction Hash:'}</span>
+            </div>
+            <div className="pl-2 text-gray-400 grow truncate">{props.hash}</div>
           </div>
 
           <div>
@@ -44,19 +46,17 @@ export default function Transaction(props: Props) {
                 </TooltipTrigger>
                 {tx.status !== 'Not found' && (
                   <div>
-                    <div>
-                      <span>{'From: '}</span>
-                      <span className="text-gray-400">
-                        {' '}
-                        {tx.transaction.from}{' '}
-                      </span>
+                    <div className="flex max-w-full">
+                      <div>From:</div>
+                      <div className="pl-2 text-gray-400 grow truncate">
+                        {tx.transaction.from}
+                      </div>
                     </div>
-                    <div>
-                      <span>{'To: '}</span>
-                      <span className="text-gray-400">
-                        {' '}
-                        {tx.transaction.to}{' '}
-                      </span>
+                    <div className="flex max-w-full">
+                      <div>To:</div>
+                      <div className="pl-2 text-gray-400 grow truncate">
+                        {tx.transaction.to}
+                      </div>
                     </div>
                     <div>
                       <span>{'Value: '}</span>

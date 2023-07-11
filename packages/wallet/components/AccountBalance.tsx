@@ -8,20 +8,20 @@ export default function AccountBalance() {
   const acc = useContext(AccountContext)
 
   return (
-    <div className="text-xl">
-      <div>
-        <span>Address: </span>
-        <span className="text-gray-400">{acc.address}</span>
+    <div className="text-xl max-w-full">
+      <div className="flex max-w-full">
+        <div>Address:</div>
+        <div className="pl-2 text-gray-400 grow truncate">{acc.address}</div>
       </div>
 
-      <div>
-        <span>Balance: </span>
-        <span className="text-gray-400">{acc.balance}</span>
+      <div className="flex max-w-full">
+        <div>Balance:</div>
+        <div className="pl-2 text-gray-400 grow truncate">{acc.balance}</div>
       </div>
 
-      <div>
-        <span>Nonce: </span>
-        <span className="text-gray-400">{acc.nonce}</span>
+      <div className="flex max-w-full">
+        <div>Nonce:</div>
+        <div className="pl-2 text-gray-400 grow truncate">{acc.nonce}</div>
       </div>
     </div>
   )

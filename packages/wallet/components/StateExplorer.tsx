@@ -95,13 +95,13 @@ export function StateExplorer() {
       {addressOrHash ? (
         <>
           {Hex.removePrefix(Hex(addressOrHash)).length === 40 ? (
-            <div className="basis-full my-2">
+            <div className="max-w-full my-2">
               <Account address={addressOrHash}>
                 <AccountBalance />
               </Account>
             </div>
           ) : (
-            <div className="basis-full my-2">
+            <div className="max-w-full my-2">
               <Transaction hash={Hex(addressOrHash).toString()} />
             </div>
           )}

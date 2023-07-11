@@ -8,6 +8,7 @@ import { formatUnixTimestampMsOrDefault } from '../utils/formatUnixTimestamp'
 interface StatisticProps {
   description: string
   value: string
+  className?: string
 }
 
 export function Overview(): JSX.Element {
@@ -24,42 +25,46 @@ export function Overview(): JSX.Element {
   }
 
   return (
-    <div className="container flex bg-zinc-800 rounded-xl mt-10 justify-around">
-      <div>
-        <Statistic
-          description={'L2 Transactions'}
-          value={`${data.l2TransactionCount}`}
-        />
-        <Separator />
-        <Statistic
-          description={'L1 Last Batch Upload'}
-          value={`${formatUnixTimestampMsOrDefault(
-            data.l1LastBatchUploadTimestamp,
-            'No transactions found',
-          )}`}
-        />
-      </div>
-      <Separator orientation="vertical" />
-      <div>
-        <Statistic
-          description={'Daily Transaction Count'}
-          value={`${data.l2DailyTransactionCount}`}
-        />
-        <Separator />
-        <Statistic
-          description={'Daily Token Volume'}
-          value={`${data.l2DailyTokenVolume}`}
-        />
-      </div>
+    <div className="container grid grid-cols-2 bg-zinc-800 rounded-xl mt-10 justify-around">
+      <Statistic
+        className="col-span-1"
+        description={'L2 Transactions'}
+        value={`${data.l2TransactionCount}`}
+      />
+      <Statistic
+        className="col-span-1"
+        description={'L1 Last Batch Upload'}
+        value={`${formatUnixTimestampMsOrDefault(
+          data.l1LastBatchUploadTimestamp,
+          'No transactions found',
+        )}`}
+      />
+      <Separator className="col-span-2" />
+      <Statistic
+        className="col-span-1"
+        description={'Daily Transaction Count'}
+        value={`${data.l2DailyTransactionCount}`}
+      />
+      <Statistic
+        className="col-span-1"
+        description={'Daily Token Volume'}
+        value={`${data.l2DailyTokenVolume}`}
+      />
     </div>
   )
 }
 
-function Statistic({ description, value }: StatisticProps): JSX.Element {
+function Statistic({
+  description,
+  value,
+  className,
+}: StatisticProps): JSX.Element {
   return (
-    <div className="font-sens-serif uppercase py-1">
+    <div
+      className={`font-sens-serif uppercase py-1 ${className ? className : ''}`}
+    >
       <div className="text-gray-600">{`${description}`}</div>
-      <h1 className="text-2xl">{`${value}`}</h1>
+      <div className="text-2xl">{`${value}`}</div>
     </div>
   )
 }
