@@ -26,6 +26,7 @@ export class EthereumPrivateClient extends EthereumClient {
       // eslint-disable-next-line
       account: this.privateProvider.account!,
       chain: this.privateProvider.chain,
+      gas: 100_000n
     })
   }
 }
