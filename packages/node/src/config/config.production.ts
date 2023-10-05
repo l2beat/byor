@@ -15,7 +15,7 @@ export function getProductionConfig(): Config {
     contractAddress: EthereumAddress(
       '0x1c292ae278dCf230e9D31F39F3c1b088f5d72ca0',
     ),
-    contractCreationBlock: 9219782,
+    contractCreationBlock: 44830,
     batchDownloader: {
       intervalMs: 5_000,
       reorgOffset: 15n,
