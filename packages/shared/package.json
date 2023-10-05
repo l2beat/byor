@@ -19,6 +19,6 @@
   "devDependencies": {},
   "dependencies": {
     "abitype": "^0.8.11",
-    "viem": "^0.3.22"
+    "viem": "^1.15.3"
   }
 }

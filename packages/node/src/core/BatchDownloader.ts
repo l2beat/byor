@@ -154,5 +154,8 @@ export class BatchDownloader {
 }
 
 function eventsToPosters(events: BatchAppendedLogsType): EthereumAddress[] {
-  return events.map((e) => EthereumAddress(e.args.sender))
+  return events.map((e) => {
+      assert(e.args.sender !== undefined, "Unexepected lack of event sender")
+      return EthereumAddress(e.args.sender)
+  })
 }
