@@ -284,7 +284,7 @@ describe(BatchDownloader.name, () => {
       )
 
       await expect(batchDownloader.getNewBatches()).toBeRejectedWith(
-        'Size must be in increments of 32 bytes',
+        'Data size of 5 bytes is too small for given parameters',
       )
     })
   })
