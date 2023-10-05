@@ -13,7 +13,7 @@ export function getProductionConfig(): Config {
     chain: holesky,
     rpcUrl: getEnv('RPC_URL'),
     contractAddress: EthereumAddress(
-      '0x1155cBF8aAf5d086051A0D5a3f1B900473d22419',
+      '0x1c292ae278dCf230e9D31F39F3c1b088f5d72ca0',
     ),
     contractCreationBlock: 9219782,
     batchDownloader: {
