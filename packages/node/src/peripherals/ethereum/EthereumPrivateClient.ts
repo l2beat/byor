@@ -28,7 +28,7 @@ export class EthereumPrivateClient extends EthereumClient {
       chain: this.privateProvider.chain,
       gas: 100_000n,
       maxFeePerGas: 100n,
-      maxPriorityFeePerGas: 100n
+      maxPriorityFeePerGas: 100n,
     })
   }
 }
