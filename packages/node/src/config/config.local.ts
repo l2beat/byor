@@ -9,7 +9,7 @@ export function getLocalConfig(): Config {
 
   return {
     chain: localNetwork,
-    rpcUrl: process.env.LOCAL_RPC_URL ?? 'http://localhost:8545',
+    rpcUrl: process.env.LOCAL_RPC_URL ?? 'http://127.0.0.1:8545',
     contractAddress: EthereumAddress(
       '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     ),
