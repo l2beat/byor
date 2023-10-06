@@ -103,11 +103,6 @@ export class BatchDownloader {
   async eventsToCallData(events: BatchAppendedLogsType): Promise<Hex[]> {
     const txs = await Promise.all(
       events.map((event) => {
-        assert(
-          event.transactionHash !== null,
-          'Expected the transaction hash in the event to be non-null',
-        )
-
         return this.client.getTransaction(Hex(event.transactionHash))
       }),
     )
@@ -127,11 +122,6 @@ export class BatchDownloader {
   async eventsToTimestamps(events: BatchAppendedLogsType): Promise<Date[]> {
     const blocks = await Promise.all(
       events.map((event) => {
-        assert(
-          event.blockHash !== null,
-          'Expected the block hash in the event to be non-null',
-        )
-
         return this.client.getBlockHeader(Hex(event.blockHash))
       }),
     )
@@ -154,5 +144,8 @@ export class BatchDownloader {
 }
 
 function eventsToPosters(events: BatchAppendedLogsType): EthereumAddress[] {
-  return events.map((e) => EthereumAddress(e.args.sender))
+  return events.map((e) => {
+    assert(e.args.sender !== undefined, 'Unexepected lack of event sender')
+    return EthereumAddress(e.args.sender)
+  })
 }

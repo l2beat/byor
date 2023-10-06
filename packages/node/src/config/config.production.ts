@@ -1,6 +1,6 @@
 import { EthereumAddress, Hex } from '@byor/shared'
 import { config as dotenv } from 'dotenv'
-import { goerli } from 'viem/chains'
+import { holesky } from 'viem/chains'
 
 import { Config } from './Config'
 import GENESIS_STATE from './genesis.json'
@@ -10,12 +10,12 @@ export function getProductionConfig(): Config {
   dotenv()
 
   return {
-    chain: goerli,
+    chain: holesky,
     rpcUrl: getEnv('RPC_URL'),
     contractAddress: EthereumAddress(
-      '0x1155cBF8aAf5d086051A0D5a3f1B900473d22419',
+      '0x1c292ae278dCf230e9D31F39F3c1b088f5d72ca0',
     ),
-    contractCreationBlock: 9219782,
+    contractCreationBlock: 44830,
     batchDownloader: {
       intervalMs: 5_000,
       reorgOffset: 15n,
