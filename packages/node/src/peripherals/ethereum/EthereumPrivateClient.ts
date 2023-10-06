@@ -1,8 +1,8 @@
 import { EthereumAddress, Hex } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 import { PublicClient, WalletClient } from 'viem'
 
 import { abi } from '../../core/abi'
-import { Logger } from '../../tools/Logger'
 import { EthereumClient } from './EthereumClient'
 
 export class EthereumPrivateClient extends EthereumClient {

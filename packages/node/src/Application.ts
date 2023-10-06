@@ -1,3 +1,4 @@
+import { Logger } from '@l2beat/backend-tools'
 import { createPublicClient, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
@@ -19,14 +20,16 @@ import { Database } from './peripherals/database/shared/Database'
 import { TransactionRepository } from './peripherals/database/TransactionRepository'
 import { EthereumPrivateClient } from './peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from './peripherals/mempool/Mempool'
-import { LogLevel } from './tools/ILogger'
-import { Logger } from './tools/Logger'
 
 export class Application {
   start: () => Promise<void>
 
   constructor(config: Config) {
-    const logger = new Logger({ logLevel: LogLevel.DEBUG, format: 'pretty' })
+    const logger = new Logger({
+      logLevel: 'DEBUG',
+      format: 'pretty',
+      colors: true,
+    })
 
     const database = new Database(
       config.database.connection,
@@ -98,7 +101,7 @@ export class Application {
     const apiServer = new ApiServer(config.apiPort, logger, routers)
 
     this.start = async (): Promise<void> => {
-      logger.info('Starting...')
+      logger.for(this).info('Starting...')
 
       await database.migrate()
       await batchDownloader.start()

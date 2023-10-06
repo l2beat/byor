@@ -1,9 +1,9 @@
 import { EthereumAddress, Hex } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 import { expect, mockFn, mockObject } from 'earl'
 import { Account, Chain, PublicClient, WalletClient } from 'viem'
 
 import { abi } from '../../core/abi'
-import { Logger } from '../../tools/Logger'
 import { EthereumPrivateClient } from './EthereumPrivateClient'
 
 describe(EthereumPrivateClient.name, () => {

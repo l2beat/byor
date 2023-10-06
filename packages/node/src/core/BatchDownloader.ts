@@ -1,4 +1,5 @@
 import { assert, EthereumAddress, Hex } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 import { zipWith } from 'lodash'
 import { decodeFunctionData, GetLogsReturnType, parseAbiItem } from 'viem'
 
@@ -7,7 +8,6 @@ import {
   FetcherRepository,
 } from '../peripherals/database/FetcherRepository'
 import { EthereumClient } from '../peripherals/ethereum/EthereumClient'
-import { Logger } from '../tools/Logger'
 import { abi } from './abi'
 
 export interface Batch {

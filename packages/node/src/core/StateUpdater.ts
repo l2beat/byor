@@ -3,6 +3,7 @@ import {
   EthereumAddress,
   unreachableCodePath,
 } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 import { zip } from 'lodash'
 
 import { AccountRepository } from '../peripherals/database/AccountRepository'
@@ -11,7 +12,6 @@ import {
   TransactionRepository,
 } from '../peripherals/database/TransactionRepository'
 import { setIntervalAsync } from '../tools/asyncTimeUtils'
-import { Logger } from '../tools/Logger'
 import { Batch, BatchDownloader } from './BatchDownloader'
 import { executeBatch, StateMap } from './executeBatch'
 
