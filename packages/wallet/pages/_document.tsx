@@ -5,8 +5,18 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <link rel="byor icon" href="/static/favicon.svg" type="image/svg+xml" />
-        <link rel="byor icon" href="/static/favicon-dark.png" type="image/png" media="(prefers-color-scheme: dark)" />
-        <link rel="byor icon" href="/static/favicon-light.png" type="image/png"  media="(prefers-color-scheme: light)" />
+        <link
+          rel="byor icon"
+          href="/static/favicon-dark.png"
+          type="image/png"
+          media="(prefers-color-scheme: dark)"
+        />
+        <link
+          rel="byor icon"
+          href="/static/favicon-light.png"
+          type="image/png"
+          media="(prefers-color-scheme: light)"
+        />
       </Head>
       <body>
         <Main />
