@@ -10,7 +10,17 @@ export function getProductionConfig(): Config {
   dotenv()
 
   return {
-    chain: holesky,
+    chain: {
+      ...holesky,
+      rpcUrls: {
+        default: {
+          http: ['https://ethereum-holesky.publicnode.com'],
+        },
+        public: {
+          http: ['https://ethereum-holesky.publicnode.com'],
+        },
+      },
+    },
     rpcUrl: getEnv('RPC_URL'),
     contractAddress: EthereumAddress(
       '0x1c292ae278dCf230e9D31F39F3c1b088f5d72ca0',
