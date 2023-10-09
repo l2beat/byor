@@ -1,14 +1,13 @@
 import { Github } from 'lucide-react'
 import Link from 'next/link'
 
+import BYORIcon from './icons/BYORIcon'
 import { L2BeatLogo } from './L2BeatLogo'
 
 export function Navbar(): JSX.Element {
   return (
     <div className="container flex font-semibold py-2 items-start sm:items-end px-0">
-      <span className="text-4xl max-w-[13rem] sm:max-w-[26rem] italic">
-        Build Your Own Rollup
-      </span>
+      <BYORIcon className="h-16 w-16" />
       <div className="sm:flex sm:items-end">
         <span className="text-sm sm:pl-2">Made By</span>
         <Link href="https://l2beat.com">
