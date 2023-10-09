@@ -16,6 +16,6 @@ const localTypedDataDomain: TypedDataDomain = {
 const productionTypedDataDomain: TypedDataDomain = {
   name: 'BYOR Sovereign Rollup',
   version: '1',
-  chainId: 5,
+  chainId: 17000,
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 }
