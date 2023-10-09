@@ -44,7 +44,7 @@ export default function Home() {
   return (
     <>
       <WagmiConfig config={wagmiConfig}>
-        <main className="pb-6">
+        <main className="pb-6 mx-auto px-4">
           <Navbar />
           <Overview />
           <Wallet />
