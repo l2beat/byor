@@ -22,6 +22,11 @@ export function FaucetPrivateKey() {
             <div className="truncate max-w-full">
               {PUBLIC_FAUCET_PRIVATE_KEY}
             </div>
+            <div className="text-accent-foreground/60 max-w-full">
+              {
+                'Important: This wallet is created for testing purposes and is accessible to everyone. It should NOT be used for storing Mainnet funds.'
+              }
+            </div>
           </div>
         </TooltipTrigger>
         <TooltipContent>

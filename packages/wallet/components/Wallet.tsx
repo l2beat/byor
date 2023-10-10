@@ -1,6 +1,5 @@
 'use client'
 
-import { Web3Button } from '@web3modal/react'
 import { useEffect, useState } from 'react'
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi'
 
@@ -65,9 +64,6 @@ export function Wallet() {
                 <>{walletReady && <TransactionModal />}</>
               </Account>
             )}
-            <div className="ml-auto">
-              <Web3Button />
-            </div>
           </div>
           <div className="basis-full max-w-full">
             {status === 'connected' ? (
