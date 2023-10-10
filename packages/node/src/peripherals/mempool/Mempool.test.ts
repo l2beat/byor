@@ -5,11 +5,11 @@ import {
   Unsigned8,
   Unsigned64,
 } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 import { install, InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'earl'
 import { privateKeyToAccount } from 'viem/accounts'
 
-import { Logger } from '../../tools/Logger'
 import { Mempool } from './Mempool'
 
 describe(Mempool.name, () => {

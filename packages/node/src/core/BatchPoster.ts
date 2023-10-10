@@ -1,9 +1,9 @@
 import { serializeBatch, unreachableCodePath } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 
 import { EthereumPrivateClient } from '../peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from '../peripherals/mempool/Mempool'
 import { setIntervalAsync } from '../tools/asyncTimeUtils'
-import { Logger } from '../tools/Logger'
 import { filterValidTxs } from './executeBatch'
 import { StateUpdater } from './StateUpdater'
 

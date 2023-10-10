@@ -1,4 +1,5 @@
-import { Logger } from '../../../tools/Logger'
+import { Logger } from '@l2beat/backend-tools'
+
 import { Database } from '../shared/Database'
 
 export function setupDatabaseTestSuite(): Database {
