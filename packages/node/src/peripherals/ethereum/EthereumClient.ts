@@ -1,4 +1,5 @@
 import { EthereumAddress, Hex } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 import { AbiEvent } from 'abitype'
 import {
   GetBlockReturnType,
@@ -6,8 +7,6 @@ import {
   PublicClient,
   Transaction,
 } from 'viem'
-
-import { Logger } from '../../tools/Logger'
 
 export class EthereumClient {
   constructor(

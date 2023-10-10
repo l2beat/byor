@@ -1,15 +1,15 @@
 import { EthereumAddress, Hex, localNetwork } from '@byor/shared'
-import { config as dotenv } from 'dotenv'
+import { getEnv } from '@l2beat/backend-tools'
 
 import { Config } from './Config'
 import GENESIS_STATE from './genesis.json'
 
 export function getLocalConfig(): Config {
-  dotenv()
+  const env = getEnv()
 
   return {
     chain: localNetwork,
-    rpcUrl: process.env.LOCAL_RPC_URL ?? 'http://127.0.0.1:8545',
+    rpcUrl: env.string('LOCAL_RPC_URL', 'http://127.0.0.1:8545'),
     contractAddress: EthereumAddress(
       '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     ),
@@ -28,9 +28,10 @@ export function getLocalConfig(): Config {
     ),
     genesisState: GENESIS_STATE,
     database: {
-      connection:
-        process.env.LOCAL_DB_URL ??
+      connection: env.string(
+        'LOCAL_DB_URL',
         'postgresql://postgres:password@localhost:5432/byor_local',
+      ),
       migrationPath: 'drizzle',
       isProduction: false,
     },

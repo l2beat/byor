@@ -1,10 +1,10 @@
 import { EthereumAddress, Hex } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 import { expect, mockFn, mockObject } from 'earl'
 import { parseAbiItem } from 'viem'
 
 import { FetcherRepository } from '../peripherals/database/FetcherRepository'
 import { EthereumClient } from '../peripherals/ethereum/EthereumClient'
-import { Logger } from '../tools/Logger'
 import { BatchDownloader } from './BatchDownloader'
 
 describe(BatchDownloader.name, () => {

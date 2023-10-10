@@ -7,13 +7,13 @@ import {
   Transaction,
   Unsigned64,
 } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 import { install, InstalledClock } from '@sinonjs/fake-timers'
 import { expect, mockFn, mockObject } from 'earl'
 import { privateKeyToAccount } from 'viem/accounts'
 
 import { EthereumPrivateClient } from '../peripherals/ethereum/EthereumPrivateClient'
 import { Mempool } from '../peripherals/mempool/Mempool'
-import { Logger } from '../tools/Logger'
 import { BatchPoster } from './BatchPoster'
 import { StateUpdater } from './StateUpdater'
 

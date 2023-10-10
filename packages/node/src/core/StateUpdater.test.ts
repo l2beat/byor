@@ -5,12 +5,12 @@ import {
   Transaction,
   Unsigned64,
 } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 import { expect, mockFn, mockObject } from 'earl'
 import { privateKeyToAccount } from 'viem/accounts'
 
 import { AccountRepository } from '../peripherals/database/AccountRepository'
 import { TransactionRepository } from '../peripherals/database/TransactionRepository'
-import { Logger } from '../tools/Logger'
 import { BatchDownloader } from './BatchDownloader'
 import { StateUpdater } from './StateUpdater'
 

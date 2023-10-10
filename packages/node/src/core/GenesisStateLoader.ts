@@ -1,10 +1,10 @@
 import { EthereumAddress, Unsigned64 } from '@byor/shared'
+import { Logger } from '@l2beat/backend-tools'
 
 import {
   AccountRecord,
   AccountRepository,
 } from '../peripherals/database/AccountRepository'
-import { Logger } from '../tools/Logger'
 
 export class GenesisStateLoader {
   constructor(
