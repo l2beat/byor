@@ -3,10 +3,11 @@ import Link from 'next/link'
 
 import BYORIcon from './icons/BYORIcon'
 import { L2BeatLogo } from './L2BeatLogo'
+import { Web3Button } from '@web3modal/react'
 
 export function Navbar(): JSX.Element {
   return (
-    <div className="container flex font-semibold py-2 items-start sm:items-end px-0">
+    <div className="container flex font-semibold py-2 items-start px-0">
       <div className="flex flex-col">
         <div className="flex">
           <BYORIcon className="h-16 w-16" />
@@ -24,6 +25,9 @@ export function Navbar(): JSX.Element {
             <Github />
           </Link>
         </div>
+      </div>
+      <div className="ml-auto my-2">
+        <Web3Button />
       </div>
     </div>
   )

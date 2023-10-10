@@ -65,9 +65,6 @@ export function Wallet() {
                 <>{walletReady && <TransactionModal />}</>
               </Account>
             )}
-            <div className="ml-auto">
-              <Web3Button />
-            </div>
           </div>
           <div className="basis-full max-w-full">
             {status === 'connected' ? (
