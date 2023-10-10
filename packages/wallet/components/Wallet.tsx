@@ -1,6 +1,5 @@
 'use client'
 
-import { Web3Button } from '@web3modal/react'
 import { useEffect, useState } from 'react'
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi'
 

@@ -1,9 +1,9 @@
+import { Web3Button } from '@web3modal/react'
 import { Github } from 'lucide-react'
 import Link from 'next/link'
 
 import BYORIcon from './icons/BYORIcon'
 import { L2BeatLogo } from './L2BeatLogo'
-import { Web3Button } from '@web3modal/react'
 
 export function Navbar(): JSX.Element {
   return (
