@@ -14,9 +14,7 @@ describe('Inputs', () => {
   it('Should emit BatchAppended event', async () => {
     const deployer = await getDeployer()
 
-    const inputsFactory = await hre.ethers.getContractFactory(
-      'Inputs',
-    )
+    const inputsFactory = await hre.ethers.getContractFactory('Inputs')
     const inputs = await inputsFactory.deploy()
 
     await expect(inputs.appendBatch(randomBytes))
@@ -25,9 +23,7 @@ describe('Inputs', () => {
   })
 
   it('Should revert if called from another contract', async () => {
-    const inputsFactory = await hre.ethers.getContractFactory(
-      'Inputs',
-    )
+    const inputsFactory = await hre.ethers.getContractFactory('Inputs')
     const inputs = await inputsFactory.deploy()
     const callerFactory = await hre.ethers.getContractFactory('Caller')
     const caller = await callerFactory.deploy(inputs.address)

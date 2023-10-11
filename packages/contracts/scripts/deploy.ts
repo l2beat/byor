@@ -55,9 +55,7 @@ async function main(): Promise<void> {
     await startPerpetualHardhatNode()
   }
 
-  const inputsFactory = await ethers.getContractFactory(
-    'Inputs',
-  )
+  const inputsFactory = await ethers.getContractFactory('Inputs')
   const inputs = await inputsFactory.deploy()
   await inputs.deployed()
 
