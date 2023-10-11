@@ -2,8 +2,8 @@
 
 ## Data availability
 
-Data availability is provided by L1 via posting the data as `calldata` to the `CTC` contract.
-You can find the contract responsible for this in the [CanonicalTransactionChain.sol](./packages/contracts/src/CanonicalTransactionChain.sol).
+Data availability is provided by L1 via posting the data as `calldata` to the `Inputs` contract.
+You can find the contract responsible for this in the [Inputs.sol](./packages/contracts/src/Inputs.sol).
 It has a single function that can be called by anyone, and it's going to emit an event for easier retrieval of new batches.
 Users can either send transactions to the contract or the sequencer that is later going to call the same function.
 
@@ -17,7 +17,7 @@ These addresses are considered to be faucets, if their supply runs out, there ar
 ### Data fetching
 
 Data is fetched by the [BatchDownloader.ts](./packages/node/src/core/BatchDownloader.ts), after it's downloaded, the `calldata` is extracted and passed through the State Transition Function by [StateUpdater.ts](./packages/node/src/core/StateUpdater.ts), the results are stored in the database.
-BatchDownloader relies on the events emitted by the `CTC` to find all the necessary `calldata`.
+BatchDownloader relies on the events emitted by the `Inputs` to find all the necessary `calldata`.
 
 ### State transition function
 

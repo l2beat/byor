@@ -7,8 +7,8 @@ import { abi } from '../../core/abi'
 import { EthereumPrivateClient } from './EthereumPrivateClient'
 
 describe(EthereumPrivateClient.name, () => {
-  describe(EthereumPrivateClient.prototype.writeToCTCContract.name, () => {
-    it('writes data to the CTC contract using private provider', async () => {
+  describe(EthereumPrivateClient.prototype.writeToInputsContract.name, () => {
+    it('writes data to the Inputs contract using private provider', async () => {
       const publicProvider = mockObject<PublicClient>({})
       const privateProvider = mockObject<WalletClient>({
         writeContract: mockFn().returnsOnce(''),
@@ -25,7 +25,7 @@ describe(EthereumPrivateClient.name, () => {
         Logger.SILENT,
       )
 
-      await ethereumClient.writeToCTCContract(Hex('0x1234'))
+      await ethereumClient.writeToInputsContract(Hex('0x1234'))
 
       expect(privateProvider.writeContract).toHaveBeenCalledWith({
         address: ctcContractAddress.toString(),

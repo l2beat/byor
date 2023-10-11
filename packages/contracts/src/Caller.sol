@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import './CanonicalTransactionChain.sol';
+import './Inputs.sol';
 
 // Only used for testing
 contract Caller {
-    CanonicalTransactionChain ctc;
+    Inputs inputs;
 
-    constructor(address ctcContract) {
-        ctc = CanonicalTransactionChain(ctcContract);
+    constructor(address inputsContract) {
+        inputs = Inputs(inputsContract);
     }
 
     function appendBatch(bytes calldata batch) public {
-        ctc.appendBatch(batch);
+        inputs.appendBatch(batch);
     }
 }

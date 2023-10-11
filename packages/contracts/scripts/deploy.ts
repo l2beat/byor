@@ -55,13 +55,11 @@ async function main(): Promise<void> {
     await startPerpetualHardhatNode()
   }
 
-  const ctcFactory = await ethers.getContractFactory(
-    'CanonicalTransactionChain',
-  )
-  const ctc = await ctcFactory.deploy()
-  await ctc.deployed()
+  const inputsFactory = await ethers.getContractFactory('Inputs')
+  const inputs = await inputsFactory.deploy()
+  await inputs.deployed()
 
-  console.log(`CanonicalTransactionChain deployed to ${ctc.address}`)
+  console.log(`Inputs deployed to ${inputs.address}`)
 }
 
 main().catch((error) => {

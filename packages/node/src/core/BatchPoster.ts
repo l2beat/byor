@@ -51,7 +51,7 @@ export class BatchPoster {
     }
 
     const batchBytes = serializeBatch(validTransactions)
-    await this.client.writeToCTCContract(batchBytes)
+    await this.client.writeToInputsContract(batchBytes)
     this.logger.info('Submitted', {
       count: candidateTransactions.length,
       leftInMempool: this.mempool.size(),

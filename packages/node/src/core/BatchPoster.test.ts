@@ -88,7 +88,7 @@ describe(BatchPoster.name, () => {
           }),
       })
       const client = mockObject<EthereumPrivateClient>({
-        writeToCTCContract: mockFn().returns(null),
+        writeToInputsContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
         popNHighestFee: mockFn()
@@ -109,12 +109,12 @@ describe(BatchPoster.name, () => {
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
-      expect(client.writeToCTCContract).toHaveBeenCalledTimes(2)
-      expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
+      expect(client.writeToInputsContract).toHaveBeenCalledTimes(2)
+      expect(client.writeToInputsContract).toHaveBeenNthCalledWith(
         1,
         modelTx1SerializedHex,
       )
-      expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
+      expect(client.writeToInputsContract).toHaveBeenNthCalledWith(
         2,
         modelTx2SerializedHex,
       )
@@ -145,7 +145,7 @@ describe(BatchPoster.name, () => {
           }),
       })
       const client = mockObject<EthereumPrivateClient>({
-        writeToCTCContract: mockFn().returns(null),
+        writeToInputsContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
         popNHighestFee: mockFn()
@@ -166,8 +166,8 @@ describe(BatchPoster.name, () => {
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
-      expect(client.writeToCTCContract).toHaveBeenCalledTimes(1)
-      expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
+      expect(client.writeToInputsContract).toHaveBeenCalledTimes(1)
+      expect(client.writeToInputsContract).toHaveBeenNthCalledWith(
         1,
         modelTx1SerializedHex,
       )
@@ -198,7 +198,7 @@ describe(BatchPoster.name, () => {
           }),
       })
       const client = mockObject<EthereumPrivateClient>({
-        writeToCTCContract: mockFn().returns(null),
+        writeToInputsContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
         popNHighestFee: mockFn()
@@ -219,7 +219,7 @@ describe(BatchPoster.name, () => {
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
-      expect(client.writeToCTCContract).toHaveBeenCalledTimes(0)
+      expect(client.writeToInputsContract).toHaveBeenCalledTimes(0)
     })
 
     it('does not submit empty transactions', async () => {
@@ -247,7 +247,7 @@ describe(BatchPoster.name, () => {
           }),
       })
       const client = mockObject<EthereumPrivateClient>({
-        writeToCTCContract: mockFn().returns(null),
+        writeToInputsContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
         popNHighestFee: mockFn()
@@ -269,12 +269,12 @@ describe(BatchPoster.name, () => {
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(3)
-      expect(client.writeToCTCContract).toHaveBeenCalledTimes(2)
-      expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
+      expect(client.writeToInputsContract).toHaveBeenCalledTimes(2)
+      expect(client.writeToInputsContract).toHaveBeenNthCalledWith(
         1,
         modelTx1SerializedHex,
       )
-      expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
+      expect(client.writeToInputsContract).toHaveBeenNthCalledWith(
         2,
         modelTx2SerializedHex,
       )
@@ -305,7 +305,7 @@ describe(BatchPoster.name, () => {
           }),
       })
       const client = mockObject<EthereumPrivateClient>({
-        writeToCTCContract: mockFn().returns(null),
+        writeToInputsContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
         popNHighestFee: mockFn()
@@ -326,7 +326,7 @@ describe(BatchPoster.name, () => {
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
-      expect(client.writeToCTCContract).toHaveBeenCalledTimes(0)
+      expect(client.writeToInputsContract).toHaveBeenCalledTimes(0)
     })
 
     it('does not submit transaction if balance if nonce is wrong', async () => {
@@ -354,7 +354,7 @@ describe(BatchPoster.name, () => {
           }),
       })
       const client = mockObject<EthereumPrivateClient>({
-        writeToCTCContract: mockFn().returns(null),
+        writeToInputsContract: mockFn().returns(null),
       })
       const mempool = mockObject<Mempool>({
         popNHighestFee: mockFn()
@@ -375,7 +375,7 @@ describe(BatchPoster.name, () => {
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
-      expect(client.writeToCTCContract).toHaveBeenCalledTimes(0)
+      expect(client.writeToInputsContract).toHaveBeenCalledTimes(0)
     })
 
     it('submits transactions every flush period seconds', async () => {
@@ -403,7 +403,7 @@ describe(BatchPoster.name, () => {
           }),
       })
       const client = mockObject<EthereumPrivateClient>({
-        writeToCTCContract: mockFn()
+        writeToInputsContract: mockFn()
           .throwsOnce(new Error('failed'))
           .returns(null),
       })
@@ -426,12 +426,12 @@ describe(BatchPoster.name, () => {
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
-      expect(client.writeToCTCContract).toHaveBeenCalledTimes(2)
-      expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
+      expect(client.writeToInputsContract).toHaveBeenCalledTimes(2)
+      expect(client.writeToInputsContract).toHaveBeenNthCalledWith(
         1,
         modelTx1SerializedHex,
       )
-      expect(client.writeToCTCContract).toHaveBeenNthCalledWith(
+      expect(client.writeToInputsContract).toHaveBeenNthCalledWith(
         2,
         modelTx2SerializedHex,
       )
