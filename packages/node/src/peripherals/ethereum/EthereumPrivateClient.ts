@@ -16,7 +16,7 @@ export class EthereumPrivateClient extends EthereumClient {
     this.logger = this.logger.for(this)
   }
 
-  async writeToCTCContract(batchBytes: Hex): Promise<void> {
+  async writeToInputsContract(batchBytes: Hex): Promise<void> {
     await this.privateProvider.writeContract({
       address: this.ctcContractAddress.toString(),
       abi: abi,

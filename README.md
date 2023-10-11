@@ -6,7 +6,7 @@ Build Your Own Rollup - A simple rollup implementation for educational purposes.
 
 If you want to read the code and understand how it works you should start with the following files:
 
-1. [The smart contract](./packages/contracts/src/CanonicalTransactionChain.sol)
+1. [The smart contract](./packages/contracts/src/Inputs.sol)
 2. [The node](./packages/node/src/index.ts)
 
 For more details about the architecture, see [here](./ARCHITECTURE.md).
