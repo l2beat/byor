@@ -9,6 +9,8 @@ If you want to read the code and understand how it works you should start with t
 1. [The smart contract](./packages/contracts/src/CanonicalTransactionChain.sol)
 2. [The node](./packages/node/src/index.ts)
 
+For more details about the architecture, see [here](./ARCHITECTURE.md).
+
 ## Running the code
 
 ### Prerequisites
