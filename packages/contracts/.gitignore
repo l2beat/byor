@@ -1,2 +1,19 @@
-# Hardhat
+# Foundry
+cache/
+out/
+.env
+broadcast/
+
+# JS
+node_modules/
+
+#Hardhat files
+cache_hardhat/
+artifacts/
 build/
+
+#Hardhat plugin files
+typechain-types/
+
+#yarn
+*.log

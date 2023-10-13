@@ -29,6 +29,7 @@
     "chai": "^4.3.7",
     "ethers": "^5.0.0",
     "hardhat-gas-reporter": "^1.0.9",
+    "hardhat-preprocessor": "^0.1.5",
     "solidity-coverage": "^0.8.2",
     "ts-node": "^10.9.1",
     "typechain": "^8.1.1"
