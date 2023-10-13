@@ -62,7 +62,7 @@ export class Mempool {
       'Invalid mempool state, dropping everything',
     )
 
-    /* eslint-enable */
+    /* eslint-disable */
     const sorted = zip(this.pool, this.poolTimestamps).sort(
       ([a, _], [b, __]) => {
         if (a!.value < b!.value) {
@@ -81,7 +81,6 @@ export class Mempool {
     return sorted.slice(0, n).map(([a, _]) => a!)
     /* eslint-enable */
   }
-
 
   popNFIFO(n: number): SignedTransaction[] {
     assert(

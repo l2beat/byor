@@ -33,7 +33,9 @@ export class BatchPoster {
     let candidateTransactions
     switch (this.sequencerOrder) {
       case 'FEE': {
-        candidateTransactions = this.mempool.popNHighestFee(this.transactionLimit)
+        candidateTransactions = this.mempool.popNHighestFee(
+          this.transactionLimit,
+        )
         break
       }
       case 'FIFO': {
@@ -49,11 +51,15 @@ export class BatchPoster {
         break
       }
       case 'VALUE': {
-        candidateTransactions = this.mempool.popNHighestValue(this.transactionLimit)
+        candidateTransactions = this.mempool.popNHighestValue(
+          this.transactionLimit,
+        )
         break
       }
       default: {
-        candidateTransactions = this.mempool.popNHighestFee(this.transactionLimit)
+        candidateTransactions = this.mempool.popNHighestFee(
+          this.transactionLimit,
+        )
       }
     }
 

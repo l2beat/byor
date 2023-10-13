@@ -306,10 +306,7 @@ describe(Mempool.name, () => {
       mempool.add([modelSignedTx1, modelSignedTx1])
       mempool.add([modelSignedTx3, modelSignedTx3])
 
-      expect(mempool.popNFIFO(2)).toEqual([
-        modelSignedTx1,
-        modelSignedTx1,
-      ])
+      expect(mempool.popNFIFO(2)).toEqual([modelSignedTx1, modelSignedTx1])
       expect(mempool.getTransactionsInPool()).toEqual([
         modelSignedTx3,
         modelSignedTx3,
@@ -376,10 +373,7 @@ describe(Mempool.name, () => {
       mempool.add([modelSignedTx1, modelSignedTx1])
       mempool.add([modelSignedTx3, modelSignedTx3])
 
-      expect(mempool.popNLIFO(2)).toEqual([
-        modelSignedTx3,
-        modelSignedTx3,
-      ])
+      expect(mempool.popNLIFO(2)).toEqual([modelSignedTx3, modelSignedTx3])
       expect(mempool.getTransactionsInPool()).toEqual([
         modelSignedTx1,
         modelSignedTx1,

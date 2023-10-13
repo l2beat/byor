@@ -487,7 +487,7 @@ describe(BatchPoster.name, () => {
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
-        "FIFO",
+        'FIFO',
       )
       batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
