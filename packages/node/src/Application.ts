@@ -90,6 +90,7 @@ export class Application {
       logger,
       calculateTransactionLimit(config.batchPoster.gasLimit),
       config.batchPoster.intervalMs,
+      config.batchPoster.sequencerOrder,
     )
 
     const routers: AppRouters = {

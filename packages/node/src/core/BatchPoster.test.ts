@@ -61,6 +61,7 @@ describe(BatchPoster.name, () => {
 
   const FLUSH_PERIOD_MS = 1_000
   const TRANSACTION_LIMIT = 100
+  const SEQUENCER_ORDER = 'FEE'
 
   describe(BatchPoster.prototype.start.name, () => {
     it('submits transactions where every one applies every flush period seconds', async () => {
@@ -103,6 +104,7 @@ describe(BatchPoster.name, () => {
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
+        SEQUENCER_ORDER,
       )
       batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
@@ -160,6 +162,7 @@ describe(BatchPoster.name, () => {
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
+        SEQUENCER_ORDER,
       )
       batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
@@ -213,6 +216,7 @@ describe(BatchPoster.name, () => {
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
+        SEQUENCER_ORDER,
       )
       batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
@@ -263,6 +267,7 @@ describe(BatchPoster.name, () => {
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
+        SEQUENCER_ORDER,
       )
       batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
@@ -320,6 +325,7 @@ describe(BatchPoster.name, () => {
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
+        SEQUENCER_ORDER,
       )
       batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
@@ -369,6 +375,7 @@ describe(BatchPoster.name, () => {
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
+        SEQUENCER_ORDER,
       )
       batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
@@ -420,12 +427,73 @@ describe(BatchPoster.name, () => {
         Logger.SILENT,
         TRANSACTION_LIMIT,
         FLUSH_PERIOD_MS,
+        SEQUENCER_ORDER,
       )
       batchPoster.start()
       await time.tickAsync(FLUSH_PERIOD_MS * 3)
 
       expect(mempool.empty).toHaveBeenCalledTimes(0)
       expect(mempool.popNHighestFee).toHaveBeenCalledTimes(2)
+      expect(client.writeToInputsContract).toHaveBeenCalledTimes(2)
+      expect(client.writeToInputsContract).toHaveBeenNthCalledWith(
+        1,
+        modelTx1SerializedHex,
+      )
+      expect(client.writeToInputsContract).toHaveBeenNthCalledWith(
+        2,
+        modelTx2SerializedHex,
+      )
+    })
+
+    it('submits transactions every flush period seconds with different sequencer ordering', async () => {
+      const stateUpdater = mockObject<StateUpdater>({
+        getState: mockFn()
+          .returnsOnce({
+            '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
+              balance: 100n,
+              nonce: 0n,
+            },
+            '0x70997970C51812dc3A010C7d01b50e0d17dc79C8': {
+              balance: 500n,
+              nonce: 0n,
+            },
+          })
+          .returnsOnce({
+            '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266': {
+              balance: 88n,
+              nonce: 1n,
+            },
+            '0x70997970C51812dc3A010C7d01b50e0d17dc79C8': {
+              balance: 0n,
+              nonce: 1n,
+            },
+          }),
+      })
+      const client = mockObject<EthereumPrivateClient>({
+        writeToInputsContract: mockFn()
+          .throwsOnce(new Error('failed'))
+          .returns(null),
+      })
+      const mempool = mockObject<Mempool>({
+        popNFIFO: mockFn()
+          .returnsOnce([modelSignedTx1])
+          .returnsOnce([modelSignedTx2]),
+        empty: mockFn().returns(null),
+      })
+      const batchPoster = new BatchPoster(
+        stateUpdater,
+        client,
+        mempool,
+        Logger.SILENT,
+        TRANSACTION_LIMIT,
+        FLUSH_PERIOD_MS,
+        "FIFO",
+      )
+      batchPoster.start()
+      await time.tickAsync(FLUSH_PERIOD_MS * 3)
+
+      expect(mempool.empty).toHaveBeenCalledTimes(0)
+      expect(mempool.popNFIFO).toHaveBeenCalledTimes(2)
       expect(client.writeToInputsContract).toHaveBeenCalledTimes(2)
       expect(client.writeToInputsContract).toHaveBeenNthCalledWith(
         1,
