@@ -14,6 +14,7 @@ export interface Config {
   readonly batchPoster: {
     readonly intervalMs: number
     readonly gasLimit: number
+    readonly sequencerOrder: string
   }
   readonly privateKey: Hex
   readonly genesisState: Record<string, number>

@@ -33,6 +33,10 @@ export function getProductionConfig(): Config {
     batchPoster: {
       intervalMs: 10_000,
       gasLimit: 3_000_000,
+      sequencerOrder: env.string(
+        'SEQUENCER_ORDER',
+        'FEE'
+      )
     },
     privateKey: Hex(env.string('PRIVATE_KEY')),
     genesisState: GENESIS_STATE,
