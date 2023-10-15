@@ -15,6 +15,7 @@ export class BatchPoster {
     private readonly logger: Logger,
     private readonly transactionLimit: number,
     private readonly intervalMs: number,
+    private readonly sequencerOrder: string,
   ) {
     this.logger = logger.for(this)
   }
@@ -29,9 +30,39 @@ export class BatchPoster {
   }
 
   private async postBatch(): Promise<void> {
-    const candidateTransactions = this.mempool.popNHighestFee(
-      this.transactionLimit,
-    )
+    let candidateTransactions
+    switch (this.sequencerOrder) {
+      case 'FEE': {
+        candidateTransactions = this.mempool.popNHighestFee(
+          this.transactionLimit,
+        )
+        break
+      }
+      case 'FIFO': {
+        candidateTransactions = this.mempool.popNFIFO(this.transactionLimit)
+        break
+      }
+      case 'LIFO': {
+        candidateTransactions = this.mempool.popNLIFO(this.transactionLimit)
+        break
+      }
+      case 'RANDOM': {
+        candidateTransactions = this.mempool.popNRandom(this.transactionLimit)
+        break
+      }
+      case 'VALUE': {
+        candidateTransactions = this.mempool.popNHighestValue(
+          this.transactionLimit,
+        )
+        break
+      }
+      default: {
+        candidateTransactions = this.mempool.popNHighestFee(
+          this.transactionLimit,
+        )
+      }
+    }
+
     if (candidateTransactions.length === 0) {
       return
     }

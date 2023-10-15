@@ -56,6 +56,68 @@ export class Mempool {
     /* eslint-enable */
   }
 
+  popNHighestValue(n: number): SignedTransaction[] {
+    assert(
+      this.pool.length === this.poolTimestamps.length,
+      'Invalid mempool state, dropping everything',
+    )
+
+    /* eslint-disable */
+    const sorted = zip(this.pool, this.poolTimestamps).sort(
+      ([a, _], [b, __]) => {
+        if (a!.value < b!.value) {
+          return 1
+        }
+        if (a!.value > b!.value) {
+          return -1
+        }
+        return 0
+      },
+    )
+
+    this.pool = sorted.slice(n).map(([a, _]) => a!)
+    this.poolTimestamps = sorted.slice(n).map(([_, a]) => a!)
+
+    return sorted.slice(0, n).map(([a, _]) => a!)
+    /* eslint-enable */
+  }
+
+  popNFIFO(n: number): SignedTransaction[] {
+    assert(
+      this.pool.length === this.poolTimestamps.length,
+      'Invalid mempool state, dropping everything',
+    )
+
+    this.poolTimestamps.splice(0, n)
+    return this.pool.splice(0, n)
+  }
+
+  popNLIFO(n: number): SignedTransaction[] {
+    assert(
+      this.pool.length === this.poolTimestamps.length,
+      'Invalid mempool state, dropping everything',
+    )
+
+    this.poolTimestamps.splice(this.poolTimestamps.length - n, n)
+    return this.pool.splice(this.pool.length - n, n).reverse()
+  }
+
+  popNRandom(n: number): SignedTransaction[] {
+    assert(
+      this.pool.length === this.poolTimestamps.length,
+      'Invalid mempool state, dropping everything',
+    )
+
+    const result: SignedTransaction[] = []
+    for (let i = 0; i < n; i++) {
+      const index = Math.floor(Math.random() * this.pool.length)
+      this.poolTimestamps.splice(index, 1)
+      result.push(...this.pool.splice(index, 1))
+    }
+
+    return result
+  }
+
   getTransactionsInPool(): SignedTransaction[] {
     return this.pool
   }

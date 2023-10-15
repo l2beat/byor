@@ -53,6 +53,42 @@ describe(Mempool.name, () => {
     v: Unsigned8(27),
   }
 
+  const modelSignedTx3: SignedTransaction = {
+    from: EthereumAddress(modelAccount.address),
+    to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
+    value: Unsigned64(20),
+    nonce: Unsigned64(1),
+    fee: Unsigned64(3),
+    hash: Hex(
+      '0x343d48c0e2c7852c9483a53a4017b7ab586140f0a0e31bc1b9e2e20a9900ea48',
+    ),
+    r: Hex(
+      '0x950e2f5c8514196afc5ba38e0d10638d3f4061d6d0b62573ad47808587f92f98',
+    ),
+    s: Hex(
+      '0x67d72774c53d2e64d4fcc6fb9f5526be2a93a68514109d0292c13656f481d033',
+    ),
+    v: Unsigned8(27),
+  }
+
+  const modelSignedTx4: SignedTransaction = {
+    from: EthereumAddress(modelAccount.address),
+    to: EthereumAddress('0x70997970C51812dc3A010C7d01b50e0d17dc79C8'),
+    value: Unsigned64(30),
+    nonce: Unsigned64(1),
+    fee: Unsigned64(3),
+    hash: Hex(
+      '0x343d48c0e2c7852c9483a53a4017b7ab586140f0a0e31bc1b9e2e20a9900ea48',
+    ),
+    r: Hex(
+      '0x950e2f5c8514196afc5ba38e0d10638d3f4061d6d0b62573ad47808587f92f98',
+    ),
+    s: Hex(
+      '0x67d72774c53d2e64d4fcc6fb9f5526be2a93a68514109d0292c13656f481d033',
+    ),
+    v: Unsigned8(27),
+  }
+
   let time: InstalledClock
 
   beforeEach(async () => {
@@ -157,6 +193,210 @@ describe(Mempool.name, () => {
       const mempool = new Mempool(Logger.SILENT)
 
       expect(mempool.popNHighestFee(0)).toEqual([])
+    })
+  })
+
+  describe(Mempool.prototype.popNHighestValue.name, () => {
+    it('intermixes transactions with different values (n = 3)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3, modelSignedTx3])
+      mempool.add([modelSignedTx4])
+
+      expect(mempool.popNHighestValue(3)).toEqual([
+        modelSignedTx4,
+        modelSignedTx3,
+        modelSignedTx3,
+      ])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('intermixes transactions with different values (n = 1) three times', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3, modelSignedTx3])
+
+      expect(mempool.popNHighestValue(1)).toEqual([modelSignedTx3])
+      expect(mempool.popNHighestValue(1)).toEqual([modelSignedTx3])
+      expect(mempool.popNHighestValue(1)).toEqual([modelSignedTx1])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('intermixes transactions with different values (n = 2)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3, modelSignedTx3])
+
+      expect(mempool.popNHighestValue(2)).toEqual([
+        modelSignedTx3,
+        modelSignedTx3,
+      ])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('intermixes transactions with different values (n = 1)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3])
+
+      expect(mempool.popNHighestValue(1)).toEqual([modelSignedTx3])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('returns empty at the start', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      expect(mempool.popNHighestValue(0)).toEqual([])
+    })
+  })
+
+  describe(Mempool.prototype.popNFIFO.name, () => {
+    it('intermixes different transactions (n = 3)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3, modelSignedTx3])
+      mempool.add([modelSignedTx4])
+
+      expect(mempool.popNFIFO(3)).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+        modelSignedTx3,
+      ])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx3,
+        modelSignedTx4,
+      ])
+    })
+
+    it('intermixes different transactions (n = 1) three times', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3, modelSignedTx3])
+
+      expect(mempool.popNFIFO(1)).toEqual([modelSignedTx1])
+      expect(mempool.popNFIFO(1)).toEqual([modelSignedTx1])
+      expect(mempool.popNFIFO(1)).toEqual([modelSignedTx1])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx3,
+        modelSignedTx3,
+      ])
+    })
+
+    it('intermixes different transactions (n = 2)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3, modelSignedTx3])
+
+      expect(mempool.popNFIFO(2)).toEqual([modelSignedTx1, modelSignedTx1])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx3,
+        modelSignedTx3,
+      ])
+    })
+
+    it('intermixes different transactions (n = 1)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3])
+
+      expect(mempool.popNFIFO(1)).toEqual([modelSignedTx1])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx3,
+      ])
+    })
+
+    it('returns empty at the start', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      expect(mempool.popNFIFO(0)).toEqual([])
+    })
+  })
+
+  describe(Mempool.prototype.popNLIFO.name, () => {
+    it('intermixes different transactions (n = 3)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3, modelSignedTx3])
+      mempool.add([modelSignedTx4])
+
+      expect(mempool.popNLIFO(3)).toEqual([
+        modelSignedTx4,
+        modelSignedTx3,
+        modelSignedTx3,
+      ])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('intermixes different transactions (n = 1) three times', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3, modelSignedTx3])
+
+      expect(mempool.popNLIFO(1)).toEqual([modelSignedTx3])
+      expect(mempool.popNLIFO(1)).toEqual([modelSignedTx3])
+      expect(mempool.popNLIFO(1)).toEqual([modelSignedTx1])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('intermixes different transactions (n = 2)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3, modelSignedTx3])
+
+      expect(mempool.popNLIFO(2)).toEqual([modelSignedTx3, modelSignedTx3])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('intermixes different transactions (n = 1)', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      mempool.add([modelSignedTx1, modelSignedTx1])
+      mempool.add([modelSignedTx3])
+
+      expect(mempool.popNLIFO(1)).toEqual([modelSignedTx3])
+      expect(mempool.getTransactionsInPool()).toEqual([
+        modelSignedTx1,
+        modelSignedTx1,
+      ])
+    })
+
+    it('returns empty at the start', () => {
+      const mempool = new Mempool(Logger.SILENT)
+
+      expect(mempool.popNLIFO(0)).toEqual([])
     })
   })
 
