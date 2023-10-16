@@ -34,7 +34,7 @@ docker exec -it byor psql -U postgres -c 'CREATE DATABASE byor_test'
 
 If you restart your system running `docker start byor` will bring the database back online.
 
-### Exection
+### Execution
 
 To build the application, follow these steps:
 
@@ -66,3 +66,7 @@ yarn dev --port 8080
 
 Anvil is used because hardhat is incapable of filtering logs using the `fromBlock`/`toBlock`.
 Read more about this issue [here](https://github.com/wagmi-dev/viem/discussions/366) and [here](https://github.com/foundry-rs/foundry/issues/4729).
+
+## Contributors
+
+- [fewwwww](https://github.com/fewwwww), [Sequencer Ordering](https://github.com/l2beat/byor/pull/62)
