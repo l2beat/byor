@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {Test, console2} from "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 import {Inputs} from "../src/Inputs.sol";
 import {Caller} from "../src/Caller.sol";
 
 contract InputsTest is Test {
-    bytes constant randomBytes = '0x12345678907654321234567890987654321234567890987654';
-    address constant bob = address(0xb0b);
+    bytes private constant RANDOM_BYTES = "0x12345678907654321234567890987654321234567890987654";
+    address private constant BOB = address(0xb0b);
     Inputs private inputs;
-    Caller private caller; 
+    Caller private caller;
 
     event BatchAppended(address sender);
 
@@ -18,18 +18,18 @@ contract InputsTest is Test {
         caller = new Caller(address(inputs));
     }
 
-    function testEvent_BatchAppended() public {
-        // expect address `bob` to be emitted
-        vm.prank(bob, bob);
+    function testEventBatchAppended() public {
+        // should emit BatchAppended event.
+        // expect address `bob` to be emitted.
+        vm.prank(BOB, BOB);
         vm.expectEmit();
-        emit BatchAppended(bob);
-        inputs.appendBatch(randomBytes);
+        emit BatchAppended(BOB);
+        inputs.appendBatch(RANDOM_BYTES);
     }
 
-    function testRevert_Caller() public {
-        // expect call to be reverted
+    function testRevertCaller() public {
+        // should revert if called from a contract
         vm.expectRevert();
-        caller.appendBatch(randomBytes);
-
+        caller.appendBatch(RANDOM_BYTES);
     }
 }
