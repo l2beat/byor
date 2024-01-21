@@ -1,2 +1,11 @@
-# Hardhat
-build/
+# Foundry
+cache/
+out/
+.env
+broadcast/
+
+# JS
+node_modules/
+
+#yarn
+*.log
