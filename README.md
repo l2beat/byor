@@ -17,7 +17,7 @@ For more details about the architecture, see [here](./ARCHITECTURE.md).
 
 Install the following:
 
-- node v18
+- node v22
 - [yarn](https://classic.yarnpkg.com/lang/en/docs/install/)
 - [foundry](https://book.getfoundry.sh/getting-started/installation)
 - Postgresql. We recommend running it through docker for local development.
