@@ -67,6 +67,10 @@ yarn dev --port 8080
 Anvil is used because hardhat is incapable of filtering logs using the `fromBlock`/`toBlock`.
 Read more about this issue [here](https://github.com/wagmi-dev/viem/discussions/366) and [here](https://github.com/foundry-rs/foundry/issues/4729).
 
+### Demo
+
+Demo deployment was available under [byor.l2beat.com](https://byor.l2beat.com) but it's no longer maintained. Please follow the README to deploy your own application if you want to use it.
+
 ## Contributors
 
 - [fewwwww](https://github.com/fewwwww), [Sequencer Ordering](https://github.com/l2beat/byor/pull/62)
