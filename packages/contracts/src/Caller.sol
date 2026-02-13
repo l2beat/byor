@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import './Inputs.sol';
+import {Inputs} from "./Inputs.sol";
 
 // Only used for testing
 contract Caller {
-    Inputs inputs;
+    Inputs internal inputs;
 
     constructor(address inputsContract) {
         inputs = Inputs(inputsContract);
